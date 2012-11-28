@@ -22,7 +22,6 @@ import com.pqqqqq.fwcore.config.Config;
 import com.pqqqqq.fwcore.config.MailConfig;
 import com.pqqqqq.fwcore.config.PluginConfig;
 
-// blah
 public class FWCore {
 	private FWCorePlugin				fwc;
 	private final Logger				log				= Logger.getLogger("Minecraft");
