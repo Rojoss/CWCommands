@@ -1,0 +1,16 @@
+name: FWCore
+main: com.pqqqqq.fwcore.bukkit.FWCorePlugin
+version: '1.0'
+author: Pqqqqq
+description: A core plugin
+commands:
+  mail:
+    description: Mail commands
+    usage: /<command> help
+    aliases: [letter]
+  book:
+    description: Book commands
+    usage: /<command> help
+  chest:
+    description: Chest commands
+    usage: /<command> help
