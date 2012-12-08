@@ -1,6 +1,7 @@
 package com.pqqqqq.fwcore;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -8,12 +9,12 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 public class DungeonChest {
-	private Block				chest;
-	private Chest				c;
-	private int					refill;
-	private long				lastRefill;
-	private ItemStack[]			inventory	= null;
-	private ArrayList<String>	accessed	= new ArrayList<String>();
+	private Block		chest;
+	private Chest		c;
+	private int			refill;
+	private long		lastRefill;
+	private ItemStack[]	inventory	= null;
+	private Set<String>	accessed	= new HashSet<String>();
 
 	public DungeonChest(Block chest, int refill) {
 		this.chest = chest;
@@ -76,11 +77,11 @@ public class DungeonChest {
 		this.lastRefill = lastRefill;
 	}
 
-	public ArrayList<String> getAccessed() {
+	public Set<String> getAccessed() {
 		return accessed;
 	}
-	
-	public void setAcccessed(ArrayList<String> accessed) {
+
+	public void setAcccessed(Set<String> accessed) {
 		this.accessed = accessed;
 	}
 

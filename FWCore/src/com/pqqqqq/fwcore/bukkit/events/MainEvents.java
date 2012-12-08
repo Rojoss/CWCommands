@@ -230,6 +230,8 @@ public class MainEvents implements Listener {
 				 * chest.setInventory(c.getInventory().getContents());
 				 * else
 				 */
+
+				//System.out.println(player.getName() + " Adding to dungeon chest accessed");
 				chest.getAccessed().add(player.getName());
 				break;
 			}
@@ -256,11 +258,12 @@ public class MainEvents implements Listener {
 
 		for (DungeonChest chest : fwc.getDungeonChests()) {
 			if (chest.getChestBlock().equals(b)) {
+				//System.out.println(player.getName() + " Opened dungeon chest");
+
 				if (chest.getAccessed().contains(player.getName())) {
 					player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.DARK_RED + "You can't use this chest again.");
 					event.setCancelled(true);
 				}
-
 				break;
 			}
 		}
@@ -282,7 +285,7 @@ public class MainEvents implements Listener {
 		Block b = c.getBlock();
 
 		boolean top = event.getRawSlot() + 1 <= event.getView().getTopInventory().getSize();
-		ItemStack cursor = event.getCursor();
+		//ItemStack cursor = event.getCursor();
 		ItemStack current = event.getCurrentItem();
 
 		/*
@@ -295,6 +298,8 @@ public class MainEvents implements Listener {
 
 		for (DungeonChest chest : fwc.getDungeonChests()) {
 			if (chest.getChestBlock().equals(b)) {
+				//System.out.println(player.getName() + " Clicked dungeon chest, top: " + top);
+
 				if (!top && current.getTypeId() != 0) {
 					if (bypass)
 						edited.add(player.getName());
@@ -303,7 +308,8 @@ public class MainEvents implements Listener {
 						event.setCancelled(true);
 						event.setResult(Result.DENY);
 					}
-				} else if (!top && cursor.getTypeId() != 0) {
+				} else if (top && current.getTypeId() != 0) {
+					//System.out.println(player.getName() + " Adding to edited");
 					edited.add(player.getName());
 				}
 			}
@@ -327,16 +333,16 @@ public class MainEvents implements Listener {
 		if (player.getOpenInventory() != null)
 			player.closeInventory();
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void weatherChange(WeatherChangeEvent event) {
 		if (event.isCancelled() || !event.toWeatherState())
 			return;
-		
+
 		Random random = new Random();
 		int rd = 1 + random.nextInt(100);
-		
-		if (rd > fwc.getStormPercent())
+
+		if (rd <= fwc.getStormPercent())
 			event.setCancelled(true);
 	}
 }

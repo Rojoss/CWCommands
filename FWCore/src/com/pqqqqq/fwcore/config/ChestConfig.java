@@ -2,6 +2,7 @@ package com.pqqqqq.fwcore.config;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -68,7 +69,7 @@ public class ChestConfig extends Config {
 
 				if (block.getState() instanceof Chest) {
 					DungeonChest dc = new DungeonChest(block, time);
-					dc.setAcccessed((ArrayList<String>) ConfigUtil.getStringList(cfg, file, "chests." + c + ".accessed"));
+					dc.setAcccessed(new HashSet<String>(ConfigUtil.getStringList(cfg, file, "chests." + c + ".accessed")));
 
 					fwc.getDungeonChests().add(dc);
 				}
@@ -95,7 +96,7 @@ public class ChestConfig extends Config {
 				cfg.set("chests." + Integer.toString(i) + ".x", loc.getBlockX());
 				cfg.set("chests." + Integer.toString(i) + ".y", loc.getBlockY());
 				cfg.set("chests." + Integer.toString(i) + ".z", loc.getBlockZ());
-				cfg.set("chests." + Integer.toString(i) + ".accessed", dc.getAccessed());
+				cfg.set("chests." + Integer.toString(i) + ".accessed", new ArrayList<String>(dc.getAccessed()));
 				cfg.set("chests." + Integer.toString(i) + ".refill-time", dc.getRefillTime());
 			}
 
