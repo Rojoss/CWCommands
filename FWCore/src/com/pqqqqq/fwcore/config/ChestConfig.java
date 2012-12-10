@@ -63,12 +63,10 @@ public class ChestConfig extends Config {
 				if (x == null || y == null || z == null)
 					continue;
 
-				int time = ConfigUtil.getInt(cfg, file, "chests." + c + ".refill-time", 30);
-
 				Block block = world.getBlockAt(x, y, z);
 
 				if (block.getState() instanceof Chest) {
-					DungeonChest dc = new DungeonChest(block, time);
+					DungeonChest dc = new DungeonChest(block);
 					dc.setAcccessed(new HashSet<String>(ConfigUtil.getStringList(cfg, file, "chests." + c + ".accessed")));
 
 					fwc.getDungeonChests().add(dc);
@@ -97,7 +95,6 @@ public class ChestConfig extends Config {
 				cfg.set("chests." + Integer.toString(i) + ".y", loc.getBlockY());
 				cfg.set("chests." + Integer.toString(i) + ".z", loc.getBlockZ());
 				cfg.set("chests." + Integer.toString(i) + ".accessed", new ArrayList<String>(dc.getAccessed()));
-				cfg.set("chests." + Integer.toString(i) + ".refill-time", dc.getRefillTime());
 			}
 
 			cfg.save(file);

@@ -2,6 +2,8 @@ package com.pqqqqq.fwcore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.block.Chest;
@@ -14,7 +16,6 @@ import org.bukkit.plugin.PluginManager;
 import com.pqqqqq.fwcore.bukkit.FWCorePlugin;
 import com.pqqqqq.fwcore.bukkit.events.MainEvents;
 import com.pqqqqq.fwcore.command.Commands;
-import com.pqqqqq.fwcore.concurrent.DungeonChestFiller;
 import com.pqqqqq.fwcore.concurrent.MailGiver;
 import com.pqqqqq.fwcore.config.BookConfig;
 import com.pqqqqq.fwcore.config.ChestConfig;
@@ -23,29 +24,28 @@ import com.pqqqqq.fwcore.config.MailConfig;
 import com.pqqqqq.fwcore.config.PluginConfig;
 
 public class FWCore {
-	private FWCorePlugin				fwc;
-	private final Logger				log				= Logger.getLogger("Minecraft");
+	private FWCorePlugin			fwc;
+	private final Logger			log				= Logger.getLogger("Minecraft");
 
-	private Commands					cmds;
+	private Commands				cmds;
 
-	private ArrayList<Villager>			notele			= new ArrayList<Villager>();
-	private ArrayList<Mail>				mail			= new ArrayList<Mail>();
-	private ArrayList<DungeonChest>		dungeonChests	= new ArrayList<DungeonChest>();
-	private ArrayList<String>			deleteChests	= new ArrayList<String>();
+	private ArrayList<Villager>		notele			= new ArrayList<Villager>();
+	private ArrayList<Mail>			mail			= new ArrayList<Mail>();
+	private ArrayList<DungeonChest>	dungeonChests	= new ArrayList<DungeonChest>();
+	private ArrayList<String>		deleteChests	= new ArrayList<String>();
 
-	private HashMap<Item, Mail>			mailDrops		= new HashMap<Item, Mail>();
-	private HashMap<String, Book>		savedBooks		= new HashMap<String, Book>();
-	private HashMap<String, Integer>	createChest		= new HashMap<String, Integer>();
-	private HashMap<String, Integer>	refillChests	= new HashMap<String, Integer>();
+	private HashMap<Item, Mail>		mailDrops		= new HashMap<Item, Mail>();
+	private HashMap<String, Book>	savedBooks		= new HashMap<String, Book>();
+	private Set<String>				createChest		= new HashSet<String>();
 
 	// Config stuff
-	private Config						cfg;
-	private Config						mailCfg;
-	private Config						booksCfg;
-	private Config						chestCfg;
-	private int							mailDelay;
-	private int							chestDelay;
-	private int							stormPercent;
+	private Config					cfg;
+	private Config					mailCfg;
+	private Config					booksCfg;
+	private Config					chestCfg;
+	private int						mailDelay;
+	private int						chestDelay;
+	private int						stormPercent;
 
 	private void registerEvents() {
 		PluginManager pm = getPlugin().getServer().getPluginManager();
@@ -111,7 +111,6 @@ public class FWCore {
 		registerEvents();
 
 		getPlugin().getServer().getScheduler().scheduleAsyncRepeatingTask(getPlugin(), new MailGiver(this), 100, 100);
-		getPlugin().getServer().getScheduler().scheduleAsyncRepeatingTask(getPlugin(), new DungeonChestFiller(this), 10, 10);
 		// getPlugin().getServer().getScheduler().scheduleAsyncRepeatingTask(getPlugin(),
 		// new ChestRemoval(this), 10, 10);
 		log("Successfully enabled.");
@@ -137,11 +136,7 @@ public class FWCore {
 		return deleteChests;
 	}
 
-	public HashMap<String, Integer> getRefillChests() {
-		return refillChests;
-	}
-
-	public HashMap<String, Integer> getCreateChests() {
+	public Set<String> getCreateChests() {
 		return createChest;
 	}
 

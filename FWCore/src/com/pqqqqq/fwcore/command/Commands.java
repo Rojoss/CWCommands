@@ -347,8 +347,7 @@ public class Commands {
 			permissions = { "fwcore.dungeonchest.create" },
 			aliases = { "create" },
 			description = "Creates a \"dungeon\" chest",
-			usage = "/chest create <seconds>",
-			example = "/chest create 60",
+			usage = "/chest create",
 			label = "chest")
 	public boolean createDungeonChest(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
@@ -358,22 +357,8 @@ public class Commands {
 
 		final Player player = (Player) sender;
 
-		if (args.length <= 0) {
-			player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Usage: /chest create <seconds>.");
-			return true;
-		}
-
-		int time;
-		try {
-			time = Integer.parseInt(args[0]);
-		} catch (NumberFormatException e) {
-			player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.DARK_RED + "Time must be an integer.");
-			return true;
-		}
-
-		fwc.getCreateChests().put(player.getName(), time);
+		fwc.getCreateChests().add(player.getName());
 		fwc.getDeleteChests().remove(player.getName());
-		fwc.getRefillChests().remove(player.getName());
 		player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Right click a chest to make it a dungeon chest.");
 		return true;
 	}
@@ -394,43 +379,7 @@ public class Commands {
 
 		fwc.getDeleteChests().add(player.getName());
 		fwc.getCreateChests().remove(player.getName());
-		fwc.getRefillChests().remove(player.getName());
 		player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Right click a dungeon chest to remove it.");
-		return true;
-	}
-
-	@Command(
-			permissions = { "fwcore.dungeonchest.edit" },
-			aliases = { "refill" },
-			description = "Changes fill time for a \"dungeon\" chest",
-			usage = "/chest refill <time>",
-			example = "/chest refill 30",
-			label = "chest")
-	public boolean changeRefillDungeonChest(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.DARK_RED + "Player-only command.");
-			return true;
-		}
-
-		final Player player = (Player) sender;
-
-		if (args.length <= 0) {
-			player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Usage: /chest refill <time>.");
-			return true;
-		}
-
-		int time;
-		try {
-			time = Integer.parseInt(args[0]);
-		} catch (NumberFormatException e) {
-			player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.DARK_RED + "Time must be an integer.");
-			return true;
-		}
-
-		fwc.getRefillChests().put(player.getName(), time);
-		fwc.getCreateChests().remove(player.getName());
-		fwc.getDeleteChests().remove(player.getName());
-		player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Right click a dungeon chest to change the refill time.");
 		return true;
 	}
 

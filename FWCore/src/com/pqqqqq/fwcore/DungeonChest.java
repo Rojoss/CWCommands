@@ -11,14 +11,12 @@ import org.bukkit.inventory.ItemStack;
 public class DungeonChest {
 	private Block		chest;
 	private Chest		c;
-	private int			refill;
 	private long		lastRefill;
 	private ItemStack[]	inventory	= null;
 	private Set<String>	accessed	= new HashSet<String>();
 
-	public DungeonChest(Block chest, int refill) {
+	public DungeonChest(Block chest) {
 		this.chest = chest;
-		this.refill = refill;
 		this.lastRefill = System.currentTimeMillis();
 
 		findChestInstance();
@@ -50,14 +48,6 @@ public class DungeonChest {
 
 	public void setChest(Block chest) {
 		this.chest = chest;
-	}
-
-	public int getRefillTime() {
-		return refill;
-	}
-
-	public void setRefillTime(int refill) {
-		this.refill = refill;
 	}
 
 	public ItemStack[] getInventory() {

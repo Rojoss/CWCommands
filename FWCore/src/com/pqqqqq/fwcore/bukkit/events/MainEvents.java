@@ -113,14 +113,11 @@ public class MainEvents implements Listener {
 		Player player = event.getPlayer();
 		Block block = event.getClickedBlock();
 
-		if (!fwc.getCreateChests().containsKey(player.getName()) && !fwc.getDeleteChests().contains(player.getName())
-				&& !fwc.getRefillChests().containsKey(player.getName()))
+		if (!fwc.getCreateChests().contains(player.getName()) && !fwc.getDeleteChests().contains(player.getName()))
 			return;
 
 		if (block != null && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (fwc.getCreateChests().containsKey(player.getName())) {
-				int time = fwc.getCreateChests().get(player.getName());
-
+			if (fwc.getCreateChests().contains(player.getName())) {
 				fwc.getCreateChests().remove(player.getName());
 				event.setCancelled(true);
 				event.setUseInteractedBlock(Result.DENY);
@@ -130,7 +127,7 @@ public class MainEvents implements Listener {
 					return;
 				}
 
-				DungeonChest dc = new DungeonChest(block, time);
+				DungeonChest dc = new DungeonChest(block);
 
 				if (fwc.getDungeonChests().contains(dc)) {
 					player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.DARK_RED + "That is already a dungeon chest.");
@@ -139,7 +136,7 @@ public class MainEvents implements Listener {
 
 				fwc.getDungeonChests().add(dc);
 				player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Dungeon chest created.");
-			} else if (fwc.getDeleteChests().contains(player.getName())) {
+			} else {
 				fwc.getDeleteChests().remove(player.getName());
 				event.setCancelled(true);
 				event.setUseInteractedBlock(Result.DENY);
@@ -153,28 +150,6 @@ public class MainEvents implements Listener {
 					if (chest.getChestBlock().equals(block)) {
 						fwc.getDungeonChests().remove(chest);
 						player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Dungeon chest deleted.");
-						return;
-					}
-				}
-
-				player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.DARK_RED + "This is not a dungeon chest.");
-			} else {
-				int time = fwc.getRefillChests().get(player.getName());
-
-				fwc.getRefillChests().remove(player.getName());
-				event.setCancelled(true);
-				event.setUseInteractedBlock(Result.DENY);
-
-				if (block.getType() != Material.CHEST) {
-					player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.DARK_RED + "That is not a chest.");
-					return;
-				}
-
-				for (DungeonChest chest : fwc.getDungeonChests()) {
-					if (chest.getChestBlock().equals(block)) {
-						chest.setRefillTime(time);
-						player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Refill time changed to " + ChatColor.DARK_PURPLE
-								+ time);
 						return;
 					}
 				}
