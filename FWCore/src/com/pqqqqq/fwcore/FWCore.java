@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.bukkit.block.Chest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Item;
@@ -74,16 +73,6 @@ public class FWCore {
 		mailCfg.save();
 		booksCfg.save();
 		chestCfg.save();
-
-		for (DungeonChest dc : dungeonChests) {
-			Chest chest = dc.getChest();
-
-			if (chest == null)
-				continue;
-
-			chest.getInventory().setContents(dc.getInventory());
-			dc.resetInventory(chest.getInventory().getContents());
-		}
 
 		log("Disabled.");
 	}

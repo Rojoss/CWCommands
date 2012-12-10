@@ -1,12 +1,17 @@
 package com.pqqqqq.fwcore.bukkit.events;
 
-import java.util.ArrayList;
 import java.util.Random;
+
+import net.minecraft.server.ContainerChest;
+import net.minecraft.server.EntityPlayer;
+import net.minecraft.server.Packet100OpenWindow;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -33,10 +38,10 @@ import org.bukkit.inventory.ItemStack;
 import com.pqqqqq.fwcore.DungeonChest;
 import com.pqqqqq.fwcore.FWCore;
 import com.pqqqqq.fwcore.Mail;
+import com.pqqqqq.fwcore.bukkit.DungeonChestInventory;
 
 public class MainEvents implements Listener {
-	private FWCore				fwc;
-	private ArrayList<String>	edited	= new ArrayList<String>();
+	private FWCore	fwc;
 
 	public MainEvents(FWCore fwc) {
 		this.fwc = fwc;
@@ -186,31 +191,18 @@ public class MainEvents implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void close(InventoryCloseEvent event) {
 		final Player player = (Player) event.getPlayer();
-		InventoryHolder holder = event.getView().getTopInventory().getHolder();
 
-		if (!edited.contains(player.getName()))
+		CraftInventory inv = (CraftInventory) event.getInventory();
+
+		if (!(inv.getInventory() instanceof DungeonChestInventory))
 			return;
 
-		if (!(holder instanceof Chest))
+		DungeonChestInventory dci = (DungeonChestInventory) inv.getInventory();
+
+		if (!dci.isEdited())
 			return;
 
-		edited.remove(player.getName());
-		Chest c = (Chest) holder;
-		Block b = c.getBlock();
-
-		for (final DungeonChest chest : fwc.getDungeonChests()) {
-			if (chest.getChestBlock().equals(b)) {
-				/*
-				 * if (player.hasPermission("fwcore.dungeonchest.edit") || player.isOp())
-				 * chest.setInventory(c.getInventory().getContents());
-				 * else
-				 */
-
-				//System.out.println(player.getName() + " Adding to dungeon chest accessed");
-				chest.getAccessed().add(player.getName());
-				break;
-			}
-		}
+		dci.getDungeonChest().getAccessed().add(player.getName());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -219,9 +211,6 @@ public class MainEvents implements Listener {
 			return;
 
 		Player player = (Player) event.getPlayer();
-
-		if (player.hasPermission("fwcore.dungeonchest.edit") || player.isOp())
-			return;
 
 		InventoryHolder holder = event.getView().getTopInventory().getHolder();
 
@@ -234,11 +223,15 @@ public class MainEvents implements Listener {
 		for (DungeonChest chest : fwc.getDungeonChests()) {
 			if (chest.getChestBlock().equals(b)) {
 				//System.out.println(player.getName() + " Opened dungeon chest");
+				event.setCancelled(true);
 
-				if (chest.getAccessed().contains(player.getName())) {
+				if (!player.hasPermission("fwcore.dungeonchest.edit") && !player.isOp() && chest.getAccessed().contains(player.getName())) {
 					player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.DARK_RED + "You can't use this chest again.");
-					event.setCancelled(true);
+					return;
 				}
+
+				DungeonChestInventory dci = new DungeonChestInventory(chest);
+				openSilently(player, dci);
 				break;
 			}
 		}
@@ -250,14 +243,14 @@ public class MainEvents implements Listener {
 			return;
 
 		Player player = (Player) event.getWhoClicked();
-		InventoryHolder holder = event.getView().getTopInventory().getHolder();
-		boolean bypass = player.hasPermission("fwcore.dungeonchest.edit") || player.isOp();
 
-		if (!(holder instanceof Chest))
+		CraftInventory inv = (CraftInventory) event.getInventory();
+
+		if (!(inv.getInventory() instanceof DungeonChestInventory))
 			return;
 
-		Chest c = (Chest) holder;
-		Block b = c.getBlock();
+		DungeonChestInventory dci = (DungeonChestInventory) inv.getInventory();
+		boolean bypass = player.hasPermission("fwcore.dungeonchest.edit") || player.isOp();
 
 		boolean top = event.getRawSlot() + 1 <= event.getView().getTopInventory().getSize();
 		//ItemStack cursor = event.getCursor();
@@ -271,23 +264,19 @@ public class MainEvents implements Listener {
 		 * System.out.println("Current: " + (current == null ? "null" : current.toString()));
 		 */
 
-		for (DungeonChest chest : fwc.getDungeonChests()) {
-			if (chest.getChestBlock().equals(b)) {
-				//System.out.println(player.getName() + " Clicked dungeon chest, top: " + top);
+		//System.out.println(player.getName() + " Clicked dungeon chest, top: " + top);
 
-				if (!top && current.getTypeId() != 0) {
-					if (bypass)
-						edited.add(player.getName());
-					else {
-						player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.DARK_RED + "You can't edit a dungeon chest.");
-						event.setCancelled(true);
-						event.setResult(Result.DENY);
-					}
-				} else if (top && current.getTypeId() != 0) {
-					//System.out.println(player.getName() + " Adding to edited");
-					edited.add(player.getName());
-				}
+		if (!top && current.getTypeId() != 0) {
+			if (bypass)
+				dci.setEdited(true);
+			else {
+				player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.DARK_RED + "You can't edit a dungeon chest.");
+				event.setCancelled(true);
+				event.setResult(Result.DENY);
 			}
+		} else if (top && current.getTypeId() != 0) {
+			//System.out.println(player.getName() + " Adding to edited");
+			dci.setEdited(true);
 		}
 	}
 
@@ -319,5 +308,23 @@ public class MainEvents implements Listener {
 
 		if (rd <= fwc.getStormPercent())
 			event.setCancelled(true);
+	}
+
+	private void openSilently(Player player, net.minecraft.server.IInventory inv) {
+		EntityPlayer p = ((CraftPlayer) player).getHandle();
+
+		if (p.activeContainer != p.defaultContainer) {
+			p.closeInventory();
+		}
+
+		try {
+			int cc = p.nextContainerCounter();
+			p.netServerHandler.sendPacket(new Packet100OpenWindow(cc, 0, inv.getName(), inv.getSize()));
+			p.activeContainer = new ContainerChest(p.inventory, inv);
+			p.activeContainer.windowId = cc;
+			p.activeContainer.addSlotListener(p);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
