@@ -2,12 +2,12 @@ package com.pqqqqq.fwcore.util;
 
 import java.util.ArrayList;
 
-import net.minecraft.server.NBTTagCompound;
-import net.minecraft.server.NBTTagList;
-import net.minecraft.server.NBTTagString;
+import net.minecraft.server.v1_4_5.NBTTagCompound;
+import net.minecraft.server.v1_4_5.NBTTagList;
+import net.minecraft.server.v1_4_5.NBTTagString;
 
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import com.pqqqqq.fwcore.Book;
@@ -16,7 +16,7 @@ public class Utils {
 
 	public static ItemStack createBook(boolean signed, Book book) {
 		ItemStack b = new ItemStack((signed ? Material.WRITTEN_BOOK : Material.BOOK_AND_QUILL), 1);
-		net.minecraft.server.ItemStack newStack = new CraftItemStack(b).getHandle();
+		net.minecraft.server.v1_4_5.ItemStack newStack = new CraftItemStack(b).getHandle();
 
 		NBTTagCompound newTag = new NBTTagCompound();
 
@@ -45,7 +45,7 @@ public class Utils {
 	}
 
 	public static Book getBook(ItemStack book) {
-		net.minecraft.server.ItemStack nmsStack = CraftItemStack.createNMSItemStack(book);
+		net.minecraft.server.v1_4_5.ItemStack nmsStack = CraftItemStack.createNMSItemStack(book);
 
 		NBTTagCompound tagCompound = nmsStack.tag;
 

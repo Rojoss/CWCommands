@@ -2,16 +2,16 @@ package com.pqqqqq.fwcore.bukkit.events;
 
 import java.util.Random;
 
-import net.minecraft.server.ContainerChest;
-import net.minecraft.server.EntityPlayer;
-import net.minecraft.server.Packet100OpenWindow;
+import net.minecraft.server.v1_4_5.ContainerChest;
+import net.minecraft.server.v1_4_5.EntityPlayer;
+import net.minecraft.server.v1_4_5.Packet100OpenWindow;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_4_5.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_5.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -310,7 +310,7 @@ public class MainEvents implements Listener {
 			event.setCancelled(true);
 	}
 
-	private void openSilently(Player player, net.minecraft.server.IInventory inv) {
+	private void openSilently(Player player, net.minecraft.server.v1_4_5.IInventory inv) {
 		EntityPlayer p = ((CraftPlayer) player).getHandle();
 
 		if (p.activeContainer != p.defaultContainer) {
