@@ -2,16 +2,16 @@ package com.pqqqqq.fwcore.concurrent;
 
 import java.util.ArrayList;
 
-import net.minecraft.server.v1_4_5.EntityItem;
-import net.minecraft.server.v1_4_5.WorldServer;
+import net.minecraft.server.v1_4_6.EntityItem;
+import net.minecraft.server.v1_4_6.WorldServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_4_5.CraftWorld;
-import org.bukkit.craftbukkit.v1_4_5.entity.CraftItem;
-import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftItem;
+import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
@@ -81,7 +81,7 @@ public class MailGiver implements Runnable {
 							ItemStack i = Utils.createBook(true, mail.getTitle(), mail.getAuthor(), mail.getPages());
 							CraftItemStack ci = (CraftItemStack) i;
 
-							EntityItem entity = new EntityItem(ws, loc.getX(), loc.getY(), loc.getZ(), ci.getHandle());
+							EntityItem entity = new EntityItem(ws, loc.getX(), loc.getY(), loc.getZ(), CraftItemStack.asNMSCopy(ci));
 							entity.pickupDelay = 10;
 							ws.addEntity(entity);
 

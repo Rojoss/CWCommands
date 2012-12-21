@@ -1,8 +1,8 @@
 package com.pqqqqq.fwcore.bukkit;
 
-import net.minecraft.server.v1_4_5.TileEntityChest;
+import net.minecraft.server.v1_4_6.TileEntityChest;
 
-import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import com.pqqqqq.fwcore.DungeonChest;
@@ -35,7 +35,7 @@ public class DungeonChestInventory extends TileEntityChest {
 		for (int i = 0; i < getSize(); i++) {
 			ItemStack it = inv[i];
 
-			setItem(i, (it == null ? null : new CraftItemStack(it.clone()).getHandle()));
+			setItem(i, (it == null ? null : CraftItemStack.asNMSCopy(it.clone())));
 		}
 	}
 }

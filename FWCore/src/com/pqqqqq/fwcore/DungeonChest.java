@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 public class DungeonChest {
@@ -27,7 +27,7 @@ public class DungeonChest {
 
 			for (int i = 0; i < inventory.length; i++) {
 				ItemStack is = iss[i];
-				inventory[i] = is == null ? null : new CraftItemStack(CraftItemStack.createNMSItemStack(iss[i].clone()));
+				inventory[i] = is == null ? null : CraftItemStack.asCraftCopy(iss[i].clone());
 			}
 		}
 	}
