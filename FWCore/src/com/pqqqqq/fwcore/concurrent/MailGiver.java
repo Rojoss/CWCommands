@@ -13,7 +13,7 @@ import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
 import org.bukkit.craftbukkit.v1_4_6.entity.CraftItem;
 import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.Witch;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -53,8 +53,7 @@ public class MailGiver implements Runnable {
 				double zLoc = loc.getZ() + zDir;
 				Location newLoc = new Location(world, xLoc, loc.getY() + 3, zLoc, -loc.getYaw(), loc.getPitch());
 
-				final Villager villager = world.spawn(newLoc, Villager.class);
-				villager.setProfession(Villager.Profession.LIBRARIAN);
+				final Witch witch = world.spawn(newLoc, Witch.class);
 
 				/*
 				 * EntityPlayer ep = ((CraftPlayer) player).getHandle();
@@ -63,7 +62,7 @@ public class MailGiver implements Runnable {
 				 * enderman.setTarget(player);
 				 */
 
-				fwc.getNoEditVillagers().add(villager);
+				fwc.getNoEditVillagers().add(witch);
 				fwc.getMail().remove(mail);
 				player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + mail.getSender() + ChatColor.GOLD + " has sent you mail.");
 				alreadyRecieved.add(player.getName());
@@ -72,12 +71,12 @@ public class MailGiver implements Runnable {
 				if (send != null)
 					send.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + player.getName() + ChatColor.GOLD + " recieved your letter.");
 
-				Bukkit.getScheduler().scheduleAsyncDelayedTask(fwc.getPlugin(), new Runnable() {
+				Bukkit.getScheduler().runTaskLaterAsynchronously(fwc.getPlugin(), new Runnable() {
 
 					@Override
 					public void run() {
 						try {
-							Location loc = villager.getLocation();
+							Location loc = witch.getLocation();
 							ItemStack i = Utils.createBook(true, mail.getTitle(), mail.getAuthor(), mail.getPages());
 							CraftItemStack ci = (CraftItemStack) i;
 
@@ -88,8 +87,8 @@ public class MailGiver implements Runnable {
 							CraftItem item = new CraftItem(ws.getServer(), entity);
 							fwc.getMailDrops().put(item, mail);
 
-							villager.remove();
-							fwc.getNoEditVillagers().remove(villager);
+							witch.remove();
+							fwc.getNoEditVillagers().remove(witch);
 
 							Thread.sleep(25000);
 							if (fwc.getMailDrops().containsKey(item)) {

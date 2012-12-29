@@ -23,7 +23,7 @@ import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
 import org.bukkit.craftbukkit.v1_4_6.entity.CraftFirework;
 import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.Witch;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
@@ -104,9 +104,8 @@ public class Commands {
 		double zLoc = loc.getZ() + zDir;
 		Location newLoc = new Location(world, xLoc, loc.getY() + 3, zLoc, -loc.getYaw(), loc.getPitch());
 
-		final Villager villager = world.spawn(newLoc, Villager.class);
-		villager.setProfession(Villager.Profession.LIBRARIAN);
-		fwc.getNoEditVillagers().add(villager);
+		final Witch witch = world.spawn(newLoc, Witch.class);
+		fwc.getNoEditVillagers().add(witch);
 
 		/*
 		 * EntityPlayer ep = ((CraftPlayer) player).getHandle(); EntityEnderman
@@ -135,8 +134,8 @@ public class Commands {
 			@Override
 			public void run() {
 				try {
-					villager.remove();
-					fwc.getNoEditVillagers().remove(villager);
+					witch.remove();
+					fwc.getNoEditVillagers().remove(witch);
 					fwc.getMail().add(new Mail(player.getName(), s, book));
 				} catch (Exception e) {
 					e.printStackTrace();

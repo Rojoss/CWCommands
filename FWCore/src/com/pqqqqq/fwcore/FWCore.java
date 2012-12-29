@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Item;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.Witch;
 import org.bukkit.plugin.PluginManager;
 
 import com.pqqqqq.fwcore.bukkit.FWCorePlugin;
@@ -28,7 +28,7 @@ public class FWCore {
 
 	private Commands				cmds;
 
-	private ArrayList<Villager>		notele			= new ArrayList<Villager>();
+	private ArrayList<Witch>		notele			= new ArrayList<Witch>();
 	private ArrayList<Mail>			mail			= new ArrayList<Mail>();
 	private ArrayList<DungeonChest>	dungeonChests	= new ArrayList<DungeonChest>();
 	private ArrayList<String>		deleteChests	= new ArrayList<String>();
@@ -99,7 +99,7 @@ public class FWCore {
 
 		registerEvents();
 
-		getPlugin().getServer().getScheduler().scheduleAsyncRepeatingTask(getPlugin(), new MailGiver(this), 100, 100);
+		getPlugin().getServer().getScheduler().runTaskTimerAsynchronously(getPlugin(), new MailGiver(this), 100, 100);
 		// getPlugin().getServer().getScheduler().scheduleAsyncRepeatingTask(getPlugin(),
 		// new ChestRemoval(this), 10, 10);
 		log("Successfully enabled.");
@@ -109,7 +109,7 @@ public class FWCore {
 		this.fwc = fwc;
 	}
 
-	public ArrayList<Villager> getNoEditVillagers() {
+	public ArrayList<Witch> getNoEditVillagers() {
 		return notele;
 	}
 
