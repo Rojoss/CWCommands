@@ -1,20 +1,31 @@
 package com.pqqqqq.fwcore.command;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import net.minecraft.server.v1_4_6.EntityFireworks;
+import net.minecraft.server.v1_4_6.WorldServer;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftFirework;
+import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
 
 import com.pqqqqq.fwcore.Book;
@@ -384,8 +395,358 @@ public class Commands {
 	}
 
 	/* End of dungeon chest commands */
-	/* End of commands */
 
+	@Command(permissions = { "fwcore.firework" }, aliases = {}, description = "Customize your rockets", usage = "/firework", label = "firework")
+	public boolean firework(CommandSender sender, String[] args) {
+		Player player = (Player) sender;
+		World world = player.getWorld();
+		WorldServer ws = ((CraftWorld) world).getHandle();
+		ItemStack firework = player.getItemInHand();
+
+		if (firework == null || firework.getType() != Material.FIREWORK) {
+			player.sendMessage(ChatColor.RED + "[FWCore] Put your rocket in your hand.");
+			return true;
+		}
+
+		if (args.length <= 0 || !args[0].equalsIgnoreCase("addcolour") && !args[0].equalsIgnoreCase("addcolor")
+				&& !args[0].equalsIgnoreCase("addfade") && !args[0].equalsIgnoreCase("power") && !args[0].equalsIgnoreCase("trail")
+				&& !args[0].equalsIgnoreCase("flicker") && !args[0].equalsIgnoreCase("clear") && !args[0].equalsIgnoreCase("type")
+				&& !args[0].equalsIgnoreCase("copy") && !args[0].equalsIgnoreCase("addeffect") && !args[0].equalsIgnoreCase("info")) {
+			player.sendMessage(ChatColor.BLUE + "[FWCore] Usage: /firework <addcolour|addfade|power|trail|flicker|clear|type|copy|addeffect|info>.");
+			return true;
+		}
+
+		FireworkMeta meta = (FireworkMeta) firework.getItemMeta();
+
+		EntityFireworks fireworks = new EntityFireworks(ws);
+		CraftFirework fw = new CraftFirework(ws.getServer(), fireworks);
+
+		if (args[0].equalsIgnoreCase("copy")) {
+			if (args.length <= 1) {
+				player.sendMessage(ChatColor.BLUE + "[FWCore] Usage: /firework copy <amount>.");
+				player.sendMessage(ChatColor.BLUE + "Example: /firework copy 64 (copy into a 64-stack)");
+				return true;
+			}
+
+			int amt;
+			try {
+				amt = Integer.parseInt(args[1]);
+			} catch (NumberFormatException e) {
+				player.sendMessage(ChatColor.RED + "[FWCore] Amount must be a number.");
+				return true;
+			}
+
+			try {
+				fw.setFireworkMeta(meta);
+				Field f = CraftFirework.class.getDeclaredField("item");
+				f.setAccessible(true);
+				CraftItemStack it = (CraftItemStack) f.get(fw);
+				it.setAmount(amt);
+
+				player.getInventory().addItem(it);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return true;
+		} else if (args[0].equalsIgnoreCase("addeffect")) {
+			if (args.length <= 3) {
+				player.sendMessage(ChatColor.BLUE + "[FWCpre] Usage: /firework addeffect r g b.");
+				player.sendMessage(ChatColor.BLUE + "Example: /firework addeffect 255 0 0 (create an effect with base-colour red)");
+				return true;
+			}
+
+			int r = 0;
+			int g = 0;
+			int b = 0;
+
+			try {
+				r = Integer.parseInt(args[1]);
+				g = Integer.parseInt(args[2]);
+				b = Integer.parseInt(args[3]);
+			} catch (NumberFormatException e) {
+				player.sendMessage(ChatColor.RED + "[FWCore] RGB values must be numbers.");
+				return true;
+			}
+
+			FireworkEffect eft = FireworkEffect.builder().withColor(Color.fromRGB(r, g, b)).build();
+
+			meta.addEffect(eft);
+			fw.setFireworkMeta(meta);
+
+			try {
+				Field f = CraftFirework.class.getDeclaredField("item");
+				f.setAccessible(true);
+				CraftItemStack it = (CraftItemStack) f.get(fw);
+				it.setAmount(firework.getAmount());
+
+				player.setItemInHand(it);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			player.sendMessage(ChatColor.GREEN + "[FWCore] Successfully added effect #" + (meta.getEffectsSize() - 1));
+			return true;
+		} else if (args[0].equalsIgnoreCase("info")) {
+			player.sendMessage(ChatColor.BLUE + "Power (Flight duration): " + meta.getPower());
+			player.sendMessage(ChatColor.BLUE + "Effects (" + meta.getEffectsSize() + "):");
+
+			for (int i = 0; i < meta.getEffectsSize(); i++) {
+				FireworkEffect effect = meta.getEffects().get(i);
+				player.sendMessage(ChatColor.GREEN + "Effect #" + i + ":");
+				player.sendMessage(ChatColor.BLUE + "Flicker effect: " + (effect.hasFlicker() ? "yes" : "no"));
+				player.sendMessage(ChatColor.BLUE + "Trail effect: " + (effect.hasTrail() ? "yes" : "no"));
+				player.sendMessage(ChatColor.BLUE + "Type: " + effect.getType().name().toLowerCase().replace("_", " "));
+				player.sendMessage(ChatColor.BLUE + "Colours (" + effect.getColors().size() + "):");
+
+				for (int c = 0; c < effect.getColors().size(); c++) {
+					Color color = effect.getColors().get(c);
+					player.sendMessage(ChatColor.GREEN + "Colour #" + c + ": R: " + color.getRed() + ", G: " + color.getGreen() + ", B:"
+							+ color.getBlue());
+				}
+
+				player.sendMessage(ChatColor.BLUE + "Fade Colours (" + effect.getFadeColors().size() + "):");
+
+				for (int c = 0; c < effect.getFadeColors().size(); c++) {
+					Color color = effect.getFadeColors().get(c);
+					player.sendMessage(ChatColor.GREEN + "Fade Colour #" + c + ": R: " + color.getRed() + ", G: " + color.getGreen() + ", B:"
+							+ color.getBlue());
+				}
+			}
+
+			return true;
+		}
+
+		FireworkEffect[] effects = null;
+
+		if (!args[0].equalsIgnoreCase("power")) {
+			effects = meta.getEffectsSize() == 0 ? new FireworkEffect[] {} : meta.getEffects().toArray(new FireworkEffect[meta.getEffectsSize()]);
+			meta.clearEffects();
+		}
+
+		if (args[0].equalsIgnoreCase("addcolour") || args[0].equalsIgnoreCase("addcolor")) {
+			if (args.length <= 4) {
+				player.sendMessage(ChatColor.BLUE + "[FWCore] Usage: /firework addcolour <effect> r g b.");
+				player.sendMessage(ChatColor.BLUE + "Example: /firework addcolour 2 255 0 0 (add red to effect #2)");
+				return true;
+			}
+
+			int effectn;
+			try {
+				effectn = Integer.parseInt(args[1]);
+
+				if (effectn < 0 || effectn > (effects.length - 1)) {
+					player.sendMessage(ChatColor.RED + "[FWCore] Effect number must be between 0 - " + (effects.length - 1));
+					return true;
+				}
+			} catch (NumberFormatException e) {
+				player.sendMessage(ChatColor.RED + "[FWCore] Effect # must be an integer.");
+				return true;
+			}
+
+			int r = 0;
+			int g = 0;
+			int b = 0;
+
+			try {
+				r = Integer.parseInt(args[2]);
+				g = Integer.parseInt(args[3]);
+				b = Integer.parseInt(args[4]);
+			} catch (NumberFormatException e) {
+				player.sendMessage(ChatColor.RED + "[FWCore] RGB values must be numbers.");
+				return true;
+			}
+
+			FireworkEffect effect = cloneEffect(effects[effectn]).withColor(Color.fromRGB(r, g, b)).build();
+			effects[effectn] = effect;
+
+			meta.addEffects(effects);
+			player.sendMessage(ChatColor.GREEN + "[FWCore] Successfully added colour.");
+		} else if (args[0].equalsIgnoreCase("addfade")) {
+			if (args.length <= 4) {
+				player.sendMessage(ChatColor.BLUE + "[FWCore] Usage: /firework addfade <effect> r g b.");
+				player.sendMessage(ChatColor.BLUE + "Example: /firework addfade 2 255 0 0 (add red to effect #2)");
+				return true;
+			}
+
+			int effectn;
+			try {
+				effectn = Integer.parseInt(args[1]);
+
+				if (effectn < 0 || effectn > (effects.length - 1)) {
+					player.sendMessage(ChatColor.RED + "[FWCore] Effect number must be between 0 - " + (effects.length - 1));
+					return true;
+				}
+			} catch (NumberFormatException e) {
+				player.sendMessage(ChatColor.RED + "[FWCore] Effect # must be an integer.");
+				return true;
+			}
+
+			int r = 0;
+			int g = 0;
+			int b = 0;
+
+			try {
+				r = Integer.parseInt(args[2]);
+				g = Integer.parseInt(args[3]);
+				b = Integer.parseInt(args[4]);
+			} catch (NumberFormatException e) {
+				player.sendMessage(ChatColor.RED + "[FWCore] RGB values must be numbers.");
+				return true;
+			}
+
+			FireworkEffect newe = cloneEffect(effects[effectn]).withFade(Color.fromRGB(r, g, b)).build();
+			effects[effectn] = newe;
+
+			meta.addEffects(effects);
+			player.sendMessage(ChatColor.GREEN + "[FWCore] Successfully added fade.");
+		} else if (args[0].equalsIgnoreCase("trail")) {
+			if (args.length <= 1) {
+				player.sendMessage(ChatColor.BLUE + "[FWCore] Usage: /firework trail <effect>.");
+				player.sendMessage(ChatColor.BLUE + "Example: /firework trail 0");
+				return true;
+			}
+
+			int effectn;
+			try {
+				effectn = Integer.parseInt(args[1]);
+
+				if (effectn < 0 || effectn > (effects.length - 1)) {
+					player.sendMessage(ChatColor.RED + "[FWCore] Effect number must be between 0 - " + (effects.length - 1));
+					return true;
+				}
+			} catch (NumberFormatException e) {
+				player.sendMessage(ChatColor.RED + "[FWCore] Effect # must be an integer.");
+				return true;
+			}
+
+			FireworkEffect effect = effects[effectn];
+			boolean trail = (effect == null ? true : !effect.hasTrail());
+
+			FireworkEffect newe = cloneEffect(effect).trail(trail).build();
+			effects[effectn] = newe;
+
+			meta.addEffects(effects);
+			player.sendMessage(ChatColor.GREEN + "[FWCore] Successfully " + (trail ? "added a" : "removed the") + " trail");
+		} else if (args[0].equalsIgnoreCase("flicker")) {
+			if (args.length <= 1) {
+				player.sendMessage(ChatColor.BLUE + "[FWCore] Usage: /firework flicker <effect>.");
+				player.sendMessage(ChatColor.BLUE + "Example: /firework flicker 0");
+				return true;
+			}
+
+			int effectn;
+			try {
+				effectn = Integer.parseInt(args[1]);
+
+				if (effectn < 0 || effectn > (effects.length - 1)) {
+					player.sendMessage(ChatColor.RED + "[FWCore] Effect number must be between 0 - " + (effects.length - 1));
+					return true;
+				}
+			} catch (NumberFormatException e) {
+				player.sendMessage(ChatColor.RED + "[FWCore] Effect # must be an integer.");
+				return true;
+			}
+
+			FireworkEffect effect = effects[effectn];
+			boolean flicker = (effect == null ? true : !effect.hasFlicker());
+
+			FireworkEffect newe = cloneEffect(effect).flicker(flicker).build();
+			effects[effectn] = newe;
+			meta.addEffects(effects);
+			player.sendMessage(ChatColor.GREEN + "[FWCore] Successfully " + (flicker ? "added a" : "removed the") + " flicker");
+		} else if (args[0].equalsIgnoreCase("power")) {
+			if (args.length <= 1) {
+				player.sendMessage(ChatColor.BLUE + "[FWCore] Usage: /firework power <amount>.");
+				return true;
+			}
+
+			try {
+				int power = Integer.parseInt(args[1]);
+
+				if (power > 3) {
+					player.sendMessage(ChatColor.RED + "[FWCore] Firework power can't be more than 3.");
+					return true;
+				}
+
+				if (power < 1) {
+					player.sendMessage(ChatColor.RED + "[FWCore] Firework power can't be less than 1.");
+					return true;
+				}
+
+				meta.setPower(power);
+				player.sendMessage(ChatColor.GREEN + "[FWCore] Successfully set power (flight duration) to: " + power);
+			} catch (NumberFormatException e) {
+				player.sendMessage(ChatColor.RED + "[FWCore] Power must be a number.");
+				return true;
+			}
+		} else if (args[0].equalsIgnoreCase("clear")) {
+			meta.clearEffects();
+			player.sendMessage(ChatColor.GREEN + "[FWCore] Successfully cleared all effects on the rocket.");
+		} else if (args[0].equalsIgnoreCase("type")) {
+			if (args.length <= 2) {
+				player.sendMessage(ChatColor.BLUE + "[FWCore] Usage: /firework type <effect> <ball|ball_large|burst|creeper|star>.");
+				player.sendMessage(ChatColor.BLUE + "Example: /firework type 0 small_ball");
+				return true;
+			}
+
+			int effectn;
+			try {
+				effectn = Integer.parseInt(args[1]);
+
+				if (effectn < 0 || effectn > (effects.length - 1)) {
+					player.sendMessage(ChatColor.RED + "[FWCore] Effect number must be between 0 - " + (effects.length - 1));
+					return true;
+				}
+			} catch (NumberFormatException e) {
+				player.sendMessage(ChatColor.RED + "[FWCore] Effect # must be an integer.");
+				return true;
+			}
+
+			Type type = null;
+
+			try {
+				type = FireworkEffect.Type.valueOf(args[2].toUpperCase());
+			} catch (Throwable e) {
+				player.sendMessage(ChatColor.RED + "[FWCore] That is not a valid firework type.");
+				return true;
+			}
+
+			FireworkEffect newe = cloneEffect(effects[effectn]).with(type).build();
+			effects[effectn] = newe;
+			meta.addEffects(effects);
+			player.sendMessage(ChatColor.GREEN + "[FWCore] Successfully changed the effect type to " + type.name().toLowerCase().replace("_", " "));
+		}
+
+		fw.setFireworkMeta(meta);
+
+		try {
+			Field f = CraftFirework.class.getDeclaredField("item");
+			f.setAccessible(true);
+			CraftItemStack it = (CraftItemStack) f.get(fw);
+			it.setAmount(firework.getAmount());
+
+			player.setItemInHand(it);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
+	private FireworkEffect.Builder cloneEffect(FireworkEffect effect) {
+		FireworkEffect.Builder builder = FireworkEffect.builder();
+
+		if (effect == null)
+			return builder;
+
+		builder = builder.withColor(effect.getColors());
+		builder = builder.withFade(effect.getFadeColors());
+		builder = builder.with(effect.getType());
+		builder = builder.trail(effect.hasTrail());
+		builder = builder.flicker(effect.hasFlicker());
+		return builder;
+	}
+
+	/* End of commands */
 	public Commands(FWCore fwc) {
 		this.fwc = fwc;
 	}
@@ -421,6 +782,9 @@ public class Commands {
 				Command commandInfo = method.getAnnotation(Command.class);
 				String[] aliases = commandInfo.aliases();
 				String[] perms = commandInfo.permissions();
+
+				if (aliases.length <= 0)
+					return (Boolean) method.invoke(this, sender, args);
 
 				for (String alias : aliases) {
 					if (alias.equalsIgnoreCase(args[0])) {

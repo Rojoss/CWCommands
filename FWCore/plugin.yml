@@ -14,3 +14,6 @@ commands:
   chest:
     description: Chest commands
     usage: /<command> help
+  firework:
+    description: Customize your rocket
+    usage: /<command>
