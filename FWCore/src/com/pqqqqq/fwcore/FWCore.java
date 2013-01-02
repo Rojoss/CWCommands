@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Item;
-import org.bukkit.entity.Witch;
+import org.bukkit.entity.Pig;
 import org.bukkit.plugin.PluginManager;
 
 import com.pqqqqq.fwcore.bukkit.FWCorePlugin;
@@ -28,7 +28,7 @@ public class FWCore {
 
 	private Commands				cmds;
 
-	private ArrayList<Witch>		notele			= new ArrayList<Witch>();
+	private ArrayList<Pig>			notele			= new ArrayList<Pig>();
 	private ArrayList<Mail>			mail			= new ArrayList<Mail>();
 	private ArrayList<DungeonChest>	dungeonChests	= new ArrayList<DungeonChest>();
 	private ArrayList<String>		deleteChests	= new ArrayList<String>();
@@ -109,7 +109,7 @@ public class FWCore {
 		this.fwc = fwc;
 	}
 
-	public ArrayList<Witch> getNoEditVillagers() {
+	public ArrayList<Pig> getNoEditVillagers() {
 		return notele;
 	}
 

@@ -12,8 +12,8 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
 import org.bukkit.craftbukkit.v1_4_6.entity.CraftItem;
 import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
+import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Witch;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -53,7 +53,7 @@ public class MailGiver implements Runnable {
 				double zLoc = loc.getZ() + zDir;
 				Location newLoc = new Location(world, xLoc, loc.getY() + 3, zLoc, -loc.getYaw(), loc.getPitch());
 
-				final Witch witch = world.spawn(newLoc, Witch.class);
+				final Pig pig = world.spawn(newLoc, Pig.class);
 
 				/*
 				 * EntityPlayer ep = ((CraftPlayer) player).getHandle();
@@ -62,7 +62,7 @@ public class MailGiver implements Runnable {
 				 * enderman.setTarget(player);
 				 */
 
-				fwc.getNoEditVillagers().add(witch);
+				fwc.getNoEditVillagers().add(pig);
 				fwc.getMail().remove(mail);
 				player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + mail.getSender() + ChatColor.GOLD + " has sent you mail.");
 				alreadyRecieved.add(player.getName());
@@ -76,7 +76,7 @@ public class MailGiver implements Runnable {
 					@Override
 					public void run() {
 						try {
-							Location loc = witch.getLocation();
+							Location loc = pig.getLocation();
 							ItemStack i = Utils.createBook(true, mail.getTitle(), mail.getAuthor(), mail.getPages());
 							CraftItemStack ci = (CraftItemStack) i;
 
@@ -87,8 +87,8 @@ public class MailGiver implements Runnable {
 							CraftItem item = new CraftItem(ws.getServer(), entity);
 							fwc.getMailDrops().put(item, mail);
 
-							witch.remove();
-							fwc.getNoEditVillagers().remove(witch);
+							pig.remove();
+							fwc.getNoEditVillagers().remove(pig);
 
 							Thread.sleep(25000);
 							if (fwc.getMailDrops().containsKey(item)) {
