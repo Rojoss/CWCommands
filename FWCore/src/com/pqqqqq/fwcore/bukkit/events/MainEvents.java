@@ -14,6 +14,7 @@ import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_4_6.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.Event.Result;
@@ -22,6 +23,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -308,6 +311,26 @@ public class MainEvents implements Listener {
 
 		if (rd <= fwc.getStormPercent())
 			event.setCancelled(true);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void spawn(CreatureSpawnEvent event) {
+		if (event.getSpawnReason() != SpawnReason.SPAWNER)
+			return;
+
+		final LivingEntity entity = event.getEntity();
+		entity.setRemoveWhenFarAway(true);
+
+		fwc.getPlugin().getServer().getScheduler().runTaskLater(fwc.getPlugin(), new Runnable() {
+
+			@Override
+			public void run() {
+				if (!entity.isDead() && entity.isValid()) {
+					entity.setHealth(0);
+					entity.remove();
+				}
+			}
+		}, 2400);
 	}
 
 	private void openSilently(Player player, net.minecraft.server.v1_4_6.IInventory inv) {
