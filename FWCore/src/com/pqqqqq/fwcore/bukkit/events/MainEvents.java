@@ -16,6 +16,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Tameable;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
@@ -27,7 +28,6 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -38,7 +38,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
 
 import com.pqqqqq.fwcore.DungeonChest;
 import com.pqqqqq.fwcore.FWCore;
@@ -321,27 +320,24 @@ public class MainEvents implements Listener {
 			return;
 
 		final LivingEntity entity = event.getEntity();
-		entity.setMetadata("spawned", new FixedMetadataValue(fwc.getPlugin(), true));
 		entity.setRemoveWhenFarAway(true);
 
 		fwc.getPlugin().getServer().getScheduler().runTaskLater(fwc.getPlugin(), new Runnable() {
 
 			@Override
 			public void run() {
-				if (!entity.isDead() && entity.isValid() && entity.hasMetadata("spawned")) {
+				if (entity instanceof Tameable) {
+					Tameable tame = (Tameable) entity;
+
+					if (tame.isTamed())
+						return;
+				}
+
+				if (!entity.isDead() && entity.isValid()) {
 					entity.remove();
 				}
 			}
 		}, 2400);
-	}
-	
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void tame(EntityTameEvent event) {
-		LivingEntity entity = event.getEntity();
-		
-		if (entity.hasMetadata("spawned")) {
-			entity.removeMetadata("spawned", fwc.getPlugin());
-		}
 	}
 
 	private void openSilently(Player player, net.minecraft.server.v1_4_6.IInventory inv) {
