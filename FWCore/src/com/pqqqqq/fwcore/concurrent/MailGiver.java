@@ -78,7 +78,7 @@ public class MailGiver implements Runnable {
 						try {
 							Location loc = pig.getLocation();
 							ItemStack i = Utils.createBook(true, mail.getTitle(), mail.getAuthor(), mail.getPages());
-							CraftItemStack ci = (CraftItemStack) i;
+							CraftItemStack ci = CraftItemStack.asCraftCopy(i);
 
 							EntityItem entity = new EntityItem(ws, loc.getX(), loc.getY(), loc.getZ(), CraftItemStack.asNMSCopy(ci));
 							entity.pickupDelay = 10;
