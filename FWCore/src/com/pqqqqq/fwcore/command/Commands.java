@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import net.minecraft.server.v1_4_6.EntityFireworks;
-import net.minecraft.server.v1_4_6.WorldServer;
+import net.minecraft.server.v1_4_R1.EntityFireworks;
+import net.minecraft.server.v1_4_R1.WorldServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,9 +19,9 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
-import org.bukkit.craftbukkit.v1_4_6.entity.CraftFirework;
-import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftFirework;
+import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -143,6 +143,11 @@ public class Commands {
 			}
 		}, 30);
 		return true;
+	}
+
+	@Command(permissions = {}, aliases = { "help" }, description = "Mail help", usage = "/mail help <page>", example = "/mail help 1", label = "mail")
+	public boolean mailHelp(CommandSender sender, String[] args) {
+		return help(sender, args, "mail");
 	}
 
 	/* End of mail commands */
@@ -350,6 +355,11 @@ public class Commands {
 		return true;
 	}
 
+	@Command(permissions = {}, aliases = { "help" }, description = "Book help", usage = "/book help <page>", example = "/book help 1", label = "book")
+	public boolean bookHelp(CommandSender sender, String[] args) {
+		return help(sender, args, "book");
+	}
+
 	/* End of book commands */
 	/* Dungeon chest commands */
 
@@ -391,6 +401,17 @@ public class Commands {
 		fwc.getCreateChests().remove(player.getName());
 		player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Right click a dungeon chest to remove it.");
 		return true;
+	}
+
+	@Command(
+			permissions = {},
+			aliases = { "help" },
+			description = "Chest help",
+			usage = "/chest help <page>",
+			example = "/chest help 1",
+			label = "chest")
+	public boolean chestHelp(CommandSender sender, String[] args) {
+		return help(sender, args, "chest");
 	}
 
 	/* End of dungeon chest commands */
@@ -730,7 +751,7 @@ public class Commands {
 		}
 		return true;
 	}
-	
+
 	private FireworkEffect.Builder cloneEffect(FireworkEffect effect) {
 		FireworkEffect.Builder builder = FireworkEffect.builder();
 
@@ -838,5 +859,37 @@ public class Commands {
 		}
 
 		return ret.substring(0, ret.length() - connect.length());
+	}
+
+	private boolean help(CommandSender sender, String[] args, String lbl) {
+		ArrayList<Method> cmds = commands.get("mail");
+
+		int page = 1;
+		int pages = (int) Math.ceil(cmds.size() / 7D);
+
+		try {
+			page = Integer.parseInt(args[0]);
+		} catch (Throwable e) {
+		}
+
+		if (page > pages) {
+			sender.sendMessage(ChatColor.DARK_PURPLE + "There are only " + ChatColor.GOLD + pages + ChatColor.DARK_PURPLE + " page(s).");
+			return true;
+		}
+
+		int start = (page - 1) * 7;
+		int end = (page * 7) - 1;
+
+		sender.sendMessage(ChatColor.DARK_PURPLE + "-----=====~ " + ChatColor.GOLD + "Help PG " + page + "/" + pages + ChatColor.DARK_PURPLE
+				+ " ~=====-----");
+		for (int i = start; i <= end && i < commands.size(); i++) {
+			Method method = cmds.get(i);
+			Command command = method.getAnnotation(Command.class);
+			String description = command.description();
+			String alias = command.aliases()[0];
+
+			sender.sendMessage(ChatColor.DARK_PURPLE + "/" + lbl + " " + alias + " --> " + ChatColor.GOLD + description);
+		}
+		return true;
 	}
 }

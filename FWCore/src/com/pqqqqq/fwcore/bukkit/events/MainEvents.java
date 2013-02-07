@@ -2,16 +2,16 @@ package com.pqqqqq.fwcore.bukkit.events;
 
 import java.util.Random;
 
-import net.minecraft.server.v1_4_6.ContainerChest;
-import net.minecraft.server.v1_4_6.EntityPlayer;
-import net.minecraft.server.v1_4_6.Packet100OpenWindow;
+import net.minecraft.server.v1_4_R1.ContainerChest;
+import net.minecraft.server.v1_4_R1.EntityPlayer;
+import net.minecraft.server.v1_4_R1.Packet100OpenWindow;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_4_6.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -216,28 +216,32 @@ public class MainEvents implements Listener {
 
 		Player player = (Player) event.getPlayer();
 
-		InventoryHolder holder = event.getView().getTopInventory().getHolder();
+		try {
+			InventoryHolder holder = event.getView().getTopInventory().getHolder();
 
-		if (!(holder instanceof Chest))
-			return;
+			if (!(holder instanceof Chest))
+				return;
 
-		Chest c = (Chest) holder;
-		Block b = c.getBlock();
+			Chest c = (Chest) holder;
+			Block b = c.getBlock();
 
-		for (DungeonChest chest : fwc.getDungeonChests()) {
-			if (chest.getChestBlock().equals(b)) {
-				//System.out.println(player.getName() + " Opened dungeon chest");
-				event.setCancelled(true);
+			for (DungeonChest chest : fwc.getDungeonChests()) {
+				if (chest.getChestBlock().equals(b)) {
+					//System.out.println(player.getName() + " Opened dungeon chest");
+					event.setCancelled(true);
 
-				if (!player.hasPermission("fwcore.dungeonchest.edit") && !player.isOp() && chest.getAccessed().contains(player.getName())) {
-					player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.DARK_RED + "You can't use this chest again.");
-					return;
+					if (!player.hasPermission("fwcore.dungeonchest.edit") && !player.isOp() && chest.getAccessed().contains(player.getName())) {
+						player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.DARK_RED + "You can't use this chest again.");
+						return;
+					}
+
+					DungeonChestInventory dci = new DungeonChestInventory(chest);
+					openSilently(player, dci);
+					break;
 				}
-
-				DungeonChestInventory dci = new DungeonChestInventory(chest);
-				openSilently(player, dci);
-				break;
 			}
+		} catch (NullPointerException e) {
+			return;
 		}
 	}
 
@@ -329,8 +333,10 @@ public class MainEvents implements Listener {
 				if (entity instanceof Tameable) {
 					Tameable tame = (Tameable) entity;
 
-					if (tame.isTamed())
+					if (tame.isTamed()) {
+						entity.setRemoveWhenFarAway(false);
 						return;
+					}
 				}
 
 				if (!entity.isDead() && entity.isValid()) {
@@ -340,7 +346,7 @@ public class MainEvents implements Listener {
 		}, 2400);
 	}
 
-	private void openSilently(Player player, net.minecraft.server.v1_4_6.IInventory inv) {
+	private void openSilently(Player player, net.minecraft.server.v1_4_R1.IInventory inv) {
 		EntityPlayer p = ((CraftPlayer) player).getHandle();
 
 		if (p.activeContainer != p.defaultContainer) {
