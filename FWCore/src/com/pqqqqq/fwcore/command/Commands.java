@@ -766,6 +766,56 @@ public class Commands {
 		return builder;
 	}
 
+	@Command(
+			permissions = { "fwcore.tploc" },
+			aliases = {},
+			description = "Teleport a player",
+			usage = "/tploc <player> <x,y,z> <world>",
+			label = "tploc")
+	public boolean tploc(CommandSender sender, String[] args) {
+		if (args.length <= 2) {
+			sender.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Usage: /tploc <player> <x,y,z> <world>.");
+			return true;
+		}
+		
+		Player player = fwc.getPlugin().getServer().getPlayer(args[0]);
+		
+		if (player == null || !player.isOnline()) {
+			sender.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.RED + "Invalid player.");
+			return true;
+		}
+		
+		String[] coords = args[1].split(",");
+		
+		if (coords.length <= 2) {
+			sender.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Invalid coordinate pattern.");
+			return true;
+		}
+		
+		int x;
+		int y;
+		int z;
+		
+		try {
+			x = Integer.parseInt(coords[0].trim());
+			y = Integer.parseInt(coords[1].trim());
+			z = Integer.parseInt(coords[2].trim());
+		} catch (NumberFormatException e) {
+			sender.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Invalid coordinates.");
+			return true;
+		}
+		
+		World world = fwc.getPlugin().getServer().getWorld(args[2]);
+		
+		if (world == null) {
+			sender.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Invalid world.");
+			return true;
+		}
+		
+		player.teleport(new Location(world, x, y, z));
+		return true;
+	}
+
 	/* End of commands */
 	public Commands(FWCore fwc) {
 		this.fwc = fwc;
@@ -862,7 +912,7 @@ public class Commands {
 	}
 
 	private boolean help(CommandSender sender, String[] args, String lbl) {
-		ArrayList<Method> cmds = commands.get("mail");
+		ArrayList<Method> cmds = commands.get(lbl);
 
 		int page = 1;
 		int pages = (int) Math.ceil(cmds.size() / 7D);

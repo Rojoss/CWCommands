@@ -17,3 +17,6 @@ commands:
   firework:
     description: Customize your rocket
     usage: /<command>
+  tploc:
+    description: Teleport a player to a location
+    usage: /tploc player x,y,z world

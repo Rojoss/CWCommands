@@ -62,7 +62,8 @@ public class FWCore {
 
 	public boolean parseCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
 		String c = cmd.getName();
-		if (c.equalsIgnoreCase("mail") || c.equalsIgnoreCase("book") || c.equalsIgnoreCase("chest") || c.equalsIgnoreCase("firework")) {
+		if (c.equalsIgnoreCase("mail") || c.equalsIgnoreCase("book") || c.equalsIgnoreCase("chest") || c.equalsIgnoreCase("firework")
+				|| c.equalsIgnoreCase("tploc")) {
 			return cmds.executeCommand(sender, lbl, args);
 		}
 		return false;
