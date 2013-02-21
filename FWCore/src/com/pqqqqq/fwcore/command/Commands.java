@@ -777,25 +777,25 @@ public class Commands {
 			sender.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Usage: /tploc <player> <x,y,z> <world>.");
 			return true;
 		}
-		
+
 		Player player = fwc.getPlugin().getServer().getPlayer(args[0]);
-		
+
 		if (player == null || !player.isOnline()) {
 			sender.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.RED + "Invalid player.");
 			return true;
 		}
-		
+
 		String[] coords = args[1].split(",");
-		
+
 		if (coords.length <= 2) {
 			sender.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Invalid coordinate pattern.");
 			return true;
 		}
-		
+
 		int x;
 		int y;
 		int z;
-		
+
 		try {
 			x = Integer.parseInt(coords[0].trim());
 			y = Integer.parseInt(coords[1].trim());
@@ -804,15 +804,28 @@ public class Commands {
 			sender.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Invalid coordinates.");
 			return true;
 		}
-		
+
 		World world = fwc.getPlugin().getServer().getWorld(args[2]);
-		
+
 		if (world == null) {
 			sender.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Invalid world.");
 			return true;
 		}
-		
-		player.teleport(new Location(world, x, y, z));
+
+		for (int yt = y; y <= 256; y++) {
+			Location tloc = new Location(world, x, yt, z);
+			Location tlocu = null;
+			
+			if (y < 256) {
+				tlocu = new Location(world, x, yt + 1, z);
+			}
+			
+			if (tloc.getBlock().getTypeId() == 0 && (tlocu == null || tlocu.getBlock().getTypeId() == 0)) {
+				player.teleport(tloc);
+				return true;
+			}
+		}
+
 		return true;
 	}
 
