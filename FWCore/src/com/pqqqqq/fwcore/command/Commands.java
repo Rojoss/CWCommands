@@ -812,7 +812,7 @@ public class Commands {
 			return true;
 		}
 
-		for (int yt = y; y <= 256; y++) {
+		for (int yt = y; yt <= 256; yt++) {
 			Location tloc = new Location(world, x, yt, z);
 			Location tlocu = null;
 			
