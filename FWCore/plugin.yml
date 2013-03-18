@@ -20,3 +20,6 @@ commands:
   tploc:
     description: Teleport a player to a location
     usage: /tploc player x,y,z world
+  givexp:
+    description: Gives a player experience
+    usage: /<command> <amount> <player>

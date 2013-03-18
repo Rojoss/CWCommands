@@ -2,16 +2,16 @@ package com.pqqqqq.fwcore.bukkit.events;
 
 import java.util.Random;
 
-import net.minecraft.server.v1_4_R1.ContainerChest;
-import net.minecraft.server.v1_4_R1.EntityPlayer;
-import net.minecraft.server.v1_4_R1.Packet100OpenWindow;
+import net.minecraft.server.v1_5_R1.ContainerChest;
+import net.minecraft.server.v1_5_R1.EntityPlayer;
+import net.minecraft.server.v1_5_R1.Packet100OpenWindow;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.craftbukkit.v1_4_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_5_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_5_R1.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -346,7 +346,7 @@ public class MainEvents implements Listener {
 		}, 2400);
 	}
 
-	private void openSilently(Player player, net.minecraft.server.v1_4_R1.IInventory inv) {
+	private void openSilently(Player player, net.minecraft.server.v1_5_R1.IInventory inv) {
 		EntityPlayer p = ((CraftPlayer) player).getHandle();
 
 		if (p.activeContainer != p.defaultContainer) {
@@ -355,7 +355,7 @@ public class MainEvents implements Listener {
 
 		try {
 			int cc = p.nextContainerCounter();
-			p.playerConnection.sendPacket(new Packet100OpenWindow(cc, 0, inv.getName(), inv.getSize()));
+			p.playerConnection.sendPacket(new Packet100OpenWindow(cc, 0, inv.getName(), inv.getSize(), true));
 			p.activeContainer = new ContainerChest(p.inventory, inv);
 			p.activeContainer.windowId = cc;
 			p.activeContainer.addSlotListener(p);

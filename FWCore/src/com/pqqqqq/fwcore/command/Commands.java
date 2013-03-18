@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import net.minecraft.server.v1_4_R1.EntityFireworks;
-import net.minecraft.server.v1_4_R1.WorldServer;
+import net.minecraft.server.v1_5_R1.EntityFireworks;
+import net.minecraft.server.v1_5_R1.WorldServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,9 +19,9 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_4_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_4_R1.entity.CraftFirework;
-import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_5_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_5_R1.entity.CraftFirework;
+import org.bukkit.craftbukkit.v1_5_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -815,17 +815,75 @@ public class Commands {
 		for (int yt = y; yt <= 256; yt++) {
 			Location tloc = new Location(world, x, yt, z);
 			Location tlocu = null;
-			
-			if (y < 256) {
+
+			if (yt < 256) {
 				tlocu = new Location(world, x, yt + 1, z);
 			}
-			
+
 			if (tloc.getBlock().getTypeId() == 0 && (tlocu == null || tlocu.getBlock().getTypeId() == 0)) {
 				player.teleport(tloc);
 				return true;
 			}
 		}
 
+		return true;
+	}
+
+	@Command(
+			permissions = { "fwcore.givexp" },
+			aliases = {},
+			description = "Give experience",
+			usage = "/givexp <amount> <player>",
+			example = "/givexp 10 joe",
+			label = "givexp")
+	public boolean givexp(CommandSender sender, String[] args) {
+		if (args.length <= 1) {
+			sender.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.GOLD + "Usage: /givexp <xp> <player>.");
+			return true;
+		}
+
+		Player player = fwc.getPlugin().getServer().getPlayer(args[1]);
+
+		if (player == null) {
+			sender.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.RED + "Invalid player.");
+			return true;
+		}
+
+		boolean levels = false;
+		if (args[0].toLowerCase().endsWith("l")) {
+			levels = true;
+			args[0] = args[0].substring(0, args[0].length() - 1);
+		}
+
+		int amt;
+		try {
+			amt = Integer.parseInt(args[0]);
+		} catch (NumberFormatException e) {
+			sender.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.RED + "Invalid amount.");
+			return true;
+		}
+
+		if (levels) {
+			int newl = player.getLevel() + amt;
+
+			sender.sendMessage(player.getLevel() + ", " + newl);
+
+			if (newl <= 0) {
+				player.setLevel(0);
+			} else {
+				player.giveExpLevels(amt);
+			}
+		} else {
+			int newxp = player.getTotalExperience() + amt;
+
+			sender.sendMessage(player.getTotalExperience() + ", " + newxp);
+			
+			if (newxp <= 0) {
+				player.setTotalExperience(0);
+			} else {
+				player.giveExp(amt);
+			}
+		}
 		return true;
 	}
 
