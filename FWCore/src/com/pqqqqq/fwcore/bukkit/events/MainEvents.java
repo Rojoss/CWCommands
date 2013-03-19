@@ -32,6 +32,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -166,6 +167,22 @@ public class MainEvents implements Listener {
 				player.sendMessage(ChatColor.DARK_PURPLE + "[FWCore] " + ChatColor.DARK_RED + "This is not a dungeon chest.");
 			}
 		}
+		
+	    if ((player.getHealth() != 20) || (player.getFoodLevel() != 20)) {
+	      int heal = 3;
+	      if (((event.getAction() == Action.RIGHT_CLICK_AIR) || (event.getAction() == Action.RIGHT_CLICK_BLOCK)) 
+	    		  && (event.getPlayer().hasPermission("fwcore.soup")) 
+	    		  && (event.getPlayer().getItemInHand().getType() == Material.MUSHROOM_SOUP) 
+	    		  && (event.getPlayer().getHealth() != 20)) {
+	        if (event.getPlayer().getItemInHand().getAmount() == 1) {
+	        player.setHealth(player.getHealth() + heal > player.getMaxHealth() ? player.getMaxHealth() : player.getHealth() + heal);
+	        event.getPlayer().getItemInHand().setTypeId(281);
+	    	  } else {
+	    	    player.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_PURPLE + "FW-Soup" + ChatColor.DARK_GRAY + "] "
+	    	  	  + ChatColor.DARK_RED + "Unstack the soup before you can use it!");
+	    	  }
+	        }
+	      }
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -363,4 +380,14 @@ public class MainEvents implements Listener {
 			e.printStackTrace();
 		}
 	}
+	
+  	@EventHandler
+    public void fixWalkSpeed(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+
+		player.setWalkSpeed(0.2f);
+        player.setSneaking(false);
+        player.setSprinting(false);
+    }
+	  
 }
