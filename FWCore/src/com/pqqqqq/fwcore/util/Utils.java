@@ -2,12 +2,12 @@ package com.pqqqqq.fwcore.util;
 
 import java.util.ArrayList;
 
-import net.minecraft.server.v1_5_R1.NBTTagCompound;
-import net.minecraft.server.v1_5_R1.NBTTagList;
-import net.minecraft.server.v1_5_R1.NBTTagString;
+import net.minecraft.server.v1_5_R3.NBTTagCompound;
+import net.minecraft.server.v1_5_R3.NBTTagList;
+import net.minecraft.server.v1_5_R3.NBTTagString;
 
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_5_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import com.pqqqqq.fwcore.Book;
@@ -16,7 +16,7 @@ public class Utils {
 
 	public static ItemStack createBook(boolean signed, Book book) {
 		ItemStack b = new ItemStack((signed ? Material.WRITTEN_BOOK : Material.BOOK_AND_QUILL), 1);
-		net.minecraft.server.v1_5_R1.ItemStack newStack = CraftItemStack.asNMSCopy(b);
+		net.minecraft.server.v1_5_R3.ItemStack newStack = CraftItemStack.asNMSCopy(b);
 
 		NBTTagCompound newTag = new NBTTagCompound();
 
@@ -45,7 +45,7 @@ public class Utils {
 	}
 
 	public static Book getBook(ItemStack book) {
-		net.minecraft.server.v1_5_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(book);
+		net.minecraft.server.v1_5_R3.ItemStack nmsStack = CraftItemStack.asNMSCopy(book);
 
 		NBTTagCompound tagCompound = nmsStack.tag;
 

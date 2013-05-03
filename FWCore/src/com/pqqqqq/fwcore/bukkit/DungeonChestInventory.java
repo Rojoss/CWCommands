@@ -1,8 +1,8 @@
 package com.pqqqqq.fwcore.bukkit;
 
-import net.minecraft.server.v1_5_R1.TileEntityChest;
+import net.minecraft.server.v1_5_R3.TileEntityChest;
 
-import org.bukkit.craftbukkit.v1_5_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import com.pqqqqq.fwcore.DungeonChest;
