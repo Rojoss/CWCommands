@@ -1,7 +1,5 @@
 package com.pqqqqq.cwcore.bukkit.events;
 
-import java.util.Random;
-
 import net.minecraft.server.v1_5_R3.ContainerChest;
 import net.minecraft.server.v1_5_R3.EntityPlayer;
 import net.minecraft.server.v1_5_R3.Packet100OpenWindow;
@@ -12,12 +10,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.craftbukkit.v1_5_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftInventory;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
-import org.bukkit.entity.Villager;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -26,95 +21,25 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-import com.pqqqqq.cwcore.DungeonChest;
+import com.pqqqqq.cwcore.LootChest;
 import com.pqqqqq.cwcore.CWCore;
-import com.pqqqqq.cwcore.Mail;
-import com.pqqqqq.cwcore.bukkit.DungeonChestInventory;
+import com.pqqqqq.cwcore.bukkit.LootChestInventory;
 
 public class MainEvents implements Listener {
 	private CWCore	cwc;
+	private String pf = ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "CW" + ChatColor.DARK_GRAY + "] " + ChatColor.GOLD;
 
 	public MainEvents(CWCore cwc) {
 		this.cwc = cwc;
-	}
-
-	/*
-	 * @EventHandler(priority = EventPriority.MONITOR) public void entityTele(EntityTeleportEvent event) { if (event.isCancelled()) return;
-	 * 
-	 * Entity entity = event.getEntity();
-	 * 
-	 * if (!(entity instanceof Enderman)) return;
-	 * 
-	 * Enderman enderman = (Enderman) entity;
-	 * 
-	 * if (fwc.getNoEditVillagers().contains(enderman)) { event.setCancelled(true); event.setTo(event.getFrom()); } }
-	 */
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void pickup(PlayerPickupItemEvent event) {
-		if (event.isCancelled())
-			return;
-
-		Player player = event.getPlayer();
-		Item item = event.getItem();
-
-		if (!cwc.getMailDrops().containsKey(item))
-			return;
-
-		Mail mail = cwc.getMailDrops().get(item);
-
-		if (!mail.getRecipient().equalsIgnoreCase(player.getName()))
-			event.setCancelled(true);
-	}
-
-	/*
-	 * @EventHandler(priority = EventPriority.MONITOR) public void changeBlock(EntityChangeBlockEvent event) { if (event.isCancelled()) return;
-	 * 
-	 * Entity entity = event.getEntity();
-	 * 
-	 * if (!(entity instanceof Villager)) return;
-	 * 
-	 * Enderman enderman = (Enderman) entity;
-	 * 
-	 * if (fwc.getNoEditVillagers().contains(enderman)) event.setCancelled(true); }
-	 */
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void dmg(EntityDamageEvent event) {
-		if (event.isCancelled())
-			return;
-
-		Entity entity = event.getEntity();
-
-		if (entity instanceof Villager) {
-			Villager villager = (Villager) entity;
-
-			if (cwc.getNoEditVillagers().contains(villager))
-				event.setCancelled(true);
-		} else if (event instanceof EntityDamageByEntityEvent) {
-			EntityDamageByEntityEvent ev = (EntityDamageByEntityEvent) event;
-			Entity e = ev.getDamager();
-
-			if (e instanceof Villager) {
-				Villager villager = (Villager) e;
-
-				if (cwc.getNoEditVillagers().contains(villager))
-					event.setCancelled(true);
-			}
-		}
 	}
 
 	@EventHandler
@@ -132,38 +57,38 @@ public class MainEvents implements Listener {
 				event.setUseInteractedBlock(Result.DENY);
 
 				if (block.getType() != Material.CHEST) {
-					player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "That is not a chest.");
+					player.sendMessage(pf + ChatColor.RED + "That is not a chest.");
 					return;
 				}
 
-				DungeonChest dc = new DungeonChest(block);
+				LootChest lc = new LootChest(block);
 
-				if (cwc.getDungeonChests().contains(dc)) {
-					player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "That is already a dungeon chest.");
+				if (cwc.getLootChests().contains(lc)) {
+					player.sendMessage(pf + ChatColor.RED + "That is already a loot chest.");
 					return;
 				}
 
-				cwc.getDungeonChests().add(dc);
-				player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Dungeon chest created.");
+				cwc.getLootChests().add(lc);
+				player.sendMessage(pf + "Loot chest created.");
 			} else {
 				cwc.getDeleteChests().remove(player.getName());
 				event.setCancelled(true);
 				event.setUseInteractedBlock(Result.DENY);
 
 				if (block.getType() != Material.CHEST) {
-					player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "That is not a chest.");
+					player.sendMessage(pf + ChatColor.RED + "That is not a chest.");
 					return;
 				}
 
-				for (DungeonChest chest : cwc.getDungeonChests()) {
+				for (LootChest chest : cwc.getLootChests()) {
 					if (chest.getChestBlock().equals(block)) {
-						cwc.getDungeonChests().remove(chest);
-						player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Dungeon chest deleted.");
+						cwc.getLootChests().remove(chest);
+						player.sendMessage(pf + "Loot chest deleted.");
 						return;
 					}
 				}
 
-				player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "This is not a dungeon chest.");
+				player.sendMessage(pf + ChatColor.RED + "This is not a loot chest.");
 			}
 		}
 	}
@@ -175,16 +100,16 @@ public class MainEvents implements Listener {
 
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
-		boolean willBypass = player.isOp() || player.hasPermission("fwcore.dungeonchest.edit");
+		boolean willBypass = player.isOp() || player.hasPermission("fwcore.lootchest.edit");
 
-		for (int i = 0; i < cwc.getDungeonChests().size(); i++) {
-			DungeonChest dc = cwc.getDungeonChests().get(i);
+		for (int i = 0; i < cwc.getLootChests().size(); i++) {
+			LootChest lc = cwc.getLootChests().get(i);
 
-			if (dc.getChestBlock().equals(block)) {
+			if (lc.getChestBlock().equals(block)) {
 				if (willBypass)
-					cwc.getDungeonChests().remove(i);
+					cwc.getLootChests().remove(i);
 				else {
-					player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "You can't destroy a dungeon chest.");
+					player.sendMessage(pf + ChatColor.RED + "You can't destroy a loot chest.");
 					event.setCancelled(true);
 				}
 				break;
@@ -198,15 +123,15 @@ public class MainEvents implements Listener {
 
 		CraftInventory inv = (CraftInventory) event.getInventory();
 
-		if (!(inv.getInventory() instanceof DungeonChestInventory))
+		if (!(inv.getInventory() instanceof LootChestInventory))
 			return;
 
-		DungeonChestInventory dci = (DungeonChestInventory) inv.getInventory();
+		LootChestInventory lci = (LootChestInventory) inv.getInventory();
 
-		if (!dci.isEdited())
+		if (!lci.isEdited())
 			return;
 
-		dci.getDungeonChest().getAccessed().add(player.getName());
+		lci.getLootChest().getAccessed().add(player.getName());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -225,17 +150,16 @@ public class MainEvents implements Listener {
 			Chest c = (Chest) holder;
 			Block b = c.getBlock();
 
-			for (DungeonChest chest : cwc.getDungeonChests()) {
+			for (LootChest chest : cwc.getLootChests()) {
 				if (chest.getChestBlock().equals(b)) {
-					//System.out.println(player.getName() + " Opened dungeon chest");
 					event.setCancelled(true);
 
-					if (!player.hasPermission("fwcore.dungeonchest.edit") && !player.isOp() && chest.getAccessed().contains(player.getName())) {
-						player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "You can't use this chest again.");
+					if (!player.hasPermission("fwcore.lootchest.edit") && !player.isOp() && chest.getAccessed().contains(player.getName())) {
+						player.sendMessage(pf + ChatColor.RED + "You can't use this loot chest again.");
 						return;
 					}
 
-					DungeonChestInventory dci = new DungeonChestInventory(chest);
+					LootChestInventory dci = new LootChestInventory(chest);
 					openSilently(player, dci);
 					break;
 				}
@@ -254,36 +178,24 @@ public class MainEvents implements Listener {
 
 		CraftInventory inv = (CraftInventory) event.getInventory();
 
-		if (!(inv.getInventory() instanceof DungeonChestInventory))
+		if (!(inv.getInventory() instanceof LootChestInventory))
 			return;
 
-		DungeonChestInventory dci = (DungeonChestInventory) inv.getInventory();
-		boolean bypass = player.hasPermission("fwcore.dungeonchest.edit") || player.isOp();
+		LootChestInventory dci = (LootChestInventory) inv.getInventory();
+		boolean bypass = player.hasPermission("fwcore.lootchest.edit") || player.isOp();
 
 		boolean top = event.getRawSlot() + 1 <= event.getView().getTopInventory().getSize();
-		//ItemStack cursor = event.getCursor();
 		ItemStack current = event.getCurrentItem();
-
-		/*
-		 * System.out.println("Top: " + top);
-		 * System.out.println("Raw slot: " + event.getRawSlot());
-		 * System.out.println("Slot: " + event.getSlot());
-		 * System.out.println("Cursor: " + (cursor == null ? "null" : cursor.toString()));
-		 * System.out.println("Current: " + (current == null ? "null" : current.toString()));
-		 */
-
-		//System.out.println(player.getName() + " Clicked dungeon chest, top: " + top);
 
 		if (!top && current.getTypeId() != 0) {
 			if (bypass)
 				dci.setEdited(true);
 			else {
-				player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "You can't edit a dungeon chest.");
+				player.sendMessage(pf + ChatColor.RED + "You can't edit a loot chest.");
 				event.setCancelled(true);
 				event.setResult(Result.DENY);
 			}
 		} else if (top && current.getTypeId() != 0) {
-			//System.out.println(player.getName() + " Adding to edited");
 			dci.setEdited(true);
 		}
 	}
@@ -304,18 +216,6 @@ public class MainEvents implements Listener {
 	private void quit(Player player) {
 		if (player.getOpenInventory() != null)
 			player.closeInventory();
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void weatherChange(WeatherChangeEvent event) {
-		if (event.isCancelled() || !event.toWeatherState())
-			return;
-
-		Random random = new Random();
-		int rd = 1 + random.nextInt(100);
-
-		if (rd <= cwc.getStormPercent())
-			event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

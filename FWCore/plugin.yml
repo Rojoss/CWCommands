@@ -4,10 +4,6 @@ version: '1.0'
 author: Pqqqqq
 description: ClashWars Core plugin
 commands:
-  mail:
-    description: Mail commands
-    usage: /<command> help
-    aliases: [letter]
   book:
     description: Book commands
     usage: /<command> help

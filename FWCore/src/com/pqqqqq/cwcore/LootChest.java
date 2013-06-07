@@ -8,13 +8,13 @@ import org.bukkit.block.Chest;
 import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
-public class DungeonChest {
+public class LootChest {
 	private Block		chest;
 	private Chest		c;
 	private ItemStack[]	inventory	= null;
 	private Set<String>	accessed	= new HashSet<String>();
 
-	public DungeonChest(Block chest) {
+	public LootChest(Block chest) {
 		this.chest = chest;
 
 		findChestInstance();
@@ -67,8 +67,8 @@ public class DungeonChest {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof DungeonChest) {
-			DungeonChest dc = (DungeonChest) obj;
+		if (obj instanceof LootChest) {
+			LootChest dc = (LootChest) obj;
 			return dc.getChestBlock().equals(getChestBlock());
 		}
 		return false;

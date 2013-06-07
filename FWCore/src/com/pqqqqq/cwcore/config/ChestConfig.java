@@ -10,14 +10,14 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import com.pqqqqq.cwcore.DungeonChest;
+import com.pqqqqq.cwcore.LootChest;
 import com.pqqqqq.cwcore.CWCore;
 
 public class ChestConfig extends Config {
 	private CWCore				cwc;
 	private YamlConfiguration	cfg;
 	private final File			dir		= new File("plugins/CWCore/");
-	private final File			file	= new File(dir + "/dungeon-chests.yml");
+	private final File			file	= new File(dir + "/lootChests.yml");
 
 	public ChestConfig(CWCore cwc) {
 		this.cwc = cwc;
@@ -38,7 +38,7 @@ public class ChestConfig extends Config {
 	public void load() {
 		try {
 			cfg.load(file);
-			cwc.getDungeonChests().clear();
+			cwc.getLootChests().clear();
 
 			if (!cfg.isConfigurationSection("chests")) {
 				cfg.createSection("chests");
@@ -66,10 +66,10 @@ public class ChestConfig extends Config {
 				Block block = world.getBlockAt(x, y, z);
 
 				if (block.getState() instanceof Chest) {
-					DungeonChest dc = new DungeonChest(block);
-					dc.setAcccessed(new HashSet<String>(ConfigUtil.getStringList(cfg, file, "chests." + c + ".accessed")));
+					LootChest lc = new LootChest(block);
+					lc.setAcccessed(new HashSet<String>(ConfigUtil.getStringList(cfg, file, "chests." + c + ".accessed")));
 
-					cwc.getDungeonChests().add(dc);
+					cwc.getLootChests().add(lc);
 				}
 			}
 		} catch (Exception e) {
@@ -81,9 +81,9 @@ public class ChestConfig extends Config {
 	public void save() {
 		try {
 			cfg.set("chests", null);
-			for (int i = 0; i < cwc.getDungeonChests().size(); i++) {
-				DungeonChest dc = cwc.getDungeonChests().get(i);
-				Chest c = dc.getChest();
+			for (int i = 0; i < cwc.getLootChests().size(); i++) {
+				LootChest lc = cwc.getLootChests().get(i);
+				Chest c = lc.getChest();
 
 				if (c == null)
 					continue;
@@ -94,7 +94,7 @@ public class ChestConfig extends Config {
 				cfg.set("chests." + Integer.toString(i) + ".x", loc.getBlockX());
 				cfg.set("chests." + Integer.toString(i) + ".y", loc.getBlockY());
 				cfg.set("chests." + Integer.toString(i) + ".z", loc.getBlockZ());
-				cfg.set("chests." + Integer.toString(i) + ".accessed", new ArrayList<String>(dc.getAccessed()));
+				cfg.set("chests." + Integer.toString(i) + ".accessed", new ArrayList<String>(lc.getAccessed()));
 			}
 
 			cfg.save(file);

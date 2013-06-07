@@ -7,22 +7,22 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.pqqqqq.cwcore.CWCore;
 
 public class CWCorePlugin extends JavaPlugin {
-	private CWCore fwc;
+	private CWCore cwc;
 	
 	@Override
 	public void onDisable() {
-		fwc.onDisable();
+		cwc.onDisable();
 	}
 	
 	@Override
 	public void onEnable() {
-		fwc = new CWCore(this);
+		cwc = new CWCore(this);
 		
-		fwc.onEnable();
+		cwc.onEnable();
 	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
-		return fwc.parseCommand(sender, cmd, lbl, args);
+		return cwc.parseCommand(sender, cmd, lbl, args);
 	}
 }

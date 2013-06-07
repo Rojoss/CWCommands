@@ -5,20 +5,20 @@ import net.minecraft.server.v1_5_R3.TileEntityChest;
 import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
-import com.pqqqqq.cwcore.DungeonChest;
+import com.pqqqqq.cwcore.LootChest;
 
-public class DungeonChestInventory extends TileEntityChest {
-	private DungeonChest	dc;
+public class LootChestInventory extends TileEntityChest {
+	private LootChest	lc;
 	private boolean			edited	= false;
 
-	public DungeonChestInventory(DungeonChest dc) {
+	public LootChestInventory(LootChest lc) {
 		super();
-		this.dc = dc;
+		this.lc = lc;
 		restore();
 	}
 
-	public DungeonChest getDungeonChest() {
-		return dc;
+	public LootChest getLootChest() {
+		return lc;
 	}
 
 	public boolean isEdited() {
@@ -30,7 +30,7 @@ public class DungeonChestInventory extends TileEntityChest {
 	}
 
 	public void restore() {
-		ItemStack[] inv = dc.getInventory();
+		ItemStack[] inv = lc.getInventory();
 
 		for (int i = 0; i < getSize(); i++) {
 			ItemStack it = inv[i];

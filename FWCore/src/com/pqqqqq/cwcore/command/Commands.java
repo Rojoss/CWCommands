@@ -9,149 +9,28 @@ import java.util.HashMap;
 import net.minecraft.server.v1_5_R3.EntityFireworks;
 import net.minecraft.server.v1_5_R3.WorldServer;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_5_R3.entity.CraftFirework;
 import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftItemStack;
-import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.util.Vector;
-
 import com.pqqqqq.cwcore.Book;
 import com.pqqqqq.cwcore.CWCore;
-import com.pqqqqq.cwcore.Mail;
 import com.pqqqqq.cwcore.util.Utils;
 
 public class Commands {
 	private CWCore										cwc;
+	private String pf = ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "CW" + ChatColor.DARK_GRAY + "] " + ChatColor.GOLD;
 	private final HashMap<String, ArrayList<Method>>	commands	= new HashMap<String, ArrayList<Method>>();
-
-	/* Command fields */
-	private final ArrayList<String>						sent		= new ArrayList<String>();
-
-	/*                */
-
-	// ---------------------------------------------- //
-
-	/* Commands */
-	/* Mail commands */
-
-	@Command(
-			permissions = { "cwcore.mail.send" },
-			aliases = { "send", "give" },
-			description = "Sends a letter to a player",
-			usage = "/mail send <user>",
-			example = "/mail send Frank",
-			label = "mail")
-	public boolean mailSend(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "Player-only command.");
-			return true;
-		}
-
-		final Player player = (Player) sender;
-
-		if (args.length <= 0) {
-			player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Usage: /mail send <user>.");
-			return true;
-		}
-
-		ItemStack mail = player.getItemInHand();
-
-		if (mail == null || mail.getType() != Material.WRITTEN_BOOK) {
-			player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "Please put your letter in your hand.");
-			return true;
-		}
-
-		if (sent.contains(player.getName())) {
-			player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "The librarians are busy, please wait " + cwc.getMailDelay()
-					+ " second(s) in-between mail");
-			return true;
-		}
-
-		final String s = args[0];
-		OfflinePlayer offp = cwc.getPlugin().getServer().getOfflinePlayer(s);
-
-		if (offp == null || !offp.hasPlayedBefore()) {
-			player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "This user hasn't been on the server yet.");
-			return true;
-		}
-
-		if (offp.getPlayer() != null && offp.getPlayer().equals(player)) {
-			player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "You can't send mail to yourself.");
-			return true;
-		}
-
-		Location loc = player.getLocation();
-		Vector dir = loc.getDirection();
-		World world = loc.getWorld();
-
-		double xDir = dir.getX() * 1.5;
-		double zDir = dir.getZ() * 1.5;
-
-		double xLoc = loc.getX() + xDir;
-		double zLoc = loc.getZ() + zDir;
-		Location newLoc = new Location(world, xLoc, loc.getY() + 3, zLoc, -loc.getYaw(), loc.getPitch());
-
-		final Pig pig = world.spawn(newLoc, Pig.class);
-		cwc.getNoEditVillagers().add(pig);
-
-		/*
-		 * EntityPlayer ep = ((CraftPlayer) player).getHandle(); EntityEnderman
-		 * ee = ((CraftEnderman) enderman).getHandle();
-		 * ee.damageEntity(DamageSource.playerAttack(ep), 1);
-		 * enderman.setTarget(player);
-		 */
-
-		final Book book = Utils.getBook(mail);
-
-		player.setItemInHand(null);
-		player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "You sent a letter to: " + ChatColor.DARK_PURPLE + args[0]);
-		player.sendMessage(ChatColor.GOLD + "They will recieve the letter (if online) in 1-5 seconds");
-
-		sent.add(player.getName());
-		Bukkit.getScheduler().scheduleSyncDelayedTask(cwc.getPlugin(), new Runnable() {
-
-			@Override
-			public void run() {
-				sent.remove(player.getName());
-			}
-		}, (cwc.getMailDelay() * 20) + 30);
-
-		Bukkit.getScheduler().scheduleSyncDelayedTask(cwc.getPlugin(), new Runnable() {
-
-			@Override
-			public void run() {
-				try {
-					pig.remove();
-					cwc.getNoEditVillagers().remove(pig);
-					cwc.getMail().add(new Mail(player.getName(), s, book));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}, 30);
-		return true;
-	}
-
-	@Command(permissions = {}, aliases = { "help" }, description = "Mail help", usage = "/mail help <page>", example = "/mail help 1", label = "mail")
-	public boolean mailHelp(CommandSender sender, String[] args) {
-		return help(sender, args, "mail");
-	}
-
-	/* End of mail commands */
-	/* Book commands */
 
 	@Command(
 			permissions = { "cwcore.book.change" },
@@ -162,21 +41,21 @@ public class Commands {
 			label = "book")
 	public boolean bookChangeAuthor(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "Player-only command.");
+			sender.sendMessage(pf + ChatColor.DARK_RED + "Player-only command.");
 			return true;
 		}
 
 		final Player player = (Player) sender;
 
 		if (args.length <= 0) {
-			player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Usage: /book author <set|reset> [author].");
+			player.sendMessage(pf + "Usage: " + ChatColor.BLUE + "/book author <set|reset> [author].");
 			return true;
 		}
 
 		ItemStack b = player.getItemInHand();
 
 		if (b == null || b.getType() != Material.WRITTEN_BOOK) {
-			player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "Please put the book in your hand.");
+			player.sendMessage(pf + ChatColor.DARK_RED + "Please put the book in your hand.");
 			return true;
 		}
 		boolean set = args.length >= 2 && !args[0].equalsIgnoreCase("reset");
@@ -186,7 +65,7 @@ public class Commands {
 		ItemStack newBook = Utils.createBook(true, book);
 
 		player.setItemInHand(newBook);
-		player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Author successfully " + (set ? "changed." : "reset."));
+		player.sendMessage(pf + "Author successfully " + (set ? "changed." : "reset."));
 		return true;
 	}
 
@@ -199,21 +78,21 @@ public class Commands {
 			label = "book")
 	public boolean bookChangeTitle(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "Player-only command.");
+			sender.sendMessage(pf + ChatColor.DARK_RED + "Player-only command.");
 			return true;
 		}
 
 		final Player player = (Player) sender;
 
 		if (args.length <= 0) {
-			player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Usage: /book title <set|reset> [title].");
+			player.sendMessage(pf + "Usage:" + ChatColor.BLUE + "/book title <set|reset> [title]");
 			return true;
 		}
 
 		ItemStack b = player.getItemInHand();
 
 		if (b == null || b.getType() != Material.WRITTEN_BOOK) {
-			player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "Please put the book in your hand.");
+			player.sendMessage(pf + ChatColor.DARK_RED + "Please put the book in your hand.");
 			return true;
 		}
 
@@ -224,7 +103,7 @@ public class Commands {
 		ItemStack newBook = Utils.createBook(true, book);
 
 		player.setItemInHand(newBook);
-		player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Title successfully " + (set ? "changed." : "reset."));
+		player.sendMessage(pf + "Title successfully " + (set ? "changed." : "reset."));
 		return true;
 	}
 
@@ -236,7 +115,7 @@ public class Commands {
 			label = "book")
 	public boolean bookReset(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "Player-only command.");
+			sender.sendMessage(pf + ChatColor.DARK_RED + "Player-only command.");
 			return true;
 		}
 
@@ -245,7 +124,7 @@ public class Commands {
 		ItemStack b = player.getItemInHand();
 
 		if (b == null || b.getType() != Material.WRITTEN_BOOK) {
-			player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "Please put the book in your hand.");
+			player.sendMessage(pf + ChatColor.DARK_RED + "Please put the book in your hand.");
 			return true;
 		}
 
@@ -253,7 +132,7 @@ public class Commands {
 		ItemStack newBook = Utils.createBook(false, book);
 
 		player.setItemInHand(newBook);
-		player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Book successfully reset.");
+		player.sendMessage(pf + "Book successfully reset.");
 		return true;
 	}
 
@@ -266,14 +145,14 @@ public class Commands {
 			label = "book")
 	public boolean bookSave(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "Player-only command.");
+			sender.sendMessage(pf + ChatColor.DARK_RED + "Player-only command.");
 			return true;
 		}
 
 		final Player player = (Player) sender;
 
 		if (args.length <= 0) {
-			player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Usage: /book save <name>.");
+			player.sendMessage(pf + "Usage:" + ChatColor.BLUE + "/book save <name>");
 			return true;
 		}
 		String name = implode(args, " ", 0);
@@ -281,18 +160,18 @@ public class Commands {
 		ItemStack b = player.getItemInHand();
 
 		if (b == null || b.getType() != Material.WRITTEN_BOOK) {
-			player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "Please put the book in your hand.");
+			player.sendMessage(pf + "Please put the book in your hand.");
 			return true;
 		}
 
 		if (cwc.getSavedBooks().containsKey(name)) {
-			player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "There is already a book with that name.");
+			player.sendMessage(pf + ChatColor.DARK_RED + "There is already a book with that name.");
 			return true;
 		}
 
 		Book book = Utils.getBook(b);
 		cwc.getSavedBooks().put(name, book);
-		player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Book saved successfully.");
+		player.sendMessage(pf + "Book saved successfully.");
 		return true;
 	}
 
@@ -305,20 +184,20 @@ public class Commands {
 			label = "book")
 	public boolean bookGive(CommandSender sender, String[] args) {
 		if (args.length <= 1) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Usage: /book give <player> <book>.");
+			sender.sendMessage(pf + "Usage: " + ChatColor.BLUE + "/book give <player> <book>");
 			return true;
 		}
 
 		Player pl = cwc.getPlugin().getServer().getPlayer(args[0]);
 
 		if (pl == null) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "That player is not online.");
+			sender.sendMessage(pf + ChatColor.DARK_RED + "That player is not online.");
 			return true;
 		}
 		String bb = implode(args, " ", 1);
 
 		if (!cwc.getSavedBooks().containsKey(bb)) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "There is no book saved with that name.");
+			sender.sendMessage(pf + ChatColor.DARK_RED + "There is no book saved with that name.");
 			return true;
 		}
 
@@ -326,9 +205,8 @@ public class Commands {
 		ItemStack item = Utils.createBook(true, book);
 
 		pl.getInventory().addItem(item);
-		pl.sendMessage(ChatColor.GOLD + "You got the book " + ChatColor.DARK_PURPLE + bb);
-		sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "You gave " + ChatColor.DARK_PURPLE + pl.getName() + ChatColor.GOLD
-				+ " the book " + ChatColor.DARK_PURPLE + bb);
+		sender.sendMessage(pf + "You gave " + ChatColor.BLUE + pl.getName() + ChatColor.GOLD
+				+ " the book " + ChatColor.BLUE + bb);
 		return true;
 	}
 
@@ -341,17 +219,17 @@ public class Commands {
 			label = "book")
 	public boolean bookRemove(CommandSender sender, String[] args) {
 		if (args.length <= 0) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Usage: /book remove <name>.");
+			sender.sendMessage(pf + "Usage: /book remove <name>.");
 			return true;
 		}
 
 		if (!cwc.getSavedBooks().containsKey(args[0])) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "There is no book saved with that name.");
+			sender.sendMessage(pf + ChatColor.DARK_RED + "There is no book saved with that name.");
 			return true;
 		}
 		cwc.getSavedBooks().remove(args[0]);
 
-		sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + args[0] + ChatColor.GOLD + " successfully removed");
+		sender.sendMessage(pf + ChatColor.BLUE + args[0] + ChatColor.GOLD + " successfully removed");
 		return true;
 	}
 
@@ -364,14 +242,14 @@ public class Commands {
 	/* Dungeon chest commands */
 
 	@Command(
-			permissions = { "cwcore.dungeonchest.create" },
+			permissions = { "cwcore.lootchest.create" },
 			aliases = { "create" },
-			description = "Creates a \"dungeon\" chest",
+			description = "Creates a \"loot\" chest",
 			usage = "/chest create",
 			label = "chest")
 	public boolean createDungeonChest(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "Player-only command.");
+			sender.sendMessage(pf + ChatColor.DARK_RED + "Player-only command.");
 			return true;
 		}
 
@@ -379,19 +257,19 @@ public class Commands {
 
 		cwc.getCreateChests().add(player.getName());
 		cwc.getDeleteChests().remove(player.getName());
-		player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Right click a chest to make it a dungeon chest.");
+		player.sendMessage(pf + "Right click a chest to make it a loot chest.");
 		return true;
 	}
 
 	@Command(
-			permissions = { "cwcore.dungeonchest.delete" },
+			permissions = { "cwcore.lootchest.delete" },
 			aliases = { "delete" },
-			description = "Delete a \"dungeon\" chest",
+			description = "Delete a \"loot\" chest",
 			usage = "/chest delete",
 			label = "chest")
 	public boolean deleteDungeonChest(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "Player-only command.");
+			sender.sendMessage(pf + ChatColor.DARK_RED + "Player-only command.");
 			return true;
 		}
 
@@ -399,7 +277,7 @@ public class Commands {
 
 		cwc.getDeleteChests().add(player.getName());
 		cwc.getCreateChests().remove(player.getName());
-		player.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Right click a dungeon chest to remove it.");
+		player.sendMessage(pf + "Right click a loot chest to remove it.");
 		return true;
 	}
 
@@ -424,7 +302,7 @@ public class Commands {
 		ItemStack firework = player.getItemInHand();
 
 		if (firework == null || firework.getType() != Material.FIREWORK) {
-			player.sendMessage(ChatColor.RED + "[CWCore] Put your rocket in your hand.");
+			player.sendMessage(pf + ChatColor.RED +  "Put your rocket in your hand.");
 			return true;
 		}
 
@@ -432,7 +310,8 @@ public class Commands {
 				&& !args[0].equalsIgnoreCase("addfade") && !args[0].equalsIgnoreCase("power") && !args[0].equalsIgnoreCase("trail")
 				&& !args[0].equalsIgnoreCase("flicker") && !args[0].equalsIgnoreCase("clear") && !args[0].equalsIgnoreCase("type")
 				&& !args[0].equalsIgnoreCase("copy") && !args[0].equalsIgnoreCase("addeffect") && !args[0].equalsIgnoreCase("info")) {
-			player.sendMessage(ChatColor.BLUE + "[CWCore] Usage: /firework <addcolour|addfade|power|trail|flicker|clear|type|copy|addeffect|info>.");
+			player.sendMessage(pf + ChatColor.GOLD + "Usage: " + ChatColor.GOLD 
+					+ "/firework <addcolour|addfade|power|trail|flicker|clear|type|copy|addeffect|info>.");
 			return true;
 		}
 
@@ -443,8 +322,8 @@ public class Commands {
 
 		if (args[0].equalsIgnoreCase("copy")) {
 			if (args.length <= 1) {
-				player.sendMessage(ChatColor.BLUE + "[CWCore] Usage: /firework copy <amount>.");
-				player.sendMessage(ChatColor.BLUE + "Example: /firework copy 64 (copy into a 64-stack)");
+				player.sendMessage(pf + "Usage: " + ChatColor.BLUE + "/firework copy <amount>");
+				player.sendMessage(ChatColor.DARK_GRAY + "Example: /firework copy 64 (copy into a 64-stack)");
 				return true;
 			}
 
@@ -452,7 +331,7 @@ public class Commands {
 			try {
 				amt = Integer.parseInt(args[1]);
 			} catch (NumberFormatException e) {
-				player.sendMessage(ChatColor.RED + "[CWCore] Amount must be a number.");
+				player.sendMessage(pf + ChatColor.RED + "Amount must be a number.");
 				return true;
 			}
 
@@ -470,8 +349,8 @@ public class Commands {
 			return true;
 		} else if (args[0].equalsIgnoreCase("addeffect")) {
 			if (args.length <= 3) {
-				player.sendMessage(ChatColor.BLUE + "[CWCore] Usage: /firework addeffect r g b.");
-				player.sendMessage(ChatColor.BLUE + "Example: /firework addeffect 255 0 0 (create an effect with base-colour red)");
+				player.sendMessage(pf + "Usage: " + ChatColor.BLUE + "/firework addeffect R G B");
+				player.sendMessage(ChatColor.DARK_GRAY + "Example: /firework addeffect 255 0 0 (create an effect with base-color red)");
 				return true;
 			}
 
@@ -484,7 +363,7 @@ public class Commands {
 				g = Integer.parseInt(args[2]);
 				b = Integer.parseInt(args[3]);
 			} catch (NumberFormatException e) {
-				player.sendMessage(ChatColor.RED + "[CWCore] RGB values must be numbers.");
+				player.sendMessage(pf + ChatColor.RED + "RGB values must be numbers.");
 				return true;
 			}
 
@@ -504,7 +383,7 @@ public class Commands {
 				e.printStackTrace();
 			}
 
-			player.sendMessage(ChatColor.GREEN + "[CWCore] Successfully added effect #" + (meta.getEffectsSize() - 1));
+			player.sendMessage(pf + ChatColor.GOLD + "Successfully added effect " + ChatColor.BLUE + "#" + (meta.getEffectsSize() - 1));
 			return true;
 		} else if (args[0].equalsIgnoreCase("info")) {
 			player.sendMessage(ChatColor.BLUE + "Power (Flight duration): " + meta.getPower());
@@ -512,24 +391,28 @@ public class Commands {
 
 			for (int i = 0; i < meta.getEffectsSize(); i++) {
 				FireworkEffect effect = meta.getEffects().get(i);
-				player.sendMessage(ChatColor.GREEN + "Effect #" + i + ":");
-				player.sendMessage(ChatColor.BLUE + "Flicker effect: " + (effect.hasFlicker() ? "yes" : "no"));
-				player.sendMessage(ChatColor.BLUE + "Trail effect: " + (effect.hasTrail() ? "yes" : "no"));
-				player.sendMessage(ChatColor.BLUE + "Type: " + effect.getType().name().toLowerCase().replace("_", " "));
-				player.sendMessage(ChatColor.BLUE + "Colours (" + effect.getColors().size() + "):");
+				player.sendMessage(ChatColor.GOLD + "Effect " + ChatColor.BLUE + "#" + i + ChatColor.GOLD + ":");
+				player.sendMessage(ChatColor.GOLD + "Flicker effect: " + (effect.hasFlicker() ? ChatColor.GREEN + "yes" : ChatColor.RED + "no"));
+				player.sendMessage(ChatColor.GOLD + "Trail effect: " + (effect.hasTrail() ? ChatColor.GREEN + "yes" : ChatColor.RED + "no"));
+				player.sendMessage(ChatColor.GOLD + "Type: " + ChatColor.BLUE + effect.getType().name().toLowerCase().replace("_", " "));
+				player.sendMessage(ChatColor.GOLD + "Colors (" + ChatColor.BLUE + effect.getColors().size() + ChatColor.GOLD + "):");
 
 				for (int c = 0; c < effect.getColors().size(); c++) {
 					Color color = effect.getColors().get(c);
-					player.sendMessage(ChatColor.GREEN + "Colour #" + c + ": R: " + color.getRed() + ", G: " + color.getGreen() + ", B:"
-							+ color.getBlue());
+					player.sendMessage(ChatColor.GOLD + "Color " + ChatColor.BLUE + "#" + c + ChatColor.GOLD + ": "
+					+ ChatColor.DARK_RED + "R: " + ChatColor.RED + color.getRed() 
+					+ ChatColor.DARK_GREEN +", G: " + ChatColor.GREEN + color.getGreen() 
+					+ ChatColor.DARK_BLUE + ", B:" + ChatColor.BLUE + color.getBlue());
 				}
 
-				player.sendMessage(ChatColor.BLUE + "Fade Colours (" + effect.getFadeColors().size() + "):");
+				player.sendMessage(ChatColor.GOLD + "Fade Colours (" + ChatColor.BLUE + effect.getFadeColors().size() + ChatColor.GOLD + "):");
 
 				for (int c = 0; c < effect.getFadeColors().size(); c++) {
 					Color color = effect.getFadeColors().get(c);
-					player.sendMessage(ChatColor.GREEN + "Fade Colour #" + c + ": R: " + color.getRed() + ", G: " + color.getGreen() + ", B:"
-							+ color.getBlue());
+					player.sendMessage(ChatColor.GOLD + "Fade Color " + ChatColor.BLUE + "#" + c + ChatColor.GOLD + ": "
+							+ ChatColor.DARK_RED + "R: " + ChatColor.RED + color.getRed() 
+							+ ChatColor.DARK_GREEN +", G: " + ChatColor.GREEN + color.getGreen() 
+							+ ChatColor.DARK_BLUE + ", B:" + ChatColor.BLUE + color.getBlue());
 				}
 			}
 
@@ -545,8 +428,8 @@ public class Commands {
 
 		if (args[0].equalsIgnoreCase("addcolour") || args[0].equalsIgnoreCase("addcolor")) {
 			if (args.length <= 4) {
-				player.sendMessage(ChatColor.BLUE + "[CWCore] Usage: /firework addcolour <effect> r g b.");
-				player.sendMessage(ChatColor.BLUE + "Example: /firework addcolour 2 255 0 0 (add red to effect #2)");
+				player.sendMessage(pf + "Usage: " + ChatColor.BLUE + "/firework addcolour <effect> R G B");
+				player.sendMessage(ChatColor.DARK_GRAY + "Example: /firework addcolour 2 255 0 0 (add red to effect #2)");
 				return true;
 			}
 
@@ -555,11 +438,11 @@ public class Commands {
 				effectn = Integer.parseInt(args[1]);
 
 				if (effectn < 0 || effectn > (effects.length - 1)) {
-					player.sendMessage(ChatColor.RED + "[CWCore] Effect number must be between 0 - " + (effects.length - 1));
+					player.sendMessage(pf + ChatColor.RED + "Effect number must be between 0 - " + (effects.length - 1));
 					return true;
 				}
 			} catch (NumberFormatException e) {
-				player.sendMessage(ChatColor.RED + "[CWCore] Effect # must be an integer.");
+				player.sendMessage(pf + ChatColor.RED + "Effect # must be an integer.");
 				return true;
 			}
 
@@ -572,7 +455,7 @@ public class Commands {
 				g = Integer.parseInt(args[3]);
 				b = Integer.parseInt(args[4]);
 			} catch (NumberFormatException e) {
-				player.sendMessage(ChatColor.RED + "[CWCore] RGB values must be numbers.");
+				player.sendMessage(pf + ChatColor.RED + "RGB values must be numbers.");
 				return true;
 			}
 
@@ -580,11 +463,11 @@ public class Commands {
 			effects[effectn] = effect;
 
 			meta.addEffects(effects);
-			player.sendMessage(ChatColor.GREEN + "[CWCore] Successfully added colour.");
+			player.sendMessage(pf + "Successfully added colour.");
 		} else if (args[0].equalsIgnoreCase("addfade")) {
 			if (args.length <= 4) {
-				player.sendMessage(ChatColor.BLUE + "[CWCore] Usage: /firework addfade <effect> r g b.");
-				player.sendMessage(ChatColor.BLUE + "Example: /firework addfade 2 255 0 0 (add red to effect #2)");
+				player.sendMessage(pf + "Usage: " + ChatColor.BLUE + "/firework addfade <effect> R G B");
+				player.sendMessage(ChatColor.DARK_GRAY + "Example: /firework addfade 2 255 0 0 (add red to effect #2)");
 				return true;
 			}
 
@@ -593,11 +476,11 @@ public class Commands {
 				effectn = Integer.parseInt(args[1]);
 
 				if (effectn < 0 || effectn > (effects.length - 1)) {
-					player.sendMessage(ChatColor.RED + "[CWCore] Effect number must be between 0 - " + (effects.length - 1));
+					player.sendMessage(pf + ChatColor.RED + "Effect number must be between 0 - " + (effects.length - 1));
 					return true;
 				}
 			} catch (NumberFormatException e) {
-				player.sendMessage(ChatColor.RED + "[CWCore] Effect # must be an integer.");
+				player.sendMessage(pf + ChatColor.RED + "Effect # must be an integer.");
 				return true;
 			}
 
@@ -610,7 +493,7 @@ public class Commands {
 				g = Integer.parseInt(args[3]);
 				b = Integer.parseInt(args[4]);
 			} catch (NumberFormatException e) {
-				player.sendMessage(ChatColor.RED + "[CWCore] RGB values must be numbers.");
+				player.sendMessage(pf + ChatColor.RED + "RGB values must be numbers.");
 				return true;
 			}
 
@@ -618,11 +501,11 @@ public class Commands {
 			effects[effectn] = newe;
 
 			meta.addEffects(effects);
-			player.sendMessage(ChatColor.GREEN + "[CWCore] Successfully added fade.");
+			player.sendMessage(pf + "[CWCore] Successfully added fade.");
 		} else if (args[0].equalsIgnoreCase("trail")) {
 			if (args.length <= 1) {
-				player.sendMessage(ChatColor.BLUE + "[CWCore] Usage: /firework trail <effect>.");
-				player.sendMessage(ChatColor.BLUE + "Example: /firework trail 0");
+				player.sendMessage(pf + "Usage: " + ChatColor.BLUE + "/firework trail <effect>");
+				player.sendMessage(ChatColor.DARK_GRAY + "Example: /firework trail 0");
 				return true;
 			}
 
@@ -631,11 +514,11 @@ public class Commands {
 				effectn = Integer.parseInt(args[1]);
 
 				if (effectn < 0 || effectn > (effects.length - 1)) {
-					player.sendMessage(ChatColor.RED + "[CWCore] Effect number must be between 0 - " + (effects.length - 1));
+					player.sendMessage(pf + ChatColor.RED + "Effect number must be between 0 - " + (effects.length - 1));
 					return true;
 				}
 			} catch (NumberFormatException e) {
-				player.sendMessage(ChatColor.RED + "[CWCore] Effect # must be an integer.");
+				player.sendMessage(pf + ChatColor.RED + "Effect # must be an integer.");
 				return true;
 			}
 
@@ -646,11 +529,11 @@ public class Commands {
 			effects[effectn] = newe;
 
 			meta.addEffects(effects);
-			player.sendMessage(ChatColor.GREEN + "[CWCore] Successfully " + (trail ? "added a" : "removed the") + " trail");
+			player.sendMessage(pf + "Successfully " + (trail ? "added a" : "removed the") + " trail");
 		} else if (args[0].equalsIgnoreCase("flicker")) {
 			if (args.length <= 1) {
-				player.sendMessage(ChatColor.BLUE + "[CWCore] Usage: /firework flicker <effect>.");
-				player.sendMessage(ChatColor.BLUE + "Example: /firework flicker 0");
+				player.sendMessage(pf + "Usage: " + ChatColor.BLUE + "/firework flicker <effect>");
+				player.sendMessage(ChatColor.DARK_GRAY + "Example: /firework flicker 0");
 				return true;
 			}
 
@@ -659,11 +542,11 @@ public class Commands {
 				effectn = Integer.parseInt(args[1]);
 
 				if (effectn < 0 || effectn > (effects.length - 1)) {
-					player.sendMessage(ChatColor.RED + "[CWCore] Effect number must be between 0 - " + (effects.length - 1));
+					player.sendMessage(pf + ChatColor.RED + "Effect number must be between 0 - " + (effects.length - 1));
 					return true;
 				}
 			} catch (NumberFormatException e) {
-				player.sendMessage(ChatColor.RED + "[CWCore] Effect # must be an integer.");
+				player.sendMessage(pf + ChatColor.RED + "Effect # must be an integer.");
 				return true;
 			}
 
@@ -673,10 +556,10 @@ public class Commands {
 			FireworkEffect newe = cloneEffect(effect).flicker(flicker).build();
 			effects[effectn] = newe;
 			meta.addEffects(effects);
-			player.sendMessage(ChatColor.GREEN + "[CWCore] Successfully " + (flicker ? "added a" : "removed the") + " flicker");
+			player.sendMessage(pf + "Successfully " + (flicker ? "added a" : "removed the") + " flicker");
 		} else if (args[0].equalsIgnoreCase("power")) {
 			if (args.length <= 1) {
-				player.sendMessage(ChatColor.BLUE + "[CWCore] Usage: /firework power <amount>.");
+				player.sendMessage(pf + "Usage: " + ChatColor.BLUE + "/firework power <amount 1-3>.");
 				return true;
 			}
 
@@ -684,28 +567,28 @@ public class Commands {
 				int power = Integer.parseInt(args[1]);
 
 				if (power > 3) {
-					player.sendMessage(ChatColor.RED + "[CWCore] Firework power can't be more than 3.");
+					player.sendMessage(pf + ChatColor.RED + "Firework power can't be more than 3.");
 					return true;
 				}
 
 				if (power < 1) {
-					player.sendMessage(ChatColor.RED + "[CWCore] Firework power can't be less than 1.");
+					player.sendMessage(pf + ChatColor.RED + "Firework power can't be less than 1.");
 					return true;
 				}
 
 				meta.setPower(power);
-				player.sendMessage(ChatColor.GREEN + "[CWCore] Successfully set power (flight duration) to: " + power);
+				player.sendMessage(pf + "Successfully set power (flight duration) to: " + ChatColor.BLUE + power);
 			} catch (NumberFormatException e) {
-				player.sendMessage(ChatColor.RED + "[CWCore] Power must be a number.");
+				player.sendMessage(pf + ChatColor.RED + "Power must be a number.");
 				return true;
 			}
 		} else if (args[0].equalsIgnoreCase("clear")) {
 			meta.clearEffects();
-			player.sendMessage(ChatColor.GREEN + "[CWCore] Successfully cleared all effects on the rocket.");
+			player.sendMessage(pf + "Successfully cleared all effects on the rocket.");
 		} else if (args[0].equalsIgnoreCase("type")) {
 			if (args.length <= 2) {
-				player.sendMessage(ChatColor.BLUE + "[CWCore] Usage: /firework type <effect> <ball|ball_large|burst|creeper|star>.");
-				player.sendMessage(ChatColor.BLUE + "Example: /firework type 0 small_ball");
+				player.sendMessage(pf + "Usage: " + ChatColor.BLUE + "/firework type <effectID> <ball|ball_large|burst|creeper|star>");
+				player.sendMessage(ChatColor.DARK_GRAY + "Example: /firework type 0 small_ball");
 				return true;
 			}
 
@@ -714,11 +597,11 @@ public class Commands {
 				effectn = Integer.parseInt(args[1]);
 
 				if (effectn < 0 || effectn > (effects.length - 1)) {
-					player.sendMessage(ChatColor.RED + "[CWCore] Effect number must be between 0 - " + (effects.length - 1));
+					player.sendMessage(pf + ChatColor.RED + "Effect number must be between 0 - " + (effects.length - 1));
 					return true;
 				}
 			} catch (NumberFormatException e) {
-				player.sendMessage(ChatColor.RED + "[CWCore] Effect # must be an integer.");
+				player.sendMessage(pf + ChatColor.RED + "Effect # must be an integer.");
 				return true;
 			}
 
@@ -727,14 +610,14 @@ public class Commands {
 			try {
 				type = FireworkEffect.Type.valueOf(args[2].toUpperCase());
 			} catch (Throwable e) {
-				player.sendMessage(ChatColor.RED + "[CWCore] That is not a valid firework type.");
+				player.sendMessage(pf + ChatColor.RED + "That is not a valid firework type.");
 				return true;
 			}
 
 			FireworkEffect newe = cloneEffect(effects[effectn]).with(type).build();
 			effects[effectn] = newe;
 			meta.addEffects(effects);
-			player.sendMessage(ChatColor.GREEN + "[CWCore] Successfully changed the effect type to " + type.name().toLowerCase().replace("_", " "));
+			player.sendMessage(ChatColor.GREEN + "Successfully changed the effect type to " + type.name().toLowerCase().replace("_", " "));
 		}
 
 		fw.setFireworkMeta(meta);
@@ -774,21 +657,21 @@ public class Commands {
 			label = "tploc")
 	public boolean tploc(CommandSender sender, String[] args) {
 		if (args.length <= 2) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Usage: /tploc <player> <x,y,z> <world>.");
+			sender.sendMessage(pf + "Usage: " + ChatColor.BLUE + "/tploc <player> <x,y,z> <world>");
 			return true;
 		}
 
 		Player player = cwc.getPlugin().getServer().getPlayer(args[0]);
 
 		if (player == null || !player.isOnline()) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.RED + "Invalid player.");
+			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
 			return true;
 		}
 
 		String[] coords = args[1].split(",");
 
 		if (coords.length <= 2) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Invalid coordinate pattern.");
+			sender.sendMessage(pf + ChatColor.RED + "Invalid coordinate pattern. <x,y,z>");
 			return true;
 		}
 
@@ -801,14 +684,14 @@ public class Commands {
 			y = Integer.parseInt(coords[1].trim());
 			z = Integer.parseInt(coords[2].trim());
 		} catch (NumberFormatException e) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Invalid coordinates.");
+			sender.sendMessage(pf + ChatColor.RED + "Invalid coordinates. <x,y,z>");
 			return true;
 		}
 
 		World world = cwc.getPlugin().getServer().getWorld(args[2]);
 
 		if (world == null) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Invalid world.");
+			sender.sendMessage(pf + ChatColor.RED + "Invalid world.");
 			return true;
 		}
 
@@ -838,14 +721,14 @@ public class Commands {
 			label = "givexp")
 	public boolean givexp(CommandSender sender, String[] args) {
 		if (args.length <= 1) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "Usage: /givexp <xp> <player>.");
+			sender.sendMessage(pf + "Usage: " + ChatColor.BLUE + "/givexp <xp> <player>");
 			return true;
 		}
 
 		Player player = cwc.getPlugin().getServer().getPlayer(args[1]);
 
 		if (player == null) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.RED + "Invalid player.");
+			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
 			return true;
 		}
 
@@ -859,7 +742,7 @@ public class Commands {
 		try {
 			amt = Integer.parseInt(args[0]);
 		} catch (NumberFormatException e) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.RED + "Invalid amount.");
+			sender.sendMessage(pf + ChatColor.RED + "Invalid amount.");
 			return true;
 		}
 
@@ -906,15 +789,12 @@ public class Commands {
 					commands.put(lbl, new ArrayList<Method>(Arrays.asList(new Method[] { method })));
 			}
 		}
-
-		// Collections.sort(commands, new SortMethods());
 	}
 
 	public boolean executeCommand(CommandSender sender, String lbl, String[] args) {
 		if (args.length <= 0) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "V" + cwc.getPlugin().getDescription().getVersion()
-					+ ChatColor.DARK_PURPLE + " created by " + ChatColor.GOLD + "Pqqqqq");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "Use " + ChatColor.GOLD + "/" + lbl + " help");
+			sender.sendMessage(pf + "V" + cwc.getPlugin().getDescription().getVersion() + " - Core features for clashwars!");
+			sender.sendMessage(ChatColor.GOLD + "Use " + ChatColor.BLUE + "/" + lbl + " help" + ChatColor.GOLD + " to see all commands!");
 			return true;
 		}
 
@@ -935,7 +815,7 @@ public class Commands {
 									break check;
 							}
 
-							sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.DARK_RED + "Insufficient permissions!");
+							sender.sendMessage(pf + ChatColor.RED + "Insufficient permissions!");
 							return true;
 						}
 
@@ -951,9 +831,8 @@ public class Commands {
 			}
 		}
 
-		sender.sendMessage(ChatColor.DARK_PURPLE + "[CWCore] " + ChatColor.GOLD + "V" + cwc.getPlugin().getDescription().getVersion()
-				+ ChatColor.DARK_PURPLE + " created by " + ChatColor.GOLD + "Pqqqqq");
-		sender.sendMessage(ChatColor.DARK_PURPLE + "Use " + ChatColor.GOLD + "/" + lbl + " help");
+		sender.sendMessage(pf + "V" + cwc.getPlugin().getDescription().getVersion() + " - Core features for clashwars!");
+		sender.sendMessage(ChatColor.GOLD + "Use " + ChatColor.BLUE + "/" + lbl + " help" + ChatColor.GOLD + " to see all commands!");
 		return true;
 	}
 
@@ -994,22 +873,23 @@ public class Commands {
 		}
 
 		if (page > pages) {
-			sender.sendMessage(ChatColor.DARK_PURPLE + "There are only " + ChatColor.GOLD + pages + ChatColor.DARK_PURPLE + " page(s).");
+			sender.sendMessage(pf + ChatColor.RED + "There are/is only " + pages + " page(s).");
 			return true;
 		}
 
 		int start = (page - 1) * 7;
 		int end = (page * 7) - 1;
 
-		sender.sendMessage(ChatColor.DARK_PURPLE + "-----=====~ " + ChatColor.GOLD + "Help PG " + page + "/" + pages + ChatColor.DARK_PURPLE
-				+ " ~=====-----");
+		sender.sendMessage(ChatColor.BLUE + "===== " 
+			+ ChatColor.GOLD + "CW Core Help Page " + ChatColor.GRAY + page + ChatColor.BLUE + "/" + ChatColor.DARK_GRAY + pages 
+			+ ChatColor.BLUE + " =====");
 		for (int i = start; i <= end && i < commands.size(); i++) {
 			Method method = cmds.get(i);
 			Command command = method.getAnnotation(Command.class);
 			String description = command.description();
 			String alias = command.aliases()[0];
 
-			sender.sendMessage(ChatColor.DARK_PURPLE + "/" + lbl + " " + alias + " --> " + ChatColor.GOLD + description);
+			sender.sendMessage(ChatColor.BLUE + "/" + lbl + " " + alias + " --> " + ChatColor.GOLD + description);
 		}
 		return true;
 	}

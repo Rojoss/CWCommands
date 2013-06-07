@@ -8,18 +8,14 @@ import java.util.logging.Logger;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Pig;
 import org.bukkit.plugin.PluginManager;
 
 import com.pqqqqq.cwcore.bukkit.CWCorePlugin;
 import com.pqqqqq.cwcore.bukkit.events.MainEvents;
 import com.pqqqqq.cwcore.command.Commands;
-import com.pqqqqq.cwcore.concurrent.MailGiver;
 import com.pqqqqq.cwcore.config.BookConfig;
 import com.pqqqqq.cwcore.config.ChestConfig;
 import com.pqqqqq.cwcore.config.Config;
-import com.pqqqqq.cwcore.config.MailConfig;
 import com.pqqqqq.cwcore.config.PluginConfig;
 
 public class CWCore {
@@ -28,23 +24,17 @@ public class CWCore {
 
 	private Commands				cmds;
 
-	private ArrayList<Pig>			notele			= new ArrayList<Pig>();
-	private ArrayList<Mail>			mail			= new ArrayList<Mail>();
-	private ArrayList<DungeonChest>	dungeonChests	= new ArrayList<DungeonChest>();
+	private ArrayList<LootChest>	lootChests	= new ArrayList<LootChest>();
 	private ArrayList<String>		deleteChests	= new ArrayList<String>();
 
-	private HashMap<Item, Mail>		mailDrops		= new HashMap<Item, Mail>();
 	private HashMap<String, Book>	savedBooks		= new HashMap<String, Book>();
 	private Set<String>				createChest		= new HashSet<String>();
 
 	// Config stuff
 	private Config					cfg;
-	private Config					mailCfg;
 	private Config					booksCfg;
 	private Config					chestCfg;
-	private int						mailDelay;
 	private int						chestDelay;
-	private int						stormPercent;
 
 	private void registerEvents() {
 		PluginManager pm = getPlugin().getServer().getPluginManager();
@@ -62,7 +52,7 @@ public class CWCore {
 
 	public boolean parseCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
 		String c = cmd.getName();
-		if (c.equalsIgnoreCase("mail") || c.equalsIgnoreCase("book") || c.equalsIgnoreCase("chest") || c.equalsIgnoreCase("firework")
+		if (c.equalsIgnoreCase("book") || c.equalsIgnoreCase("chest") || c.equalsIgnoreCase("firework")
 				|| c.equalsIgnoreCase("tploc") || c.equalsIgnoreCase("givexp")) {
 			return cmds.executeCommand(sender, lbl, args);
 		}
@@ -71,7 +61,6 @@ public class CWCore {
 
 	public void onDisable() {
 		getPlugin().getServer().getScheduler().cancelTasks(getPlugin());
-		mailCfg.save();
 		booksCfg.save();
 		chestCfg.save();
 
@@ -82,13 +71,9 @@ public class CWCore {
 		cmds = new Commands(this);
 		cmds.populateCommands();
 
-		cfg = new PluginConfig(this);
+		cfg = new PluginConfig();
 		cfg.init();
 		cfg.load();
-
-		mailCfg = new MailConfig(this);
-		mailCfg.init();
-		mailCfg.load();
 
 		booksCfg = new BookConfig(this);
 		booksCfg.init();
@@ -100,9 +85,6 @@ public class CWCore {
 
 		registerEvents();
 
-		getPlugin().getServer().getScheduler().runTaskTimerAsynchronously(getPlugin(), new MailGiver(this), 100, 100);
-		// getPlugin().getServer().getScheduler().scheduleAsyncRepeatingTask(getPlugin(),
-		// new ChestRemoval(this), 10, 10);
 		log("Successfully enabled.");
 	}
 
@@ -110,16 +92,8 @@ public class CWCore {
 		this.cwc = cwc;
 	}
 
-	public ArrayList<Pig> getNoEditVillagers() {
-		return notele;
-	}
-
-	public ArrayList<Mail> getMail() {
-		return mail;
-	}
-
-	public ArrayList<DungeonChest> getDungeonChests() {
-		return dungeonChests;
+	public ArrayList<LootChest> getLootChests() {
+		return lootChests;
 	}
 
 	public ArrayList<String> getDeleteChests() {
@@ -130,20 +104,8 @@ public class CWCore {
 		return createChest;
 	}
 
-	public HashMap<Item, Mail> getMailDrops() {
-		return mailDrops;
-	}
-
 	public HashMap<String, Book> getSavedBooks() {
 		return savedBooks;
-	}
-
-	public int getMailDelay() {
-		return mailDelay;
-	}
-
-	public void setMailDelay(int mailDelay) {
-		this.mailDelay = mailDelay;
 	}
 
 	public int getChestDelay() {
@@ -152,13 +114,5 @@ public class CWCore {
 
 	public void setChestDelay(int chestDelay) {
 		this.chestDelay = chestDelay;
-	}
-
-	public int getStormPercent() {
-		return stormPercent;
-	}
-
-	public void setStormPercent(int stormPercent) {
-		this.stormPercent = stormPercent;
 	}
 }
