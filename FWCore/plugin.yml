@@ -1,8 +1,8 @@
-name: FWCore
-main: com.pqqqqq.fwcore.bukkit.FWCorePlugin
+name: CWCore
+main: com.pqqqqq.cwcore.bukkit.CWCorePlugin
 version: '1.0'
 author: Pqqqqq
-description: A core plugin
+description: ClashWars Core plugin
 commands:
   mail:
     description: Mail commands
