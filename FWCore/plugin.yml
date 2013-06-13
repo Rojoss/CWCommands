@@ -1,7 +1,7 @@
 name: CWCore
-main: com.pqqqqq.cwcore.bukkit.CWCorePlugin
+main: net.clashwars.cwcore.bukkit.CWCorePlugin
 version: '1.0'
-author: Pqqqqq
+author: ClashWars
 description: ClashWars Core plugin
 commands:
   book:
@@ -15,7 +15,33 @@ commands:
     usage: /<command>
   tploc:
     description: Teleport a player to a location
-    usage: /tploc player x,y,z world
-  givexp:
-    description: Gives a player experience
-    usage: /<command> <amount> <player>
+    usage: /<command> player x,y,z world
+  exp:
+    description: Give/Take/Show experience
+    usage: /<command> <player> <exp[L]>
+  bc:
+    description: Broadcast a message
+    usage: /<command> <msg>
+    aliases: [broadcast,bcmsg]
+  freeze:
+    description: Freeze a player
+    usage: /<command> [player] [on|off]
+  gm:
+    description: Change gamemode
+    usage: /<command> <mode> [player]
+  heal:
+    description: Heal or set health
+    usage: /<command> [player] [amt]
+    aliases: [health,hp]
+  nick:
+    description: Change nicknames
+    usage: /<command> <nick> [player]
+  realname:
+    description: Check real name of a player
+    usage: /<command> [player]
+  time:
+    description: Change the time
+    usage: /<command> <get|500ticks|24:00|10pm|day|dawn|noon|afternoon|dusk|midnight|night>
+  removepots:
+    description: Remove potion effects from a player
+    usage: /<command> [player]

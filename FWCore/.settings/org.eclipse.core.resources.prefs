@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+encoding//src/net/clashwars/cwcore/command/Commands.java=UTF-8
+encoding//src/net/clashwars/cwcore/commands/BroadcastCmd.java=UTF-8
+encoding//src/net/clashwars/cwcore/commands/FreezeCmd.java=UTF-8
+encoding//src/net/clashwars/cwcore/commands/GamemodeCmd.java=UTF-8
+encoding//src/net/clashwars/cwcore/commands/HealCmd.java=UTF-8
+encoding//src/net/clashwars/cwcore/commands/InvseeCmd.java=UTF-8
+encoding//src/net/clashwars/cwcore/commands/NickCmd.java=UTF-8
+encoding//src/net/clashwars/cwcore/commands/RealnameCmd.java=UTF-8
+encoding//src/net/clashwars/cwcore/commands/RemovepotsCmd.java=UTF-8
+encoding//src/net/clashwars/cwcore/commands/TimeCmd.java=UTF-8
