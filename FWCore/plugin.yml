@@ -45,3 +45,6 @@ commands:
   removepots:
     description: Remove potion effects from a player
     usage: /<command> [player]
+  invsee:
+    description: See/Edit a player his inventory
+    usage: /<command> <player>

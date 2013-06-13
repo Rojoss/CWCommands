@@ -2,6 +2,8 @@ package net.clashwars.cwcore.bukkit.events;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.entity.CWPlayer;
+import net.clashwars.cwcore.util.Utils;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,7 +32,7 @@ public class MainEvents implements Listener {
         player.sendMessage(pf + "Name: " + cwp.getName() + "  Gamemode: " + cwp.getGamemode() + "  Nick: " + cwp.getNick()
         		+ "  Health: " + cwp.getMaxHealth());
         
-        player.setDisplayName(cwp.getNick());
+        player.setDisplayName(Utils.integrateColor(cwp.getNick()));
     }
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

@@ -11,7 +11,7 @@ import net.clashwars.cwcore.bukkit.CWCorePlugin;
 import net.clashwars.cwcore.bukkit.events.CoreEvents;
 import net.clashwars.cwcore.bukkit.events.MainEvents;
 import net.clashwars.cwcore.command.Commands;
-import net.clashwars.cwcore.commands.internal.CommandClass;
+import net.clashwars.cwcore.commands.*;
 import net.clashwars.cwcore.config.BookConfig;
 import net.clashwars.cwcore.config.ChestConfig;
 import net.clashwars.cwcore.config.Config;
@@ -21,15 +21,12 @@ import net.clashwars.cwcore.runnables.SaveRunnable;
 import net.clashwars.cwcore.runnables.SqlUpdateRunnable;
 import net.clashwars.cwcore.sql.SqlConnection;
 import net.clashwars.cwcore.sql.SqlInfo;
-import net.milkbowl.vault.permission.Permission;
-
+import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.reflections.Reflections;
 
 public class CWCore {
 	private CWCorePlugin			cwc;
@@ -37,7 +34,6 @@ public class CWCore {
 
 	private Commands				cmds;
 	private PlayerManager			pm;
-	private Permission				perm;
 	private SqlConnection			sql;
 	private SqlInfo					sqlInfo;
 	private Config					cfg;
@@ -48,12 +44,13 @@ public class CWCore {
 	private ArrayList<String>		deleteChests	= new ArrayList<String>();
 	private ArrayList<String>		freeze			= new ArrayList<String>();
 	private int						chestDelay;
+	private String					pf 				= ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "CW" + ChatColor.DARK_GRAY + "] " + ChatColor.GOLD;
 
 	private HashMap<String, Book>	savedBooks		= new HashMap<String, Book>();
 	private Set<String>				createChest		= new HashSet<String>();
 	private SqlUpdateRunnable		sqlr;
 
-	private Set<CommandClass>		commands		= new HashSet<CommandClass>();
+	//private Set<CommandClass>		commands		= new HashSet<CommandClass>();
 
 	public CWCore(CWCorePlugin cwc) {
 		this.cwc = cwc;
@@ -95,9 +92,6 @@ public class CWCore {
 		pm = new PlayerManager(this);
 		pm.populate();
 
-		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-		perm = rsp.getProvider();
-
 		registerEvents();
 		registerTasks();
 
@@ -112,6 +106,7 @@ public class CWCore {
 			return cmds.executeCommand(sender, lbl, args);
 		}*/
 
+		/*
 		for (CommandClass cc : commands) {
 			for (String alias : cc.aliases()) {
 				if (alias.equalsIgnoreCase(cmd.getName())) {
@@ -119,21 +114,24 @@ public class CWCore {
 				}
 			}
 		}
+		*/
+		
 
 		return false;
 	}
 
 	public void registerCommands() {
-		/*getServer().getPluginCommand("heal").setExecutor(new HealCmd(this));
+		getServer().getPluginCommand("heal").setExecutor(new HealCmd(this));
 		getServer().getPluginCommand("gm").setExecutor(new GamemodeCmd(this));
 		getServer().getPluginCommand("bc").setExecutor(new BroadcastCmd(this));
 		getServer().getPluginCommand("freeze").setExecutor(new FreezeCmd(this));
 		getServer().getPluginCommand("nick").setExecutor(new NickCmd(this));
-		getServer().getPluginCommand("time").setExecutor(new TimeCmd());
+		getServer().getPluginCommand("time").setExecutor(new TimeCmd(this));
 		getServer().getPluginCommand("realname").setExecutor(new RealnameCmd(this));
-		getServer().getPluginCommand("removepots").setExecutor(new RemovepotsCmd(this));*/
-		//getServer().getPluginCommand("invsee").setExecutor(new InvseeCmd(this));
+		getServer().getPluginCommand("removepots").setExecutor(new RemovepotsCmd(this));
+		getServer().getPluginCommand("invsee").setExecutor(new InvseeCmd(this));
 
+		/*
 		try {
 			commands.clear();
 			Reflections reflections = new Reflections("net.clashwars.cwcore.commands");
@@ -144,6 +142,7 @@ public class CWCore {
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
+		*/
 	}
 
 	private void registerEvents() {
@@ -238,5 +237,11 @@ public class CWCore {
 
 	public ArrayList<String> getFrozenPlayers() {
 		return freeze;
+	}
+	
+	/* Other */
+	
+	public String getPrefix() {
+		return pf;
 	}
 }

@@ -276,29 +276,10 @@ public class CoreEvents implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void playerMove(PlayerMoveEvent event) {
-		
-		final Player player = event.getPlayer();
-		
-		if(cwc.getFrozenPlayers().contains(player.getName())) {
-			
-			if (player.getLocation().clone().subtract(0, 0.1, 0).getBlock().getTypeId() == 0)
-				return;
-
-			if(event.getFrom().getX() != event.getTo().getX() || event.getFrom().getY() != event.getTo().getY() || event.getFrom().getZ() != event.getTo().getZ()) {
-					Location loc = event.getFrom();
-					loc.setPitch(event.getTo().getPitch());
-					loc.setYaw(event.getTo().getYaw());
-					event.getPlayer().teleport(loc);
-			}
-		}
-	}
-	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void signChange(SignChangeEvent e){
         Player player = e.getPlayer();
-        if (player.hasPermission("cwcore.coloredsign") || player.hasPermission("cwcore.*")){
+        if (player.hasPermission("cwcore.colorsign") || player.hasPermission("cwcore.*")){
             for (int i = 0; i <= 3; i++){
                 e.setLine(i, Utils.integrateColor(e.getLine(i)));
             }
