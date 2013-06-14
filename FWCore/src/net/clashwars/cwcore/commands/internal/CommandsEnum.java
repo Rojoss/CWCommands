@@ -1,6 +1,7 @@
 package net.clashwars.cwcore.commands.internal;
 
 import net.clashwars.cwcore.commands.BroadcastCmd;
+import net.clashwars.cwcore.commands.ClearinvCmd;
 import net.clashwars.cwcore.commands.FreezeCmd;
 import net.clashwars.cwcore.commands.GamemodeCmd;
 import net.clashwars.cwcore.commands.GiveCmd;
@@ -24,6 +25,7 @@ public enum CommandsEnum {
 	REALNAME(RealnameCmd.class,"realname","rname"),
 	REMOVEPOTS(RemovepotsCmd.class,"removepots","removepotions","rpots"),
 	TIME(TimeCmd.class,"time","day","night"),
+	CLEARINV(ClearinvCmd.class,"clearinv","ci","clearinventory"),
 	;
 
 	private String[]						aliases;

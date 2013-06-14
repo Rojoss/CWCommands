@@ -47,3 +47,7 @@ commands:
   give:
     description: Give items to a player
     usage: /<command> <player> <item:data> [amt] [optional args]
+  clearinv:
+    description: Clear items in a player his inventory
+    usage: /<command> [player]
+    aliases: [ci,clearinventory]
