@@ -1,6 +1,7 @@
 package net.clashwars.cwcore.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import net.clashwars.cwcore.Book;
 import net.minecraft.server.v1_5_R3.NBTTagCompound;
@@ -10,6 +11,7 @@ import net.minecraft.server.v1_5_R3.NBTTagString;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftItemStack;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 
@@ -100,7 +102,7 @@ public class Utils {
 		return str;
 	}
 	
-	/* CommandClass Utils */
+	/* Command Utils */
 	public static boolean hasModifier(String[] args, String mod) {
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].toLowerCase().startsWith(mod)) {
@@ -132,5 +134,38 @@ public class Utils {
                 args2[i] = args[i];
         }
         return args2;
+	}
+	
+	public static int getArgIndex(String[] args, String argument) {
+		for (int i = 0; i < args.length; i++) {
+			if (args[i].toLowerCase().startsWith(argument)) {
+				return i;
+			}
+		}
+		return 0;
+	}
+	/*
+	public static int getEnchantment(String[] args, HashMap<Enchantment, Integer> enchants) {
+		for (int i = 0; i < args.length; i++) {
+			if (args[i].toLowerCase().startsWith(argument)) {
+				return i;
+			}
+		}
+		return 0;
+	}
+	*/
+	
+	/* Other Utils */
+	
+	public static int hexToInt(String hex) {
+		int color = -1;
+		if (hex.contains("#")) {
+		    String[] temp = hex.split("#");
+		    hex = temp[0];
+		    if (temp[1].matches("[0-9A-Fa-f]+")) {
+		            color = Integer.parseInt(temp[1], 16);
+		    }
+		}
+		return color;
 	}
 }

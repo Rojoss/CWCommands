@@ -1,17 +1,17 @@
 package net.clashwars.cwcore.commands;
 
 import net.clashwars.cwcore.CWCore;
+import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.entity.CWPlayer;
 import net.clashwars.cwcore.util.Utils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class GamemodeCmd implements CommandExecutor {
+public class GamemodeCmd implements CommandClass {
 	
 	private CWCore cwc;
 	
@@ -20,8 +20,8 @@ public class GamemodeCmd implements CommandExecutor {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
-		if(lbl.equalsIgnoreCase("gm")) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+		if(lbl.equalsIgnoreCase("gamemode")) {
 			String pf = cwc.getPrefix();
 			GameMode mode = null;
 			Player player = null;
@@ -91,5 +91,10 @@ public class GamemodeCmd implements CommandExecutor {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public String[] permissions() {
+		return new String[] { "cwcore.cmd.gamemode", "cwcore.cmd.*", "cwcore.*" };
 	}
 }

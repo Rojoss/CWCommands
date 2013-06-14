@@ -39,13 +39,22 @@ public class PlayerManager implements Manager {
 
 	public CWPlayer getPlayer(String player) {
 		for (Map.Entry<Integer, CWPlayer> entry : players.entrySet()) {
-			cwc.log("" + entry.getValue() + "   " + entry.getKey());
 
 			CWPlayer cwp = entry.getValue();
 
-			cwc.log("" + cwp.getName());
-
 			if (cwp.getName().equalsIgnoreCase(player)) {
+				return cwp;
+			}
+		}
+		return null;
+	}
+	
+	public CWPlayer getPlayerFromNick(String nick) {
+		for (Map.Entry<Integer, CWPlayer> entry : players.entrySet()) {
+
+			CWPlayer cwp = entry.getValue();
+
+			if (cwp.getNick().equalsIgnoreCase(nick)) {
 				return cwp;
 			}
 		}

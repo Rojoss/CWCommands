@@ -1,7 +1,6 @@
 package net.clashwars.cwcore.config;
 
 import java.io.File;
-
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.sql.SqlInfo;
 
@@ -13,6 +12,7 @@ public class PluginConfig extends Config {
 	private ConfigUtil cu;
 	private final File			dir		= new File("plugins/CWCore/");
 	private final File			file	= new File(dir + "/CWCore.yml");
+	
 	
 	public PluginConfig (CWCore cwc) {
 		this.cwc = cwc;
@@ -48,4 +48,14 @@ public class PluginConfig extends Config {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+    public void save() {
+            try {
+                    
+                    cfg.save(file);
+            } catch (Exception e) {
+                    e.printStackTrace();
+            }
+    }
 }

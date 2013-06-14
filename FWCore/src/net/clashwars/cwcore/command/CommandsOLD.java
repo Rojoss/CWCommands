@@ -1,37 +1,11 @@
 package net.clashwars.cwcore.command;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 
-import net.clashwars.cwcore.Book;
-import net.clashwars.cwcore.CWCore;
-import net.clashwars.cwcore.util.Utils;
-import net.minecraft.server.v1_5_R3.EntityFireworks;
-import net.minecraft.server.v1_5_R3.WorldServer;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.FireworkEffect.Type;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_5_R3.entity.CraftFirework;
-import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftItemStack;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.FireworkMeta;
-
-
-public class Commands {
-	private CWCore										cwc;
-	private String pf = ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "CW" + ChatColor.DARK_GRAY + "] " + ChatColor.GOLD;
-	private final HashMap<String, ArrayList<Method>>	commands	= new HashMap<String, ArrayList<Method>>();
+public class CommandsOLD {
+	//private CWCore										cwc;
+	//private String pf = ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "CW" + ChatColor.DARK_GRAY + "] " + ChatColor.GOLD;
+	//private final HashMap<String, ArrayList<Method>>	commands	= new HashMap<String, ArrayList<Method>>();
+	
 	
 	//TODO: Convert to other command system
 	
@@ -39,7 +13,6 @@ public class Commands {
  * 
  * CommandClass: exp
  * 
-*/
 	@Command(
             permissions = { "cwcore.exp" },
             aliases = {},
@@ -104,7 +77,6 @@ public class Commands {
  * 
  * CommandClass: chest
  * 
-*/
 		@Command(
 				permissions = { "cwcore.lootchest.create" },
 				aliases = { "create" },
@@ -160,7 +132,6 @@ public class Commands {
  * 
  * CommandClass: book
  * 
-*/
 	@Command(
 			permissions = { "cwcore.book.change" },
 			aliases = { "author" },
@@ -371,7 +342,7 @@ public class Commands {
  * 
  * CommandClass: firework
  * 
-*/
+
 	@Command(permissions = { "cwcore.firework" }, aliases = {}, description = "Customize your rockets", usage = "/firework", label = "firework")
 	public boolean firework(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
@@ -789,10 +760,10 @@ public class Commands {
 
 		return true;
 	}
-/* End of commands */
+/* End of commands
 	
 	
-	public Commands(CWCore cwc) {
+	public CommandsOLD(CWCore cwc) {
 		this.cwc = cwc;
 	}
 
@@ -909,4 +880,6 @@ public class Commands {
 		}
 		return true;
 	}
+}
+*/
 }

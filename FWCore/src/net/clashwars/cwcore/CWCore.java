@@ -10,8 +10,9 @@ import java.util.logging.Logger;
 import net.clashwars.cwcore.bukkit.CWCorePlugin;
 import net.clashwars.cwcore.bukkit.events.CoreEvents;
 import net.clashwars.cwcore.bukkit.events.MainEvents;
-import net.clashwars.cwcore.command.Commands;
-import net.clashwars.cwcore.commands.*;
+import net.clashwars.cwcore.commands.internal.CommandClass;
+import net.clashwars.cwcore.commands.internal.CommandsEnum;
+import net.clashwars.cwcore.config.AliasesConfig;
 import net.clashwars.cwcore.config.BookConfig;
 import net.clashwars.cwcore.config.ChestConfig;
 import net.clashwars.cwcore.config.Config;
@@ -21,6 +22,7 @@ import net.clashwars.cwcore.runnables.SaveRunnable;
 import net.clashwars.cwcore.runnables.SqlUpdateRunnable;
 import net.clashwars.cwcore.sql.SqlConnection;
 import net.clashwars.cwcore.sql.SqlInfo;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
@@ -31,14 +33,14 @@ import org.bukkit.scheduler.BukkitScheduler;
 public class CWCore {
 	private CWCorePlugin			cwc;
 	private final Logger			log				= Logger.getLogger("Minecraft");
-
-	private Commands				cmds;
+	
 	private PlayerManager			pm;
 	private SqlConnection			sql;
 	private SqlInfo					sqlInfo;
 	private Config					cfg;
 	private Config					booksCfg;
 	private Config					chestCfg;
+	private Config					aliasesCfg;
 
 	private ArrayList<LootChest>	lootChests		= new ArrayList<LootChest>();
 	private ArrayList<String>		deleteChests	= new ArrayList<String>();
@@ -70,9 +72,6 @@ public class CWCore {
 	}
 
 	public void onEnable() {
-		cmds = new Commands(this);
-		cmds.populateCommands();
-		registerCommands();
 
 		cfg = new PluginConfig(this);
 		cfg.init();
@@ -85,6 +84,10 @@ public class CWCore {
 		chestCfg = new ChestConfig(this);
 		chestCfg.init();
 		chestCfg.load();
+		
+		aliasesCfg = new AliasesConfig();
+		aliasesCfg.init();
+		aliasesCfg.load();
 
 		sql = new SqlConnection();
 		attemptSQLConnection();
@@ -100,49 +103,29 @@ public class CWCore {
 
 	public boolean parseCommand(CommandSender sender, Command cmd, String lbl, String[] args) throws InstantiationException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		/*String c = cmd.getName();
-		if (c.equalsIgnoreCase("book") || c.equalsIgnoreCase("chest") || c.equalsIgnoreCase("firework")
-				|| c.equalsIgnoreCase("tploc") || c.equalsIgnoreCase("exp")) {
-			return cmds.executeCommand(sender, lbl, args);
-		}*/
-
-		/*
-		for (CommandClass cc : commands) {
-			for (String alias : cc.aliases()) {
-				if (alias.equalsIgnoreCase(cmd.getName())) {
-					return cc.execute(sender, cmd, lbl, args);
-				}
-			}
-		}
-		*/
 		
-
-		return false;
-	}
-
-	public void registerCommands() {
-		getServer().getPluginCommand("heal").setExecutor(new HealCmd(this));
-		getServer().getPluginCommand("gm").setExecutor(new GamemodeCmd(this));
-		getServer().getPluginCommand("bc").setExecutor(new BroadcastCmd(this));
-		getServer().getPluginCommand("freeze").setExecutor(new FreezeCmd(this));
-		getServer().getPluginCommand("nick").setExecutor(new NickCmd(this));
-		getServer().getPluginCommand("time").setExecutor(new TimeCmd(this));
-		getServer().getPluginCommand("realname").setExecutor(new RealnameCmd(this));
-		getServer().getPluginCommand("removepots").setExecutor(new RemovepotsCmd(this));
-		getServer().getPluginCommand("invsee").setExecutor(new InvseeCmd(this));
-
-		/*
-		try {
-			commands.clear();
-			Reflections reflections = new Reflections("net.clashwars.cwcore.commands");
-			for (Class<? extends CommandClass> clazz : reflections.getSubTypesOf(CommandClass.class)) {
-				CommandClass cc = clazz.getConstructor(CWCore.class).newInstance(this);
-				commands.add(cc);
+		Class<? extends CommandClass> clazz = CommandsEnum.fromString(cmd.getName());
+		if (clazz != null) {
+			CommandClass cc = clazz.getConstructor(CWCore.class).newInstance(this);
+			String[] perms = cc.permissions();
+			
+			mb: if (perms != null && perms.length > 0 && !sender.isOp()) {
+				String permDisplay = perms[0];
+				
+				for (String perm : perms) {
+					if (sender.hasPermission(perm)) {
+						break mb;
+					}
+				}
+				
+				sender.sendMessage(pf + ChatColor.RED + "insufficient permissions!" 
+				+ ChatColor.GRAY + " - " + ChatColor.DARK_GRAY + "'" + ChatColor.DARK_RED + permDisplay + ChatColor.DARK_GRAY + "'");
+				return true;
 			}
-		} catch (Throwable e) {
-			e.printStackTrace();
+			
+			return cc.execute(sender, cmd, lbl, args);
 		}
-		*/
+		return false;
 	}
 
 	private void registerEvents() {
@@ -202,6 +185,10 @@ public class CWCore {
 
 	public Config getChestsConfig() {
 		return chestCfg;
+	}
+	
+	public Config getAliasesConfig() {
+		return aliasesCfg;
 	}
 
 	/* Chests */

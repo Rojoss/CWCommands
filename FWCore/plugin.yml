@@ -4,31 +4,18 @@ version: '1.0'
 author: ClashWars
 description: ClashWars Core plugin
 commands:
-  book:
-    description: Book commands
-    usage: /<command> help
-  chest:
-    description: Chest commands
-    usage: /<command> help
-  firework:
-    description: Customize your rocket
-    usage: /<command>
-  tploc:
-    description: Teleport a player to a location
-    usage: /<command> player x,y,z world
-  exp:
-    description: Give/Take/Show experience
-    usage: /<command> <player> <exp[L]>
-  bc:
+  broadcast:
     description: Broadcast a message
     usage: /<command> <msg>
-    aliases: [broadcast,bcmsg]
+    aliases: [bc,bcmsg]
   freeze:
     description: Freeze a player
     usage: /<command> [player] [on|off]
-  gm:
+    aliases: [lock]
+  gamemode:
     description: Change gamemode
     usage: /<command> <mode> [player]
+    aliases: [gm]
   heal:
     description: Heal or set health
     usage: /<command> [player] [amt]
@@ -36,15 +23,24 @@ commands:
   nick:
     description: Change nicknames
     usage: /<command> <nick> [player]
+    aliases: [nickname]
   realname:
     description: Check real name of a player
     usage: /<command> [player]
+    aliases: [rname]
   time:
     description: Change the time
     usage: /<command> <get|500ticks|24:00|10pm|day|dawn|noon|afternoon|dusk|midnight|night>
+    aliases: [day,night]
   removepots:
     description: Remove potion effects from a player
     usage: /<command> [player]
+    aliases: [removepotions,rpots]
   invsee:
     description: See/Edit a player his inventory
     usage: /<command> <player>
+    aliases: [invedit]
+  item:
+    description: Spawn items
+    usage: /<command> <item:data> [amt] [optional args]
+    aliases: [i]

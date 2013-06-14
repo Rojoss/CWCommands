@@ -8,5 +8,5 @@ public interface CommandClass {
 	
 	public String[] permissions();
 	
-	public String[] aliases();
+	//public String[] aliases();
 }
