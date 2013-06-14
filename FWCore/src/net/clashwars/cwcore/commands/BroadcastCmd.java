@@ -2,6 +2,7 @@ package net.clashwars.cwcore.commands;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
+import net.clashwars.cwcore.util.CmdUtils;
 import net.clashwars.cwcore.util.Utils;
 
 import org.bukkit.ChatColor;
@@ -21,7 +22,7 @@ public class BroadcastCmd implements CommandClass {
 		String pf = cwc.getPrefix();
 		
 		/* Modifiers + No args */
-		if (Utils.hasModifier(args,"-h") || args.length < 1) {
+		if (CmdUtils.hasModifier(args,"-h") || args.length < 1) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/broadcast <msg>");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Broadcast a message to the server.");
@@ -30,9 +31,9 @@ public class BroadcastCmd implements CommandClass {
 			return true;
 		}
 		boolean prefix = true;
-		if (Utils.hasModifier(args,"-p")) {
+		if (CmdUtils.hasModifier(args,"-p")) {
 			prefix = false;
-			args = Utils.modifiedArgs(args,"-p");
+			args = CmdUtils.modifiedArgs(args,"-p");
 		}
 		
 		/* args */

@@ -2,7 +2,7 @@ package net.clashwars.cwcore.commands;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
-import net.clashwars.cwcore.util.Utils;
+import net.clashwars.cwcore.util.CmdUtils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -26,25 +26,25 @@ public class FreezeCmd implements CommandClass {
 		Boolean on = null;
 		
 		/* Modifiers */
-		if (Utils.hasModifier(args,"-h")) {
+		if (CmdUtils.hasModifier(args,"-h")) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/freeze [player] [on|off]");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Freeze a player so he can't move/(jump) anymore.");
 			sender.sendMessage(pf + "Modifiers: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-j" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Allow jumping while frozen");
-			args = Utils.modifiedArgs(args,"-h");
+			args = CmdUtils.modifiedArgs(args,"-h");
 			return true;
 		}
 		boolean silent = false;
-		if (Utils.hasModifier(args,"-s")) {
+		if (CmdUtils.hasModifier(args,"-s")) {
 			silent = true;
-			args = Utils.modifiedArgs(args,"-s");
+			args = CmdUtils.modifiedArgs(args,"-s");
 		}
 		boolean jump = false;
-		if (Utils.hasModifier(args,"-j")) {
+		if (CmdUtils.hasModifier(args,"-j")) {
 			jump = true;
-			args = Utils.modifiedArgs(args,"-j");
+			args = CmdUtils.modifiedArgs(args,"-j");
 		}
 		
 		

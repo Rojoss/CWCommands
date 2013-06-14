@@ -15,11 +15,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
-public class ItemCmd implements CommandClass {
+public class GiveCmd implements CommandClass {
 	
 	private CWCore cwc;
 	
-	public ItemCmd(CWCore cwc) {
+	public GiveCmd(CWCore cwc) {
 		this.cwc = cwc;
 	}
 
@@ -34,10 +34,10 @@ public class ItemCmd implements CommandClass {
 		boolean equiped = false;
 		
 		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h") || args.length < 1) {
+		if (CmdUtils.hasModifier(args,"-h") || args.length < 2) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + lbl + ChatColor.DARK_GRAY + "  =====");
-			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/item <item[:data]> [amt] [optional args]");
-			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Spawn items for yourself");
+			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/give <player> <item[:data]> [amt] [optional args]");
+			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Spawn items for for other players");
 			sender.sendMessage(pf + "Optional args: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "name:<name>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set display name of item");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "lore:<lore>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set lore of item, _ for space, | for newline");
@@ -52,7 +52,6 @@ public class ItemCmd implements CommandClass {
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-e" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Auto equip items if it's armor (WARNING: Will override!)");
 			return true;
 		}
-		
 		boolean silent = false;
 		if (CmdUtils.hasModifier(args,"-s")) {
 			silent = true;
@@ -74,23 +73,20 @@ public class ItemCmd implements CommandClass {
 			args = CmdUtils.modifiedArgs(args,"-e");
 		}
 		
-		/* Console check */
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(pf + ChatColor.RED + "Only players can use this command. Use /give instead.");
-			return true;
-		} else {
-			player = (Player) sender;
-		}
-		
-		/* 1 arg (Item:Data) */
+		/* 1 arg (Player) */
 		if (args.length >= 1) {
-			md = AliasUtils.getFullData(args[0]);
+			player = cwc.getServer().getPlayer(args[0]);
 		}
 		
-		/* 2 args (Amount) */
+		/* 2 args (Item:Data) */
 		if (args.length >= 2) {
+			md = AliasUtils.getFullData(args[1]);
+		}
+		
+		/* 3 args (Amount) */
+		if (args.length >= 3) {
 			try {
-			 	amt = Integer.parseInt(args[1]);
+			 	amt = Integer.parseInt(args[2]);
 			 } catch (NumberFormatException e) {
 			 	sender.sendMessage(pf + ChatColor.RED + "Invalid amount, Must be a number.");
 			 	return true;
@@ -98,8 +94,12 @@ public class ItemCmd implements CommandClass {
 		}
 		
 		/* null checks */
+		if (player == null) {
+			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
+		 	return true;
+		}
 		if (md == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Item " + ChatColor.GRAY + args[0] + ChatColor.RED + " was not recognized!");
+			sender.sendMessage(pf + ChatColor.RED + "Item " + ChatColor.GRAY + args[1] + ChatColor.RED + " was not recognized!");
 		 	return true;
 		}
 		if (drop && unstack) {
@@ -109,7 +109,7 @@ public class ItemCmd implements CommandClass {
 		
 		/* Check for option args */
 		item = new ItemStack(md.getItemType(), amt, md.getData());
-		if (args.length >= 3) {
+		if (args.length >= 4) {
 			item = ItemUtils.createItemFromCmd(args, md, amt, sender);
 		}
 		if (item == null)
@@ -155,10 +155,17 @@ public class ItemCmd implements CommandClass {
 		
 		name = item.getItemMeta().getDisplayName();
 		if (!silent) {
-			if (name == null)
-				player.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + args[0]);
-			else
-				player.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name));
+			if (name == null) {
+				sender.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + args[1] 
+				+ ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + player.getDisplayName());
+				player.sendMessage(pf + "You received " + ChatColor.DARK_PURPLE + amt + " " + args[1] 
+						+ ChatColor.GOLD + " from " + ChatColor.DARK_PURPLE + sender.getName());
+			} else {
+				sender.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name) 
+				+ ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + player.getDisplayName());
+				player.sendMessage(pf + "You received " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name) 
+				+ ChatColor.GOLD + " from " + ChatColor.DARK_PURPLE + sender.getName());
+			}
 		}
 		
 		return true;
@@ -166,6 +173,6 @@ public class ItemCmd implements CommandClass {
 
 	@Override
 	public String[] permissions() {
-		return new String[] { "cwcore.cmd.item", "cwcore.cmd.*", "cwcore.*" };
+		return new String[] { "cwcore.cmd.give", "cwcore.cmd.*", "cwcore.*" };
 	}
 }

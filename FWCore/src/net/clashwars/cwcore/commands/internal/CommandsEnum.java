@@ -3,6 +3,7 @@ package net.clashwars.cwcore.commands.internal;
 import net.clashwars.cwcore.commands.BroadcastCmd;
 import net.clashwars.cwcore.commands.FreezeCmd;
 import net.clashwars.cwcore.commands.GamemodeCmd;
+import net.clashwars.cwcore.commands.GiveCmd;
 import net.clashwars.cwcore.commands.HealCmd;
 import net.clashwars.cwcore.commands.InvseeCmd;
 import net.clashwars.cwcore.commands.ItemCmd;
@@ -18,10 +19,11 @@ public enum CommandsEnum {
 	HEAL(HealCmd.class,"heal","hp","health"),
 	INVSEE(InvseeCmd.class,"invsee","invedit"),
 	ITEM(ItemCmd.class,"item","i"),
+	GIVE(GiveCmd.class,"give"),
 	NICK(NickCmd.class,"nick","nickname"),
 	REALNAME(RealnameCmd.class,"realname","rname"),
 	REMOVEPOTS(RemovepotsCmd.class,"removepots","removepotions","rpots"),
-	TIME(TimeCmd.class,"teime","day","night")
+	TIME(TimeCmd.class,"time","day","night"),
 	;
 
 	private String[]						aliases;

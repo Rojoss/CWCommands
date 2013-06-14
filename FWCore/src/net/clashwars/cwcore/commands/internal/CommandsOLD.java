@@ -1,4 +1,4 @@
-package net.clashwars.cwcore.command;
+package net.clashwars.cwcore.commands.internal;
 
 
 public class CommandsOLD {

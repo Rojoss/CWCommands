@@ -1,4 +1,4 @@
-package net.clashwars.cwcore.util;
+package net.clashwars.cwcore.entity;
 
 public interface Manager {
 

@@ -2,7 +2,7 @@ package net.clashwars.cwcore.commands;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
-import net.clashwars.cwcore.util.Utils;
+import net.clashwars.cwcore.util.CmdUtils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -23,7 +23,7 @@ public class InvseeCmd implements CommandClass {
 		Player player = null;
 		
 		/* Modifiers + No args */
-		if (Utils.hasModifier(args,"-h") || args.length < 1) {
+		if (CmdUtils.hasModifier(args,"-h") || args.length < 1) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Look into a player his inventory and edit it.");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/invsee <player>");

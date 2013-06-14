@@ -3,6 +3,7 @@ package net.clashwars.cwcore.commands;
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.entity.CWPlayer;
+import net.clashwars.cwcore.util.CmdUtils;
 import net.clashwars.cwcore.util.Utils;
 
 import org.bukkit.ChatColor;
@@ -26,7 +27,7 @@ public class NickCmd implements CommandClass {
 		String nick = "";
 		
 		/* Modifiers + No args */
-		if (Utils.hasModifier(args,"-h") || args.length < 1) {
+		if (CmdUtils.hasModifier(args,"-h") || args.length < 1) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/nick <nick> [player]");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Change a player his nickname or reset it.");
@@ -36,14 +37,14 @@ public class NickCmd implements CommandClass {
 			return true;
 		}
 		boolean silent = false;
-		if (Utils.hasModifier(args,"-s")) {
+		if (CmdUtils.hasModifier(args,"-s")) {
 			silent = true;
-			args = Utils.modifiedArgs(args,"-s");
+			args = CmdUtils.modifiedArgs(args,"-s");
 		}
 		boolean reset = false;
-		if (Utils.hasModifier(args,"-r")) {
+		if (CmdUtils.hasModifier(args,"-r")) {
 			reset = true;
-			args = Utils.modifiedArgs(args,"-r");
+			args = CmdUtils.modifiedArgs(args,"-r");
 		}
 		
 		/* Console check */

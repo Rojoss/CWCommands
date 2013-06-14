@@ -2,7 +2,7 @@ package net.clashwars.cwcore.commands;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
-import net.clashwars.cwcore.util.Utils;
+import net.clashwars.cwcore.util.CmdUtils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -24,19 +24,19 @@ public class RemovepotsCmd implements CommandClass {
 		Player player = null;
 		
 		/* Modifiers */
-		if (Utils.hasModifier(args,"-h")) {
+		if (CmdUtils.hasModifier(args,"-h")) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/removepots [player]");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Remove all potion effects from a player.");
 			sender.sendMessage(pf + "Modifiers: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
-			args = Utils.modifiedArgs(args,"-h");
+			args = CmdUtils.modifiedArgs(args,"-h");
 			return true;
 		}
 		boolean silent = false;
-		if (Utils.hasModifier(args,"-s")) {
+		if (CmdUtils.hasModifier(args,"-s")) {
 			silent = true;
-			args = Utils.modifiedArgs(args,"-s");
+			args = CmdUtils.modifiedArgs(args,"-s");
 		}
 		
 		/* Console check */

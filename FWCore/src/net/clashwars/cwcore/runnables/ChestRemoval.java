@@ -1,4 +1,4 @@
-package net.clashwars.cwcore.concurrent;
+package net.clashwars.cwcore.runnables;
 
 import java.util.ArrayList;
 import java.util.Arrays;

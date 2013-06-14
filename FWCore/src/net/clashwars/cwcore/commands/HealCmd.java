@@ -3,7 +3,7 @@ package net.clashwars.cwcore.commands;
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.entity.CWPlayer;
-import net.clashwars.cwcore.util.Utils;
+import net.clashwars.cwcore.util.CmdUtils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -26,7 +26,7 @@ public class HealCmd implements CommandClass {
 		int amt = 0;
 		
 		/* Modifiers */
-		if (Utils.hasModifier(args,"-h")) {
+		if (CmdUtils.hasModifier(args,"-h")) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/heal [player] [amt]");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Heal a player or set a player his max health.");
@@ -34,23 +34,23 @@ public class HealCmd implements CommandClass {
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-m" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set Max health only, doesn't heal player. (need amt)");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-a" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Also resets hunger/saturation/fireticks/exhaustion");
-			args = Utils.modifiedArgs(args,"-h");
+			args = CmdUtils.modifiedArgs(args,"-h");
 			return true;
 		}
 		boolean silent = false;
-		if (Utils.hasModifier(args,"-s")) {
+		if (CmdUtils.hasModifier(args,"-s")) {
 			silent = true;
-			args = Utils.modifiedArgs(args,"-s");
+			args = CmdUtils.modifiedArgs(args,"-s");
 		}
 		boolean all = false;
-		if (Utils.hasModifier(args,"-a")) {
+		if (CmdUtils.hasModifier(args,"-a")) {
 			all = true;
-			args = Utils.modifiedArgs(args,"-a");
+			args = CmdUtils.modifiedArgs(args,"-a");
 		}
 		boolean maxOnly = false;
-		if (Utils.hasModifier(args,"-m")) {
+		if (CmdUtils.hasModifier(args,"-m")) {
 			maxOnly = true;
-			args = Utils.modifiedArgs(args,"-m");
+			args = CmdUtils.modifiedArgs(args,"-m");
 		}
 		
 		/* Console check */

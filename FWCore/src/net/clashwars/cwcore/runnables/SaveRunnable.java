@@ -1,9 +1,8 @@
 package net.clashwars.cwcore.runnables;
 
-import org.bukkit.ChatColor;
-import org.bukkit.World;
-
 import net.clashwars.cwcore.CWCore;
+
+import org.bukkit.World;
 
 public class SaveRunnable implements Runnable {
 	
@@ -19,6 +18,5 @@ public class SaveRunnable implements Runnable {
         for (World world : cwc.getServer().getWorlds()) {
         	world.save();
         }
-        cwc.getServer().broadcastMessage(ChatColor.GRAY + "Saved!");
     }
 }

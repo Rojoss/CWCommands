@@ -1,75 +1,21 @@
 package net.clashwars.cwcore.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import net.clashwars.cwcore.Book;
-import net.minecraft.server.v1_5_R3.NBTTagCompound;
-import net.minecraft.server.v1_5_R3.NBTTagList;
-import net.minecraft.server.v1_5_R3.NBTTagString;
+import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftItemStack;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
 
 
 public class Utils {
 
-	/* Book Utils */
-	public static ItemStack createBook(boolean signed, Book book) {
-		ItemStack b = new ItemStack((signed ? Material.WRITTEN_BOOK : Material.BOOK_AND_QUILL), 1);
-		net.minecraft.server.v1_5_R3.ItemStack newStack = CraftItemStack.asNMSCopy(b);
-
-		NBTTagCompound newTag = new NBTTagCompound();
-
-		if (book.getTitle() != null)
-			newTag.setString("title", book.getTitle());
-
-		if (book.getAuthor() != null)
-			newTag.setString("author", book.getAuthor());
-
-		NBTTagList list = new NBTTagList();
-
-		String[] pages = (book.getPages() == null ? new String[] {} : book.getPages());
-		for (int i = 0; i < pages.length; i++) {
-			list.add(new NBTTagString("page" + i, pages[i]));
-		}
-
-		list.setName("pages");
-		newTag.set("pages", list);
-
-		newStack.setTag(newTag);
-		return CraftItemStack.asBukkitCopy(newStack);
-	}
-
-	public static ItemStack createBook(boolean signed, String title, String author, String... pages) {
-		return createBook(signed, new Book(title, author, pages));
-	}
-
-	public static Book getBook(ItemStack book) {
-		net.minecraft.server.v1_5_R3.ItemStack nmsStack = CraftItemStack.asNMSCopy(book);
-
-		NBTTagCompound tagCompound = nmsStack.tag;
-
-		if (tagCompound == null)
-			return new Book(null, null);
-
-		String title = tagCompound.getString("title");
-		String author = tagCompound.getString("author");
-		NBTTagList list = tagCompound.getList("pages");
-
-		ArrayList<String> pages = new ArrayList<String>();
-		for (int i = 0; i < list.size(); i++) {
-			NBTTagString s = (NBTTagString) list.get(i);
-			pages.add(s.data);
-		}
-
-		return new Book(title, author, pages.toArray(new String[pages.size()]));
-	}
 	
-	/* String Utils */
+	/**
+	 * Implode a StringList to a single string and specify the character between strings and specify at what string index to start and end
+	 * @param arr (The string list to implode)
+	 * @param glue (The string to put between 2 strings)
+	 * @param start (The index of the string to start with)
+	 * @param end (The index of the string to end at)
+	 * @return String (String with all StringList strings separated by the given char)
+	 */
 	public static String implode(String[] arr, String glue, int start, int end) {
 		String ret = "";
 
@@ -83,18 +29,42 @@ public class Utils {
 		return ret.substring(0, ret.length() - glue.length());
 	}
 
+	/**
+	 * Implode a StringList to a single string and specify the character between strings and specify at what string index to start
+	 * @param arr (The string list to implode)
+	 * @param glue (The string to put between 2 strings)
+	 * @param start (The index of the string to start with)
+	 * @return String (String with all StringList strings separated by the given char)
+	 */
 	public static String implode(String[] arr, String glue, int start) {
 		return implode(arr, glue, start, arr.length - 1);
 	}
 
+	/**
+	 * Implode a StringList to a single string and specify the character between strings.
+	 * @param arr (The string list to implode)
+	 * @param glue (The string to put between 2 strings)
+	 * @return String (String with all StringList strings separated by the given char)
+	 */
 	public static String implode(String[] arr, String glue) {
 		return implode(arr, glue, 0);
 	}
 
+	/**
+	 * Implode a StringList to a single string.
+	 * @param arr (The string list to implode)
+	 * @return String (String with all StringList strings separated by spaces)
+	 */
 	public static String implode(String[] arr) {
 		return implode(arr, " ");
 	}
-
+	
+	/**
+	 * Add color to a string for like nicknames and itemnames etc.
+	 * It will replace all color codes like &1<>9 &a<>f And the format codes.
+	 * @param str (The string to add the color to)
+	 * @return String (String with integrated colors)
+	 */
 	public static String integrateColor(String str) {
 		for (ChatColor c : ChatColor.values()) {
 			str = str.replaceAll("&" + c.getChar() + "|&" + Character.toUpperCase(c.getChar()), c.toString());
@@ -102,70 +72,7 @@ public class Utils {
 		return str;
 	}
 	
-	/* Command Utils */
-	public static boolean hasModifier(String[] args, String mod) {
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].toLowerCase().startsWith(mod)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public static String[] modifiedArgs(String[] args, String mod) {
-		int i;
-        int sloc = -1;
-        String temp;
-        for (i = 0; i < args.length; i++) {
-                if (args[i].toLowerCase().startsWith(mod)) {
-                        sloc = i;
-                }
-        }
-        if (sloc != -1) {
-                for (i = sloc; i < args.length -1; i++) {
-                        temp = args[i];
-                    args[i] = args[i + 1];
-                    args[i + 1] = temp;
-                }
-        }
-       
-        String[] args2 = new String[args.length - 1];
-        for (i = 0; i < args2.length; i++) {
-                args2[i] = args[i];
-        }
-        return args2;
-	}
-	
-	public static int getArgIndex(String[] args, String argument) {
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].toLowerCase().startsWith(argument)) {
-				return i;
-			}
-		}
-		return 0;
-	}
-	/*
-	public static int getEnchantment(String[] args, HashMap<Enchantment, Integer> enchants) {
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].toLowerCase().startsWith(argument)) {
-				return i;
-			}
-		}
-		return 0;
-	}
-	*/
-	
-	/* Other Utils */
-	
-	public static int hexToInt(String hex) {
-		int color = -1;
-		if (hex.contains("#")) {
-		    String[] temp = hex.split("#");
-		    hex = temp[0];
-		    if (temp[1].matches("[0-9A-Fa-f]+")) {
-		            color = Integer.parseInt(temp[1], 16);
-		    }
-		}
-		return color;
+	public static String stripColorCodes(String str) {
+		return Pattern.compile("&([0-9a-fk-orA-FK-OR])").matcher(str).replaceAll("");
 	}
 }

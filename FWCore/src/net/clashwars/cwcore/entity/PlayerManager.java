@@ -6,7 +6,7 @@ import java.util.Map;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.sql.SqlConnection;
-import net.clashwars.cwcore.util.Manager;
+import net.clashwars.cwcore.util.Utils;
 
 import org.bukkit.entity.Player;
 
@@ -53,8 +53,10 @@ public class PlayerManager implements Manager {
 		for (Map.Entry<Integer, CWPlayer> entry : players.entrySet()) {
 
 			CWPlayer cwp = entry.getValue();
+			
+			String str = Utils.stripColorCodes(cwp.getNick());
 
-			if (cwp.getNick().equalsIgnoreCase(nick)) {
+			if (str.equalsIgnoreCase(nick) || cwp.getNick().equalsIgnoreCase(nick)) {
 				return cwp;
 			}
 		}
