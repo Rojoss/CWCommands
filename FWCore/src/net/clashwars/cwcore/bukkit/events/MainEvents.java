@@ -5,13 +5,16 @@ import net.clashwars.cwcore.entity.CWPlayer;
 import net.clashwars.cwcore.util.Utils;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 
 
 public class MainEvents implements Listener {
@@ -48,11 +51,25 @@ public class MainEvents implements Listener {
     private void quit(final Player p) {
     	//Player player = p;
     	//final CWPlayer cwp = cwc.getPlayerManager().getOrCreatePlayer(p);
-    	
-    	
-        
     }
-	
+    
+    
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        Player player = (Player) event.getPlayer();
+        if(cwc.getViewList().containsKey(player.getName())) {
+            Player target = cwc.getViewList().get(player.getName());
+            ItemStack[] items = event.getInventory().getContents();
+            target.getEnderChest().clear();
+            target.getEnderChest().setContents(items);
+            
+            if(!((player == target) || target.isOnline()))
+            	target.saveData();
+            
+            cwc.getViewList().remove(player.getName());
+            player.playSound(player.getLocation(), Sound.CHEST_CLOSE, 5.0f, 1.0f);
+        }
+    }
 	
 	  
 }

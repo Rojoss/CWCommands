@@ -27,6 +27,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -49,7 +50,9 @@ public class CWCore {
 	private String					pf 				= ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "CW" + ChatColor.DARK_GRAY + "] " + ChatColor.GOLD;
 
 	private HashMap<String, Book>	savedBooks		= new HashMap<String, Book>();
+	private HashMap<String, Player> viewList        = new HashMap<String, Player>();
 	private Set<String>				createChest		= new HashSet<String>();
+	
 	private SqlUpdateRunnable		sqlr;
 
 	//private Set<CommandClass>		commands		= new HashSet<CommandClass>();
@@ -202,6 +205,10 @@ public class CWCore {
 
 	public Set<String> getCreateChests() {
 		return createChest;
+	}
+	
+	public HashMap<String, Player> getViewList() {
+		return viewList;
 	}
 
 	/* Books */

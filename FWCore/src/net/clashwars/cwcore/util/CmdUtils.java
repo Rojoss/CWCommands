@@ -1,5 +1,14 @@
 package net.clashwars.cwcore.util;
 
+import net.clashwars.cwcore.CWCore;
+import net.minecraft.server.v1_5_R3.DedicatedServer;
+import net.minecraft.server.v1_5_R3.EntityPlayer;
+import net.minecraft.server.v1_5_R3.MinecraftServer;
+import net.minecraft.server.v1_5_R3.PlayerInteractManager;
+
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+
 public class CmdUtils {
 	
 	/**
@@ -62,5 +71,37 @@ public class CmdUtils {
 			}
 		}
 		return 0;
+	}
+	
+	public static Player getPlayerFromArgs(String[] args, String prefix, CWCore cwc) {
+		Player player = null;
+		for (int i = 0; i < args.length; i++) {
+            if (args[i].toLowerCase().startsWith(prefix)) {
+            	String[] splt = args[i].split(":");
+            	if (splt.length > 1) {
+                    player = cwc.getServer().getPlayer(splt[1]);
+                    return player;
+            	}
+            }
+		}
+		return null;
+	}
+	
+	public static Player getOfflinePlayerFromArgs(String[] args, String prefix, CWCore cwc) {
+		OfflinePlayer player = null;
+		for (int i = 0; i < args.length; i++) {
+            if (args[i].toLowerCase().startsWith(prefix)) {
+            	String[] splt = args[i].split(":");
+            	if (splt.length > 1) {
+                    player = cwc.getServer().getOfflinePlayer(splt[1]);
+                    MinecraftServer minecraftServer = DedicatedServer.getServer();
+    				EntityPlayer entityPlayer = new EntityPlayer(DedicatedServer.getServer(), minecraftServer.getWorldServer(0), player.getName(), new PlayerInteractManager(minecraftServer.getWorldServer(0)));
+                    entityPlayer.getBukkitEntity().loadData();
+                    Player p = entityPlayer.getBukkitEntity();
+                    return p;
+            	}
+            }
+		}
+		return null;
 	}
 }

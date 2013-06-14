@@ -40,6 +40,7 @@ public class ClearinvCmd implements CommandClass {
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-i" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Clear inventory");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-b" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Clear hotbar");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-f" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Clear item in fist/hand");
+			sender.sendMessage(ChatColor.DARK_PURPLE + "-e" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Clear items in enderchest");
 			return true;
 		}
 		boolean all = true;
@@ -68,10 +69,14 @@ public class ClearinvCmd implements CommandClass {
 			hand = true;
 			args = CmdUtils.modifiedArgs(args,"-f");
 		}
-		if (armor || inventory || bar || hand) {
+		boolean echest = false;
+		if (CmdUtils.hasModifier(args,"-e")) {
+			echest = true;
+			args = CmdUtils.modifiedArgs(args,"-e");
+		}
+		if (armor || inventory || bar || hand || echest) {
 			all = false;
 		}
-		
 		
 		/* Console check */
 		if (!(sender instanceof Player)) {
@@ -115,24 +120,26 @@ public class ClearinvCmd implements CommandClass {
 		
 		/* Action without material */
 		if (all) {
-			InvUtils.clearInventorySlots(player, 0, -1, md, amt);
+			InvUtils.clearInventorySlots(player, false, 0, -1, md, amt);
 			player.getInventory().setArmorContents(null);
 		} else {
 			if (armor)
 				player.getInventory().setArmorContents(null);
 			if (inventory)
-				InvUtils.clearInventorySlots(player, 9, 36, md, amt);
+				InvUtils.clearInventorySlots(player, false, 9, 36, md, amt);
 			if (bar)
-				InvUtils.clearInventorySlots(player, 0, 9, md, amt);
+				InvUtils.clearInventorySlots(player, false, 0, 9, md, amt);
 			if (hand)
-				InvUtils.clearInventorySlots(player, player.getInventory().getHeldItemSlot(), player.getInventory().getHeldItemSlot() + 1, md, amt);
+				InvUtils.clearInventorySlots(player, false, player.getInventory().getHeldItemSlot(), player.getInventory().getHeldItemSlot() + 1, md, amt);
+			if (echest)
+				InvUtils.clearInventorySlots(player, true, 0, -1, md, amt);
 		}
 		
 		if (!silent) {
-			player.sendMessage(pf + "Items in your inventory have been cleared!");
+			player.sendMessage(pf + "Items in your " + (echest ? "enderchest" : "inventory") + " have been cleared!");
 			if (sender.getName() != player.getName())
 				sender.sendMessage(pf + "You have cleared items in " + ChatColor.DARK_PURPLE + player.getDisplayName() 
-				+ ChatColor.GOLD + " his inventory!");
+				+ ChatColor.GOLD + " his " + (echest ? "enderchest" : "inventory") + ".");
 		}
 		return true;
 	}

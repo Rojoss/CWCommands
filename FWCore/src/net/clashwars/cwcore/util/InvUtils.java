@@ -1,7 +1,7 @@
 package net.clashwars.cwcore.util;
 
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.material.MaterialData;
 
 public class InvUtils {
@@ -17,8 +17,14 @@ public class InvUtils {
 	 * @param amt (The amount of the material to remove if -1 it will remove all of the given material)
 	 * @return void
 	 */
-	public static void clearInventorySlots(Player player, int firstSlot, int lastSlot, MaterialData md, int amt) {
-		PlayerInventory inventory = player.getInventory();
+	public static void clearInventorySlots(Player player, boolean echest, int firstSlot, int lastSlot, MaterialData md, int amt) {
+		Inventory inventory = null;
+		
+		if (echest)
+			inventory = player.getEnderChest();
+		else
+			inventory = player.getInventory();
+		
 		int left = amt;
 		
 		if (lastSlot == -1)

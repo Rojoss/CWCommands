@@ -59,3 +59,6 @@ commands:
     description: Create more items of the item in hand.
     usage: /<command> [amt]
     aliases: [stack]
+  gui:
+    description: Open a GUI like workbench, enchanttable, enderchest
+    usage: /<command> <gui> [player]
