@@ -5,6 +5,7 @@ import net.clashwars.cwcore.commands.ClearinvCmd;
 import net.clashwars.cwcore.commands.FreezeCmd;
 import net.clashwars.cwcore.commands.GamemodeCmd;
 import net.clashwars.cwcore.commands.GiveCmd;
+import net.clashwars.cwcore.commands.HatCmd;
 import net.clashwars.cwcore.commands.HealCmd;
 import net.clashwars.cwcore.commands.InvseeCmd;
 import net.clashwars.cwcore.commands.ItemCmd;
@@ -26,6 +27,7 @@ public enum CommandsEnum {
 	REMOVEPOTS(RemovepotsCmd.class,"removepots","removepotions","rpots"),
 	TIME(TimeCmd.class,"time","day","night"),
 	CLEARINV(ClearinvCmd.class,"clearinv","ci","clearinventory"),
+	HAT(HatCmd.class,"hat","head"),
 	;
 
 	private String[]						aliases;

@@ -27,6 +27,22 @@ public class TimeCmd implements CommandClass {
 		World world = null;
 		Player player = null;
 		
+		/* Check if cmd is /day or /night and force time*/
+		if (sender instanceof Player && args.length < 1) {
+			if (lbl.equalsIgnoreCase("day")) {
+				long ticks = TimeUtils.parse("day");
+				((Player) sender).getWorld().setTime(ticks);
+				sender.sendMessage(pf + "Time set to: "+ ChatColor.DARK_PURPLE + "day");
+				return true;
+			}
+			if (lbl.equalsIgnoreCase("night")) {
+				long ticks = TimeUtils.parse("night");
+				((Player) sender).getWorld().setTime(ticks);
+				sender.sendMessage(pf + "Time set to: "+ ChatColor.DARK_PURPLE + "night");
+				return true;
+			}
+		}
+		
 		/* Modifiers + No args */
 		if (CmdUtils.hasModifier(args,"-h") || args.length < 1) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");

@@ -42,12 +42,16 @@ commands:
     aliases: [invedit]
   item:
     description: Spawn items
-    usage: /<command> <item:data> [amt] [optional args]
+    usage: /<command> <item[:data]> [amt] [optional args]
     aliases: [i]
   give:
     description: Give items to a player
-    usage: /<command> <player> <item:data> [amt] [optional args]
+    usage: /<command> <player> <item[:data]> [amt] [optional args]
   clearinv:
     description: Clear items in a player his inventory
-    usage: /<command> [player]
+    usage: /<command> [player] [item[:data]] [amount]
     aliases: [ci,clearinventory]
+  hat:
+    description: Set a player his hat
+    usage: /<command> <item[:data]> [player] [optional args]
+    aliases: [head]
