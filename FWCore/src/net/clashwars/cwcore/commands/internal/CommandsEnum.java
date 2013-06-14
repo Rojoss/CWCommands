@@ -9,6 +9,7 @@ import net.clashwars.cwcore.commands.HatCmd;
 import net.clashwars.cwcore.commands.HealCmd;
 import net.clashwars.cwcore.commands.InvseeCmd;
 import net.clashwars.cwcore.commands.ItemCmd;
+import net.clashwars.cwcore.commands.MoreCmd;
 import net.clashwars.cwcore.commands.NickCmd;
 import net.clashwars.cwcore.commands.RealnameCmd;
 import net.clashwars.cwcore.commands.RemovepotsCmd;
@@ -28,6 +29,7 @@ public enum CommandsEnum {
 	TIME(TimeCmd.class,"time","day","night"),
 	CLEARINV(ClearinvCmd.class,"clearinv","ci","clearinventory"),
 	HAT(HatCmd.class,"hat","head"),
+	MORE(MoreCmd.class,"more","stack"),
 	;
 
 	private String[]						aliases;

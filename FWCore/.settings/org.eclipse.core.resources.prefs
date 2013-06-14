@@ -8,6 +8,7 @@ encoding//src/net/clashwars/cwcore/commands/HatCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/HealCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/InvseeCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/ItemCmd.java=UTF-8
+encoding//src/net/clashwars/cwcore/commands/MoreCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/NickCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/RealnameCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/RemovepotsCmd.java=UTF-8

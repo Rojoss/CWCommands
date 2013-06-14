@@ -55,3 +55,7 @@ commands:
     description: Set a player his hat
     usage: /<command> <item[:data]> [player] [optional args]
     aliases: [head]
+  more:
+    description: Create more items of the item in hand.
+    usage: /<command> [amt]
+    aliases: [stack]
