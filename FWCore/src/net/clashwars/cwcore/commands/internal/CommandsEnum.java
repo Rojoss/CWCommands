@@ -15,6 +15,7 @@ import net.clashwars.cwcore.commands.NickCmd;
 import net.clashwars.cwcore.commands.RealnameCmd;
 import net.clashwars.cwcore.commands.RemovepotsCmd;
 import net.clashwars.cwcore.commands.TimeCmd;
+import net.clashwars.cwcore.commands.TopCmd;
 
 public enum CommandsEnum {
 	BROADCAST(BroadcastCmd.class,"broadcast","bc","bcmsg"),
@@ -32,6 +33,7 @@ public enum CommandsEnum {
 	HAT(HatCmd.class,"hat","head"),
 	MORE(MoreCmd.class,"more","stack"),
 	GUI(GuiCmd.class,"gui"),
+	TOP(TopCmd.class,"top"),
 	;
 
 	private String[]						aliases;

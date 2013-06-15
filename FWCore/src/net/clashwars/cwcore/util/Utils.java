@@ -75,4 +75,13 @@ public class Utils {
 	public static String stripColorCodes(String str) {
 		return Pattern.compile("&([0-9a-fk-orA-FK-OR])").matcher(str).replaceAll("");
 	}
+	
+	public static boolean isNumber(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 }

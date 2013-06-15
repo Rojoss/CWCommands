@@ -62,3 +62,6 @@ commands:
   gui:
     description: Open a GUI like workbench, enchanttable, enderchest
     usage: /<command> <gui> [player]
+  top:
+    description: Teleport to the top.
+    usage: /<command>
