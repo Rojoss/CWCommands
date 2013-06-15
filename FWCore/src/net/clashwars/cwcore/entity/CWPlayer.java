@@ -18,11 +18,11 @@ public class CWPlayer {
     private String               nick           	= "";
     private String               tag        	    = "";
     private int                  gm			        = 0;
-    private int                  god              	= 0;
-    private int                  vanished           = 0;
-    private int                  flying          	= 0;
-    private int                  walkSpeed          = 0;
-    private int                  flySpeed           = 0;
+    private boolean              god              	= false;
+    private boolean              vanished           = false;
+    private boolean              flying          	= false;
+    private float                walkSpeed          = 0;
+    private float                flySpeed           = 0;
     private int                  maxHealth         	= 0;
 
     public CWPlayer(CWCore cwc, int id, String name) {
@@ -89,47 +89,47 @@ public class CWPlayer {
         cwc.getSQLConnection().update("users", "gm", gm, "id", id);
     }
 
-    public int getGod() {
+    public boolean getGod() {
         return god;
     }
 
-    public void setGod(int god) {
+    public void setGod(boolean god) {
         this.god = god;
         cwc.getSQLConnection().update("users", "god", god, "id", id);
     }
     
-    public int getVanished() {
+    public boolean getVanished() {
         return vanished;
     }
 
-    public void setVanished(int vanished) {
+    public void setVanished(boolean vanished) {
         this.vanished = vanished;
         cwc.getSQLConnection().update("users", "vanished", vanished, "id", id);
     }
     
-    public int getFlying() {
+    public boolean getFlying() {
         return flying;
     }
 
-    public void setFlying(int flying) {
+    public void setFlying(boolean flying) {
         this.flying = flying;
         cwc.getSQLConnection().update("users", "flying", flying, "id", id);
     }
     
-    public int getWalkSpeed() {
+    public float getWalkSpeed() {
         return walkSpeed;
     }
 
-    public void setWalkSpeed(int walkSpeed) {
+    public void setWalkSpeed(float walkSpeed) {
         this.walkSpeed = walkSpeed;
         cwc.getSQLConnection().update("users", "walkSpeed", walkSpeed, "id", id);
     }
     
-    public int getFlySpeed() {
+    public float getFlySpeed() {
         return flySpeed;
     }
 
-    public void setFlySpeed(int flySpeed) {
+    public void setFlySpeed(float flySpeed) {
         this.flySpeed = flySpeed;
         cwc.getSQLConnection().update("users", "flySpeed", flySpeed, "id", id);
     }
@@ -166,11 +166,11 @@ public class CWPlayer {
         nick = (String) assoc.get("nick");
         tag = (String) assoc.get("tag");
         gm = (Integer) assoc.get("gm");
-        god = (Integer) assoc.get("god");
-        vanished = (Integer) assoc.get("vanished");
-        flying = (Integer) assoc.get("flying");
-        walkSpeed = (Integer) assoc.get("walkSpeed");
-        flySpeed = (Integer) assoc.get("flySpeed");
+        god = (boolean) assoc.get("god");
+        vanished = (boolean) assoc.get("vanished");
+        flying = (boolean) assoc.get("flying");
+        walkSpeed = (float) assoc.get("walkSpeed");
+        flySpeed = (float) assoc.get("flySpeed");
         maxHealth = (Integer) assoc.get("maxHealth");
 
     }

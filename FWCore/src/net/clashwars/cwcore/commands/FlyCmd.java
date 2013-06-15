@@ -73,20 +73,20 @@ public class FlyCmd implements CommandClass {
 			return true;
 		}
 		if (on == null) {
-			if (cwp.getFlying() == 1) {
-				cwp.setFlying(0);
+			if (cwp.getFlying() == true) {
+				cwp.setFlying(false);
 				player.setAllowFlight(false);
 				player.setFlying(false);
 			} else {
-				cwp.setFlying(1);
+				cwp.setFlying(true);
 				player.setAllowFlight(true);
 				player.setFlying(true);
 			}
 		} else {
 		/* Action */
 			if (on) {
-				if (cwp.getFlying() == 0) {
-					cwp.setFlying(1);
+				if (cwp.getFlying() == false) {
+					cwp.setFlying(true);
 					player.setFlying(true);
 					player.setAllowFlight(true);
 				} else {
@@ -94,8 +94,8 @@ public class FlyCmd implements CommandClass {
 					return true;
 				}
 			} else {
-				if (cwp.getFlying() == 1) {
-					cwp.setFlying(0);
+				if (cwp.getFlying() == true) {
+					cwp.setFlying(false);
 					player.setAllowFlight(false);
 					player.setFlying(false);
 				} else {
@@ -105,7 +105,7 @@ public class FlyCmd implements CommandClass {
 			}
 		}
 		
-		if (cwp.getFlying() == 1) {
+		if (cwp.getFlying() == true) {
 			if (!silent) {
 				player.sendMessage(pf + "Fly mode enabled!");
 				if (sender.getName() != player.getName())

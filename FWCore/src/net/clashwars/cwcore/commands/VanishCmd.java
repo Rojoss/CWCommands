@@ -76,19 +76,19 @@ public class VanishCmd implements CommandClass {
 			return true;
 		}
 		if (on == null) {
-			if (cwp.getVanished() == 1) {
-				cwp.setVanished(0);
+			if (cwp.getVanished() == true) {
+				cwp.setVanished(false);
 				player.removePotionEffect(PotionEffectType.INVISIBILITY);
 			} else {
-				cwp.setVanished(1);
+				cwp.setVanished(true);
 				player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100000, 1));
 				vanish = true;
 			}
 		} else {
 		/* Action */
 			if (on) {
-				if (cwp.getVanished() == 0) {
-					cwp.setVanished(1);
+				if (cwp.getVanished() == false) {
+					cwp.setVanished(true);
 					player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100000, 1));
 					vanish = true;
 				} else {
@@ -96,8 +96,8 @@ public class VanishCmd implements CommandClass {
 					return true;
 				}
 			} else {
-				if (cwp.getVanished() == 1) {
-					cwp.setVanished(0);
+				if (cwp.getVanished() == true) {
+					cwp.setVanished(false);
 					player.removePotionEffect(PotionEffectType.INVISIBILITY);
 				} else {
 					sender.sendMessage(pf + ChatColor.RED + "Player is already unvanished");
@@ -115,7 +115,7 @@ public class VanishCmd implements CommandClass {
 			}
 		}
 		
-		if (cwp.getVanished() == 1) {
+		if (cwp.getVanished() == true) {
 			if (!silent) {
 				player.sendMessage(pf + "Vanished!");
 				if (sender.getName() != player.getName())

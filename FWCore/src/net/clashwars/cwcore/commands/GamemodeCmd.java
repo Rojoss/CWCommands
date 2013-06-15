@@ -84,10 +84,10 @@ public class GamemodeCmd implements CommandClass {
 		player.setGameMode(mode);
 		cwp.setGamemode(mode.getValue());
 		if (player.getGameMode().getValue() != 1) {
-			if (cwp.getFlying() == 1) {
+			if (cwp.getFlying() == true) {
 				player.setAllowFlight(true);
 				player.setFlying(true);
-				cwp.setFlying(1);
+				cwp.setFlying(true);
 			} else {
 				Utils.tpToTop(cwc, player);
 			}

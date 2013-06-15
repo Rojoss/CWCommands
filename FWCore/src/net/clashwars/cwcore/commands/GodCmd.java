@@ -72,23 +72,23 @@ public class GodCmd implements CommandClass {
 			return true;
 		}
 		if (on == null) {
-			if (cwp.getGod() == 1) {
-				cwp.setGod(0);
+			if (cwp.getGod() == true) {
+				cwp.setGod(false);
 			} else {
-				cwp.setGod(1);
+				cwp.setGod(true);
 			}
 		} else {
 		/* Action */
 			if (on) {
-				if (cwp.getGod() == 0)
-					cwp.setGod(1);
+				if (cwp.getGod() == false)
+					cwp.setGod(true);
 				else {
 					sender.sendMessage(pf + ChatColor.RED + "Player already has godemode");
 					return true;
 				}
 			} else {
-				if (cwp.getGod() == 1)
-					cwp.setGod(0);
+				if (cwp.getGod() == true)
+					cwp.setGod(false);
 				else {
 					sender.sendMessage(pf + ChatColor.RED + "Player doesn't have godmode");
 					return true;
@@ -96,7 +96,7 @@ public class GodCmd implements CommandClass {
 			}
 		}
 		
-		if (cwp.getGod() == 1) {
+		if (cwp.getGod() == true) {
 			if (!silent) {
 				player.sendMessage(pf + "God mode enabled!");
 				if (sender.getName() != player.getName())

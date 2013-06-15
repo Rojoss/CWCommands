@@ -57,7 +57,7 @@ public class KillCmd implements CommandClass {
 			return true;
 		}
 		if (!force) {
-			if (cwp.getGamemode() == 1 || cwp.getGod() == 1) {
+			if (cwp.getGamemode() == 1 || cwp.getGod() == true) {
 				sender.sendMessage(pf + ChatColor.RED + "You can't kill this player.");
 				return true;
 			}

@@ -13,7 +13,6 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -32,24 +31,15 @@ public class CmdEvents implements Listener {
 		CWPlayer cwp = cwc.getPlayerManager().getPlayer(player);
         for (Player plr : cwc.getServer().getOnlinePlayers()) {
         	CWPlayer cwplr = cwc.getPlayerManager().getPlayer(plr);
-            if (cwplr != null && cwplr.getVanished() == 1) {
+            if (cwplr != null && cwplr.getVanished() == true) {
             	if (!(player.hasPermission("cwcore.cmd.vanish.see"))) {
             		player.hidePlayer(plr);
-            		if (cwp.getVanished() == 1)
+            		if (cwp.getVanished() == true)
             			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100000, 1));
             	}
             }
         }
 	}
-	
-	@EventHandler
-	public void onQuit(PlayerQuitEvent event) {
-		Player player = (Player) event.getPlayer();
-		CWPlayer cwp = cwc.getPlayerManager().getPlayer(player);
-        if (cwp.getVanished() == 1)
-        	player.removePotionEffect(PotionEffectType.INVISIBILITY);
-	}
-    
     
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
@@ -75,7 +65,7 @@ public class CmdEvents implements Listener {
       if ((entity instanceof Player)) {
     	  Player player = (Player)entity;
     	  CWPlayer cwp = cwc.getPlayerManager().getPlayer(player);
-    	  if (cwp.getGod() == 1) {
+    	  if (cwp.getGod() == true) {
     		  player.setFireTicks(0);
     		  player.setRemainingAir(player.getMaximumAir());
     		  event.setCancelled(true);
@@ -90,7 +80,7 @@ public class CmdEvents implements Listener {
         if ((target instanceof Player)) {
       	  Player player = (Player)target;
       	  CWPlayer cwp = cwc.getPlayerManager().getPlayer(player);
-      	  if (cwp.getGod() == 1) {
+      	  if (cwp.getGod() == true) {
       		  event.setCancelled(true);
       	  }
         }
@@ -103,7 +93,7 @@ public class CmdEvents implements Listener {
         if ((entity instanceof Player)) {
       	  Player player = (Player)entity;
       	  CWPlayer cwp = cwc.getPlayerManager().getPlayer(player);
-      	  if (cwp.getGod() == 1) {
+      	  if (cwp.getGod() == true) {
       		  player.setFoodLevel(20);
       		  player.setSaturation(10);
       		  event.setCancelled(true);

@@ -46,7 +46,7 @@ public class MainEvents implements Listener {
         	player.setGameMode(GameMode.ADVENTURE);
         }
         
-        if (cwp.getFlying() == 1) {
+        if (cwp.getFlying() == true) {
         	player.setAllowFlight(true);
         	player.setFlying(true);
         } else {

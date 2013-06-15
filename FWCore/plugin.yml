@@ -28,6 +28,9 @@ commands:
     description: Change gamemode
     usage: /<command> <mode> [player]
     aliases: [gm]
+  speed:
+    description: Change walk/fly speed
+    usage: /<command> <speed> [player]
   heal:
     description: Heal or set health
     usage: /<command> [player] [amt]
