@@ -10,10 +10,12 @@ import net.clashwars.cwcore.commands.HatCmd;
 import net.clashwars.cwcore.commands.HealCmd;
 import net.clashwars.cwcore.commands.InvseeCmd;
 import net.clashwars.cwcore.commands.ItemCmd;
+import net.clashwars.cwcore.commands.KillCmd;
 import net.clashwars.cwcore.commands.MoreCmd;
 import net.clashwars.cwcore.commands.NickCmd;
 import net.clashwars.cwcore.commands.RealnameCmd;
 import net.clashwars.cwcore.commands.RemovepotsCmd;
+import net.clashwars.cwcore.commands.SuicideCmd;
 import net.clashwars.cwcore.commands.TimeCmd;
 import net.clashwars.cwcore.commands.TopCmd;
 
@@ -34,6 +36,8 @@ public enum CommandsEnum {
 	MORE(MoreCmd.class,"more","stack"),
 	GUI(GuiCmd.class,"gui"),
 	TOP(TopCmd.class,"top"),
+	SUICIDE(SuicideCmd.class,"suicide","killme"),
+	KILL(KillCmd.class,"kill","slay"),
 	;
 
 	private String[]						aliases;

@@ -65,3 +65,11 @@ commands:
   top:
     description: Teleport to the top.
     usage: /<command>
+  suicide:
+    description: Kill yourself.
+    usage: /<command>
+    aliases: [killme]
+  kill:
+    description: Kill a player.
+    usage: /<command> <player>
+    aliases: [slay]
