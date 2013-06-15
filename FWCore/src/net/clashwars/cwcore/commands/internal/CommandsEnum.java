@@ -5,6 +5,7 @@ import net.clashwars.cwcore.commands.ClearinvCmd;
 import net.clashwars.cwcore.commands.FreezeCmd;
 import net.clashwars.cwcore.commands.GamemodeCmd;
 import net.clashwars.cwcore.commands.GiveCmd;
+import net.clashwars.cwcore.commands.GodCmd;
 import net.clashwars.cwcore.commands.GuiCmd;
 import net.clashwars.cwcore.commands.HatCmd;
 import net.clashwars.cwcore.commands.HealCmd;
@@ -38,6 +39,7 @@ public enum CommandsEnum {
 	TOP(TopCmd.class,"top"),
 	SUICIDE(SuicideCmd.class,"suicide","killme"),
 	KILL(KillCmd.class,"kill","slay"),
+	GOD(GodCmd.class,"god","godmode"),
 	;
 
 	private String[]						aliases;

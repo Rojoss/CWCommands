@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import net.clashwars.cwcore.bukkit.CWCorePlugin;
+import net.clashwars.cwcore.bukkit.events.CmdEvents;
 import net.clashwars.cwcore.bukkit.events.CoreEvents;
 import net.clashwars.cwcore.bukkit.events.MainEvents;
 import net.clashwars.cwcore.commands.internal.CommandClass;
@@ -135,6 +136,7 @@ public class CWCore {
 		PluginManager pm = getPlugin().getServer().getPluginManager();
 		pm.registerEvents(new MainEvents(this), getPlugin());
 		pm.registerEvents(new CoreEvents(this), getPlugin());
+		pm.registerEvents(new CmdEvents(this), getPlugin());
 	}
 
 	private void registerTasks() {

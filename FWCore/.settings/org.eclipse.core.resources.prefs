@@ -4,6 +4,7 @@ encoding//src/net/clashwars/cwcore/commands/ClearinvCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/FreezeCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/GamemodeCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/GiveCmd.java=UTF-8
+encoding//src/net/clashwars/cwcore/commands/GodCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/GuiCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/HatCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/HealCmd.java=UTF-8

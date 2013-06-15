@@ -12,6 +12,10 @@ commands:
     description: Freeze a player
     usage: /<command> [player] [on|off]
     aliases: [lock]
+  god:
+    description: Give a player godmode
+    usage: /<command> [player] [on|off]
+    aliases: [godmode]
   gamemode:
     description: Change gamemode
     usage: /<command> <mode> [player]
