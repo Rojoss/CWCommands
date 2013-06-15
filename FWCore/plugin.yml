@@ -16,6 +16,10 @@ commands:
     description: Give a player godmode
     usage: /<command> [player] [on|off]
     aliases: [godmode]
+  fly:
+    description: Give a player flymode
+    usage: /<command> [player] [on|off]
+    aliases: [flymode]
   gamemode:
     description: Change gamemode
     usage: /<command> <mode> [player]

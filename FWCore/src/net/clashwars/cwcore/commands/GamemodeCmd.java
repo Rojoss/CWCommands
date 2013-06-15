@@ -4,6 +4,7 @@ import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.entity.CWPlayer;
 import net.clashwars.cwcore.util.CmdUtils;
+import net.clashwars.cwcore.util.Utils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -82,6 +83,15 @@ public class GamemodeCmd implements CommandClass {
 		cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
 		player.setGameMode(mode);
 		cwp.setGamemode(mode.getValue());
+		if (player.getGameMode().getValue() != 1) {
+			if (cwp.getFlying() == 1) {
+				player.setAllowFlight(true);
+				player.setFlying(true);
+				cwp.setFlying(1);
+			} else {
+				Utils.tpToTop(cwc, player);
+			}
+		}
 		if (!silent) {
 			player.sendMessage(pf + "Your gamemode is set to " + ChatColor.DARK_PURPLE + mode.name().toLowerCase());
 			if (sender.getName() != player.getName())

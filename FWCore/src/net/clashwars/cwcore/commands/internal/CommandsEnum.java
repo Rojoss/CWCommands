@@ -2,6 +2,7 @@ package net.clashwars.cwcore.commands.internal;
 
 import net.clashwars.cwcore.commands.BroadcastCmd;
 import net.clashwars.cwcore.commands.ClearinvCmd;
+import net.clashwars.cwcore.commands.FlyCmd;
 import net.clashwars.cwcore.commands.FreezeCmd;
 import net.clashwars.cwcore.commands.GamemodeCmd;
 import net.clashwars.cwcore.commands.GiveCmd;
@@ -40,6 +41,7 @@ public enum CommandsEnum {
 	SUICIDE(SuicideCmd.class,"suicide","killme"),
 	KILL(KillCmd.class,"kill","slay"),
 	GOD(GodCmd.class,"god","godmode"),
+	FLY(FlyCmd.class,"fly","flymode"),
 	;
 
 	private String[]						aliases;

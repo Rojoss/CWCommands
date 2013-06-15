@@ -2,7 +2,11 @@ package net.clashwars.cwcore.util;
 
 import java.util.regex.Pattern;
 
+import net.clashwars.cwcore.CWCore;
+
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 
 public class Utils {
@@ -84,4 +88,12 @@ public class Utils {
             return false;
         }
     }
+	
+	public static void tpToTop(CWCore cwc, Player player) {
+		double topY = cwc.getServer().getWorld(player.getWorld().getName()).getHighestBlockYAt(player.getLocation().getBlockX(), player.getLocation().getBlockZ());
+		Location loc = new Location(player.getWorld(), player.getLocation().getX(), topY, player.getLocation().getZ());
+		loc.setYaw(player.getLocation().getYaw());
+		loc.setPitch(player.getLocation().getPitch());
+		player.teleport(loc);
+	}
 }

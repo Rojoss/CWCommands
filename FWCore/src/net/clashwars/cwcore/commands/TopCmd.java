@@ -3,9 +3,9 @@ package net.clashwars.cwcore.commands;
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.CmdUtils;
+import net.clashwars.cwcore.util.Utils;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -47,11 +47,7 @@ public class TopCmd implements CommandClass {
 		}
 		
 		/* action */
-		double topY = cwc.getServer().getWorld(player.getWorld().getName()).getHighestBlockYAt(player.getLocation().getBlockX(), player.getLocation().getBlockZ());
-		Location loc = new Location(player.getWorld(), player.getLocation().getX(), topY, player.getLocation().getZ());
-		loc.setYaw(player.getLocation().getYaw());
-		loc.setPitch(player.getLocation().getPitch());
-		player.teleport(loc);
+		Utils.tpToTop(cwc, player);
 		if (!silent)
 			player.sendMessage(pf + "Teleporting to top...");
 		return true;

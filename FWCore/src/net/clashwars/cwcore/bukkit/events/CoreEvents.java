@@ -38,10 +38,11 @@ import org.bukkit.inventory.ItemStack;
 
 public class CoreEvents implements Listener {
 	private CWCore	cwc;
-	private String pf = ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "CW" + ChatColor.DARK_GRAY + "] " + ChatColor.GOLD;
+	private String pf = null;
 
 	public CoreEvents(CWCore cwc) {
 		this.cwc = cwc;
+		pf = cwc.getPrefix();
 	}
 
 	@EventHandler

@@ -4,7 +4,7 @@ import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.entity.CWPlayer;
 import net.clashwars.cwcore.util.Utils;
 
-import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,10 +16,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class MainEvents implements Listener {
 	private CWCore	cwc;
-	private String pf = ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "CW" + ChatColor.DARK_GRAY + "] " + ChatColor.GOLD;
+	private String pf = null;
 
 	public MainEvents(CWCore cwc) {
 		this.cwc = cwc;
+		pf = cwc.getPrefix();
 	}
 	
 	
@@ -29,10 +30,29 @@ public class MainEvents implements Listener {
         CWPlayer cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
         cwc.getSqlUpdateTask().getPlayers().add(cwp);
         
-        player.sendMessage(pf + "Name: " + cwp.getName() + "  Gamemode: " + cwp.getGamemode() + "  Nick: " + cwp.getNick()
-        		+ "  Health: " + cwp.getMaxHealth());
+        if (cwp.getNick() != "" && cwp.getNick() != null && cwp.getNick() != player.getDisplayName()) {
+        	player.setDisplayName(Utils.integrateColor(cwp.getNick()));
+        }
         
-        player.setDisplayName(Utils.integrateColor(cwp.getNick()));
+        if (cwp.getMaxHealth() != 0 && cwp.getMaxHealth() != player.getMaxHealth()) {
+        	player.setMaxHealth(cwp.getMaxHealth());
+        }
+        
+        if (cwp.getGamemode() == 0 && player.getGameMode().getValue() != 0) {
+        	player.setGameMode(GameMode.SURVIVAL);
+        } else if (cwp.getGamemode() == 1 && player.getGameMode().getValue() != 1) {
+        	player.setGameMode(GameMode.CREATIVE);
+        } else if (cwp.getGamemode() == 2 && player.getGameMode().getValue() != 2) {
+        	player.setGameMode(GameMode.ADVENTURE);
+        }
+        
+        if (cwp.getFlying() == 1) {
+        	player.setAllowFlight(true);
+        	player.setFlying(true);
+        } else {
+        	player.setAllowFlight(false);
+        	player.setFlying(false);
+        }
     }
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -47,6 +67,6 @@ public class MainEvents implements Listener {
     
     private void quit(final Player p) {
     	//Player player = p;
-    	//final CWPlayer cwp = cwc.getPlayerManager().getOrCreatePlayer(p);
+    	
     }
 }
