@@ -20,6 +20,7 @@ import net.clashwars.cwcore.commands.RemovepotsCmd;
 import net.clashwars.cwcore.commands.SuicideCmd;
 import net.clashwars.cwcore.commands.TimeCmd;
 import net.clashwars.cwcore.commands.TopCmd;
+import net.clashwars.cwcore.commands.VanishCmd;
 
 public enum CommandsEnum {
 	BROADCAST(BroadcastCmd.class,"broadcast","bc","bcmsg"),
@@ -42,6 +43,7 @@ public enum CommandsEnum {
 	KILL(KillCmd.class,"kill","slay"),
 	GOD(GodCmd.class,"god","godmode"),
 	FLY(FlyCmd.class,"fly","flymode"),
+	VANISH(VanishCmd.class,"vanish","v","invis"),
 	;
 
 	private String[]						aliases;

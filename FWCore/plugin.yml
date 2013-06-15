@@ -20,6 +20,10 @@ commands:
     description: Give a player flymode
     usage: /<command> [player] [on|off]
     aliases: [flymode]
+  vanish:
+    description: Vanish a player
+    usage: /<command> [player] [on|off]
+    aliases: [v,invis]
   gamemode:
     description: Change gamemode
     usage: /<command> <mode> [player]

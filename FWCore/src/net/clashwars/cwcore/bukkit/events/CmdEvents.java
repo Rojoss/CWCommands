@@ -12,7 +12,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 
 public class CmdEvents implements Listener {
@@ -20,6 +24,30 @@ public class CmdEvents implements Listener {
 
 	public CmdEvents(CWCore cwc) {
 		this.cwc = cwc;
+	}
+	
+	@EventHandler
+	public void onJoin(PlayerJoinEvent event) {
+		Player player = (Player) event.getPlayer();
+		CWPlayer cwp = cwc.getPlayerManager().getPlayer(player);
+        for (Player plr : cwc.getServer().getOnlinePlayers()) {
+        	CWPlayer cwplr = cwc.getPlayerManager().getPlayer(plr);
+            if (cwplr != null && cwplr.getVanished() == 1) {
+            	if (!(player.hasPermission("cwcore.cmd.vanish.see"))) {
+            		player.hidePlayer(plr);
+            		if (cwp.getVanished() == 1)
+            			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100000, 1));
+            	}
+            }
+        }
+	}
+	
+	@EventHandler
+	public void onQuit(PlayerQuitEvent event) {
+		Player player = (Player) event.getPlayer();
+		CWPlayer cwp = cwc.getPlayerManager().getPlayer(player);
+        if (cwp.getVanished() == 1)
+        	player.removePotionEffect(PotionEffectType.INVISIBILITY);
 	}
     
     
@@ -56,7 +84,7 @@ public class CmdEvents implements Listener {
 	}
     
     @EventHandler
-	public void onEntityCombust(EntityTargetEvent event) {
+	public void onEntityTarget(EntityTargetEvent event) {
     	Entity target = event.getTarget();
 
         if ((target instanceof Player)) {
