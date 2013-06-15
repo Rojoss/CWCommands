@@ -88,3 +88,7 @@ commands:
     description: Kill a player.
     usage: /<command> <player>
     aliases: [slay]
+  spawner:
+    description: Change a mob spawner
+    usage: /<command> <mob>
+    aliases: [mobspawner,monsterspawner,changespawner]
