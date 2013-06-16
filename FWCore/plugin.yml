@@ -92,3 +92,7 @@ commands:
     description: Change a mob spawner
     usage: /<command> <mob>
     aliases: [mobspawner,monsterspawner,changespawner]
+  spawnmob:
+    description: Spawn mobs
+    usage: /<command> [mob[:data],mob[:data],...] [amount] [Optional args]
+    aliases: [spawnm,mobspawn,sm,mspawn]

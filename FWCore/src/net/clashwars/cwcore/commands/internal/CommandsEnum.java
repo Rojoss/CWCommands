@@ -18,6 +18,7 @@ import net.clashwars.cwcore.commands.NickCmd;
 import net.clashwars.cwcore.commands.RealnameCmd;
 import net.clashwars.cwcore.commands.RemovepotsCmd;
 import net.clashwars.cwcore.commands.SpawnerCmd;
+import net.clashwars.cwcore.commands.SpawnmobCmd;
 import net.clashwars.cwcore.commands.SpeedCmd;
 import net.clashwars.cwcore.commands.SuicideCmd;
 import net.clashwars.cwcore.commands.TimeCmd;
@@ -48,6 +49,7 @@ public enum CommandsEnum {
 	VANISH(VanishCmd.class,"vanish","v","invis"),
 	SPEED(SpeedCmd.class,"speed"),
 	SPAWNER(SpawnerCmd.class,"spawner","mobspawner","monsterspawner","changespawner"),
+	SPAWNMOB(SpawnmobCmd.class,"spawnmob", "spawnm", "mobspawn", "sm", "mspawn"),
 	;
 
 	private String[]						aliases;

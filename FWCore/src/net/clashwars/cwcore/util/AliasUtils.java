@@ -33,7 +33,7 @@ public class AliasUtils {
 	}
 	
 	/**
-	 * Find a entity in the Aliases file with the given string
+	 * Find a entityType in the Aliases file with the given string
 	 * @param str (The string with the entity)
 	 * @return EntityType (The type of entity if the entity is found)
 	 */

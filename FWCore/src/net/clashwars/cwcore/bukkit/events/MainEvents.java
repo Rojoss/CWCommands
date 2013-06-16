@@ -16,11 +16,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class MainEvents implements Listener {
 	private CWCore	cwc;
-	private String pf = null;
+	//private String pf = null;
 
 	public MainEvents(CWCore cwc) {
 		this.cwc = cwc;
-		pf = cwc.getPrefix();
+		//pf = cwc.getPrefix();
 	}
 	
 	

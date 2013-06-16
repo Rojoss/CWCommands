@@ -17,6 +17,7 @@ encoding//src/net/clashwars/cwcore/commands/NickCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/RealnameCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/RemovepotsCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/SpawnerCmd.java=UTF-8
+encoding//src/net/clashwars/cwcore/commands/SpawnmobCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/SpeedCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/SuicideCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/TimeCmd.java=UTF-8
