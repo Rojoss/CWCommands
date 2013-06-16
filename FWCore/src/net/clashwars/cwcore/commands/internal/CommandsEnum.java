@@ -15,6 +15,7 @@ import net.clashwars.cwcore.commands.ItemCmd;
 import net.clashwars.cwcore.commands.KillCmd;
 import net.clashwars.cwcore.commands.MoreCmd;
 import net.clashwars.cwcore.commands.NickCmd;
+import net.clashwars.cwcore.commands.PowertoolCmd;
 import net.clashwars.cwcore.commands.RealnameCmd;
 import net.clashwars.cwcore.commands.RemovepotsCmd;
 import net.clashwars.cwcore.commands.SpawnerCmd;
@@ -50,6 +51,7 @@ public enum CommandsEnum {
 	SPEED(SpeedCmd.class,"speed"),
 	SPAWNER(SpawnerCmd.class,"spawner","mobspawner","monsterspawner","changespawner"),
 	SPAWNMOB(SpawnmobCmd.class,"spawnmob", "spawnm", "mobspawn", "sm", "mspawn"),
+	POWERTOOL(PowertoolCmd.class,"powertool", "pt", "macro", "bind"),
 	;
 
 	private String[]						aliases;

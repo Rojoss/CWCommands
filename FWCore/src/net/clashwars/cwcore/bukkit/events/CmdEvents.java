@@ -2,16 +2,19 @@ package net.clashwars.cwcore.bukkit.events;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.entity.CWPlayer;
+import net.clashwars.cwcore.util.Utils;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -99,6 +102,21 @@ public class CmdEvents implements Listener {
       		  event.setCancelled(true);
       	  }
         }
+	}
+    
+    @EventHandler
+	public void onPowertoolUse(final PlayerInteractEvent event) {
+		if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_AIR) {
+			if (event.getItem() != null && event.getItem().getTypeId() != 0) {
+				Player player = event.getPlayer();
+				CWPlayer cwp = cwc.getPlayerManager().getPlayer(player.getName());
+				String cmd = Utils.getPowerToolCommandByID(Utils.getPowerToolsList(cwp), event.getItem().getTypeId());
+				if (cmd != "") {
+					player.chat("/" + cmd.replaceAll("_", " "));
+					event.setCancelled(true);
+				}
+			}
+		}
 	}
 	
 	  

@@ -7,7 +7,7 @@ public class Constants {
 	public static final SqlValue[]   USERS;
 	
 	static {
-		SqlValue[] userTable = new SqlValue[12];
+		SqlValue[] userTable = new SqlValue[13];
 		userTable[0] = new SqlValue("id", SqlType.INTEGER, true);
 		userTable[1] = new SqlValue("player", SqlType.TEXT, true);
 		userTable[2] = new SqlValue("credits", SqlType.INTEGER, true);
@@ -20,6 +20,7 @@ public class Constants {
 		userTable[9] = new SqlValue("walkSpeed", SqlType.FLOAT, true);
 		userTable[10] = new SqlValue("flySpeed", SqlType.FLOAT, true);
 		userTable[11] = new SqlValue("maxHealth", SqlType.INTEGER, true);
+		userTable[12] = new SqlValue("powertools", SqlType.TEXT, true);
 		USERS = userTable;
 	}
 }

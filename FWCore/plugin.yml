@@ -96,3 +96,7 @@ commands:
     description: Spawn mobs
     usage: /<command> [mob[:data],mob[:data],...] [amount] [Optional args]
     aliases: [spawnm,mobspawn,sm,mspawn]
+  powertool:
+    description: Bind a command to the item you are holding.
+    usage: /<command> <cmd> <args>
+    aliases: [pt,macro,bind]

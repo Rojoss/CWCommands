@@ -24,6 +24,7 @@ public class CWPlayer {
     private float                walkSpeed          = 0;
     private float                flySpeed           = 0;
     private int                  maxHealth         	= 0;
+    private String               powertools        	= "";
 
     public CWPlayer(CWCore cwc, int id, String name) {
         this.cwc = cwc;
@@ -143,6 +144,24 @@ public class CWPlayer {
         cwc.getSQLConnection().update("users", "maxHealth", maxHealth, "id", id);
     }
     
+    public String getPowertool() {
+        return powertools;
+    }
+
+    public void setPowertool(String powertool) {
+        this.powertools = powertool;
+        cwc.getSQLConnection().update("users", "powertools", powertools, "id", id);
+    }
+    
+    public void addPowertool(String powertool) {
+    	if (this.powertools == "") {
+    		this.powertools += powertool;
+    	} else {
+    		this.powertools += "," + powertool;
+    	}
+        cwc.getSQLConnection().update("users", "powertools", powertools, "id", id);
+    }
+    
     public Player getOnlinePlayer() {
         return Bukkit.getPlayer(getName());
     }
@@ -172,6 +191,7 @@ public class CWPlayer {
         walkSpeed = (float) assoc.get("walkSpeed");
         flySpeed = (float) assoc.get("flySpeed");
         maxHealth = (Integer) assoc.get("maxHealth");
+        powertools = (String) assoc.get("powertools");
 
     }
 
