@@ -157,7 +157,7 @@ public class CWPlayer {
     	if (this.powertools == "") {
     		this.powertools += powertool;
     	} else {
-    		this.powertools += "," + powertool;
+    		this.powertools += "»" + powertool;
     	}
         cwc.getSQLConnection().update("users", "powertools", powertools, "id", id);
     }

@@ -97,17 +97,19 @@ public class Utils {
 	}
 	
 	public static String[] getPowerToolsList(CWPlayer cwp) {
-		String[] ptools = cwp.getPowertool().split(",");
-    	if (ptools.length > 1) {
-    		return ptools;
-    	}
-		return null;
+		String[] ptools = cwp.getPowertool().split("»");
+    	return ptools;
 	}
 	
 	public static String getPowerToolCommandByID(String[] ptools, int id) {
 		for (int i = 0; i < ptools.length; i++) {
 			String[] ptool = ptools[i].split(":", 2);
-			int ptID = Integer.parseInt(ptool[0]);
+			int ptID = -1;
+			try {
+				ptID = Integer.parseInt(ptool[0]);
+			} catch (NumberFormatException e) {
+				return "";
+			}
 			if (ptID == id) {
 				return ptool[1];
 			}
@@ -120,9 +122,9 @@ public class Utils {
 			String[] ptool = ptools[i].split(":", 2);
 			int ptID = Integer.parseInt(ptool[0]);
 			if (ptID == id) {
-				return implode(CmdUtils.modifiedArgs(ptools, ptool[0]), ",");
+				return implode(CmdUtils.modifiedArgs(ptools, ptool[0]), "»");
 			}
 		}
-		return implode(ptools, ",");
+		return implode(ptools, "»");
 	}
 }
