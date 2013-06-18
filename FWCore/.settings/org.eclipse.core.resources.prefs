@@ -22,6 +22,7 @@ encoding//src/net/clashwars/cwcore/commands/SpawnmobCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/SpeedCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/SuicideCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/TeleportCmd.java=UTF-8
+encoding//src/net/clashwars/cwcore/commands/TeleporthereCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/TimeCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/TopCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/VanishCmd.java=UTF-8

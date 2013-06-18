@@ -7,6 +7,7 @@ import net.clashwars.cwcore.entity.CWPlayer;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 
@@ -94,6 +95,14 @@ public class Utils {
 		loc.setYaw(player.getLocation().getYaw());
 		loc.setPitch(player.getLocation().getPitch());
 		player.teleport(loc);
+	}
+	
+	public static Location getTopLocation(CWCore cwc, Location location, World world) {
+		double topY = world.getHighestBlockYAt(location.getBlockX(), location.getBlockZ());
+		Location loc = new Location(location.getWorld(), location.getX(), topY, location.getZ());
+		loc.setYaw(location.getYaw());
+		loc.setPitch(location.getPitch());
+		return loc;
 	}
 	
 	public static String[] getPowerToolsList(CWPlayer cwp) {
