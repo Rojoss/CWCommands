@@ -100,3 +100,7 @@ commands:
     description: Bind a command to the item you are holding.
     usage: /<command> <cmd> <args>
     aliases: [pt,macro,bind]
+  teleport:
+    description: Teleport yourself or a given player to <target-player>
+    usage: /<command> <target-player> [player]
+    aliases: [tp]

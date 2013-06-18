@@ -22,6 +22,7 @@ import net.clashwars.cwcore.commands.SpawnerCmd;
 import net.clashwars.cwcore.commands.SpawnmobCmd;
 import net.clashwars.cwcore.commands.SpeedCmd;
 import net.clashwars.cwcore.commands.SuicideCmd;
+import net.clashwars.cwcore.commands.TeleportCmd;
 import net.clashwars.cwcore.commands.TimeCmd;
 import net.clashwars.cwcore.commands.TopCmd;
 import net.clashwars.cwcore.commands.VanishCmd;
@@ -52,6 +53,7 @@ public enum CommandsEnum {
 	SPAWNER(SpawnerCmd.class,"spawner","mobspawner","monsterspawner","changespawner"),
 	SPAWNMOB(SpawnmobCmd.class,"spawnmob", "spawnm", "mobspawn", "sm", "mspawn"),
 	POWERTOOL(PowertoolCmd.class,"powertool", "pt", "macro", "bind"),
+	TELEPORT(TeleportCmd.class,"teleport", "tp"),
 	;
 
 	private String[]						aliases;
