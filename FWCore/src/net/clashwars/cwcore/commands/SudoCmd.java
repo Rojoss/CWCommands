@@ -108,14 +108,15 @@ public class SudoCmd implements CommandClass {
 				cwc.getPermissions().playerAdd(player.getWorld(), player.getName(), perm);
 			
 			player.chat("/" + command);
+			sender.sendMessage(pf + "giving: " + ChatColor.DARK_PURPLE + perm + " , " 
+			+ (cwc.getPermissions().has(player.getWorld(), player.getName() ,perm) ? ChatColor.GREEN+"success":ChatColor.RED+"fail"));
 			
+			if (!silent)
+				player.sendMessage(pf + "You where forced to run the command: " + ChatColor.DARK_PURPLE + "/" + command);
 			if (giveOP)
 				player.setOp(curOp);
 			if (permSet)
 				cwc.getPermissions().playerRemove(player.getWorld(), player.getName(), perm);
-			
-			if (!silent)
-				player.sendMessage(pf + "You where forced to run the command: " + ChatColor.DARK_PURPLE + "/" + command);
 		}
 		if (!silent) {
 			sender.sendMessage(pf + "You forced " + ChatColor.DARK_PURPLE + (fromConsole ? "the console":player.getDisplayName())

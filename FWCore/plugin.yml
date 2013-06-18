@@ -115,3 +115,6 @@ commands:
   sudo:
     description: Force a player to run a command
     usage: /<command> <player> <cmd>
+  whois:
+    description: Show detailed info about a player
+    usage: /<command> <player>

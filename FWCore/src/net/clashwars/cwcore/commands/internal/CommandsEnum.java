@@ -29,6 +29,7 @@ import net.clashwars.cwcore.commands.TeleportposCmd;
 import net.clashwars.cwcore.commands.TimeCmd;
 import net.clashwars.cwcore.commands.TopCmd;
 import net.clashwars.cwcore.commands.VanishCmd;
+import net.clashwars.cwcore.commands.WhoisCmd;
 
 public enum CommandsEnum {
 	BROADCAST(BroadcastCmd.class,"broadcast","bc","bcmsg"),
@@ -60,6 +61,7 @@ public enum CommandsEnum {
 	TELEPORTHERE(TeleporthereCmd.class,"teleporthere", "tphere"),
 	TELEPORTPOS(TeleportposCmd.class,"teleportpos", "tppos", "tploc"),
 	SUDO(SudoCmd.class,"sudo"),
+	WHOIS(WhoisCmd.class,"whois"),
 	;
 
 	private String[]						aliases;
