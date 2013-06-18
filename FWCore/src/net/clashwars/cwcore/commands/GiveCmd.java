@@ -34,7 +34,7 @@ public class GiveCmd implements CommandClass {
 		boolean equiped = false;
 		
 		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h") || args.length < 2) {
+		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 2) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/give <player> <item[:data]> [amt] [optional args]");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Spawn items for for other players");
@@ -53,24 +53,24 @@ public class GiveCmd implements CommandClass {
 			return true;
 		}
 		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s")) {
+		if (CmdUtils.hasModifier(args,"-s", true)) {
 			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s");
+			args = CmdUtils.modifiedArgs(args,"-s", true);
 		}
 		boolean drop = false;
-		if (CmdUtils.hasModifier(args,"-d")) {
+		if (CmdUtils.hasModifier(args,"-d", true)) {
 			drop = true;
-			args = CmdUtils.modifiedArgs(args,"-d");
+			args = CmdUtils.modifiedArgs(args,"-d", true);
 		}
 		boolean unstack = false;
-		if (CmdUtils.hasModifier(args,"-u")) {
+		if (CmdUtils.hasModifier(args,"-u", true)) {
 			unstack = true;
-			args = CmdUtils.modifiedArgs(args,"-u");
+			args = CmdUtils.modifiedArgs(args,"-u", true);
 		}
 		boolean equip = false;
-		if (CmdUtils.hasModifier(args,"-e")) {
+		if (CmdUtils.hasModifier(args,"-e", true)) {
 			equip = true;
-			args = CmdUtils.modifiedArgs(args,"-e");
+			args = CmdUtils.modifiedArgs(args,"-e", true);
 		}
 		
 		/* 1 arg (Player) */

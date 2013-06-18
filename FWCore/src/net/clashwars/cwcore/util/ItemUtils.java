@@ -44,7 +44,7 @@ public class ItemUtils {
 		item = new ItemStack(md.getItemType(), amt, md.getData());
 		
 		/* DisplayName (name:<Name>) */
-		int nameArg = CmdUtils.getArgIndex(args,"name:");
+		int nameArg = CmdUtils.getArgIndex(args,"name:", false);
 		if (nameArg != 0) {
 			String str = args[nameArg];
 			String[] splt = str.split(":");
@@ -56,7 +56,7 @@ public class ItemUtils {
 		
 		/* Lore (lore:<Lore>) */
 		String s = null;
-		int loreArg = CmdUtils.getArgIndex(args,"lore:");
+		int loreArg = CmdUtils.getArgIndex(args,"lore:", false);
 		if (loreArg != 0) {
 			String str = args[loreArg];
 			String[] splt = str.split(":");
@@ -79,7 +79,7 @@ public class ItemUtils {
 		}
 		
 		/* Durability (dur:<amt>) */
-		int durArg = CmdUtils.getArgIndex(args,"dur:");
+		int durArg = CmdUtils.getArgIndex(args,"dur:", false);
 		if (durArg != 0) {
 			String str = args[durArg];
 			String[] splt = str.split(":");
@@ -98,7 +98,7 @@ public class ItemUtils {
 		
 			
 		/* Colored LeatherArmor (color:<#RRGGBB>) */
-		int clrArg = CmdUtils.getArgIndex(args,"color:");
+		int clrArg = CmdUtils.getArgIndex(args,"color:", false);
 		if (clrArg != 0) {
 			String str = args[clrArg];
 			String[] splt = str.split(":");
@@ -119,7 +119,7 @@ public class ItemUtils {
 		}
 		
 		/* PlayerSkulls (player:<player>) */
-		int pArg = CmdUtils.getArgIndex(args,"player:");
+		int pArg = CmdUtils.getArgIndex(args,"player:", false);
 		if (pArg != 0) {
 			String str = args[pArg];
 			String[] splt = str.split(":");

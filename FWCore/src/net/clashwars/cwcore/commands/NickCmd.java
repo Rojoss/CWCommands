@@ -27,7 +27,7 @@ public class NickCmd implements CommandClass {
 		String nick = "";
 		
 		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h") || args.length < 1) {
+		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/nick <nick> [player]");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Change a player his nickname or reset it.");
@@ -37,14 +37,14 @@ public class NickCmd implements CommandClass {
 			return true;
 		}
 		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s")) {
+		if (CmdUtils.hasModifier(args,"-s", true)) {
 			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s");
+			args = CmdUtils.modifiedArgs(args,"-s", true);
 		}
 		boolean reset = false;
-		if (CmdUtils.hasModifier(args,"-r")) {
+		if (CmdUtils.hasModifier(args,"-r", true)) {
 			reset = true;
-			args = CmdUtils.modifiedArgs(args,"-r");
+			args = CmdUtils.modifiedArgs(args,"-r", true);
 		}
 		
 		/* Console check */

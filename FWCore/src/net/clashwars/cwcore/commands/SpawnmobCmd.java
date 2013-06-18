@@ -41,44 +41,44 @@ public class SpawnmobCmd implements CommandClass {
 		
 		/* Modifiers + No args */
 		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s")) {
+		if (CmdUtils.hasModifier(args,"-s", true)) {
 			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s");
+			args = CmdUtils.modifiedArgs(args,"-s", true);
 		}
 		boolean forceTarget = false;
-		if (CmdUtils.hasModifier(args,"-t")) {
+		if (CmdUtils.hasModifier(args,"-t", true)) {
 			forceTarget = true;
-			args = CmdUtils.modifiedArgs(args,"-t");
+			args = CmdUtils.modifiedArgs(args,"-t", true);
 		}
 		boolean forceSpawn = false;
-		if (CmdUtils.hasModifier(args,"-f")) {
+		if (CmdUtils.hasModifier(args,"-f", true)) {
 			forceSpawn = true;
-			args = CmdUtils.modifiedArgs(args,"-f");
+			args = CmdUtils.modifiedArgs(args,"-f", true);
 		}
 		boolean displayName = false;
-		if (CmdUtils.hasModifier(args,"-d")) {
+		if (CmdUtils.hasModifier(args,"-d", true)) {
 			displayName = true;
-			args = CmdUtils.modifiedArgs(args,"-d");
+			args = CmdUtils.modifiedArgs(args,"-d", true);
 		}
 		boolean targetSet = false;
-		if (CmdUtils.hasModifier(args,"player:")) {
+		if (CmdUtils.hasModifier(args,"player:", false)) {
 			targetSet = true;
 			target = CmdUtils.getPlayerFromArgs(args, "player:", cwc);
-			args = CmdUtils.modifiedArgs(args,"player:");
+			args = CmdUtils.modifiedArgs(args,"player:", false);
 		}
 		boolean nameSet = false;
-		if (CmdUtils.hasModifier(args,"name:")) {
+		if (CmdUtils.hasModifier(args,"name:", false)) {
 			nameSet = true;
-			String[] splt = args[CmdUtils.getArgIndex(args, "name:")].split(":");
+			String[] splt = args[CmdUtils.getArgIndex(args, "name:", false)].split(":");
 			name = splt[1];
-			args = CmdUtils.modifiedArgs(args,"name:");
+			args = CmdUtils.modifiedArgs(args,"name:", false);
 		}
 		boolean healthSet = false;
-		if (CmdUtils.hasModifier(args,"hp:")) {
+		if (CmdUtils.hasModifier(args,"hp:", false)) {
 			healthSet = true;
-			CmdUtils.getArgIndex(args, "hp:");
+			CmdUtils.getArgIndex(args, "hp:", false);
 			
-			String[] splt = args[CmdUtils.getArgIndex(args, "hp:")].split(":");
+			String[] splt = args[CmdUtils.getArgIndex(args, "hp:", false)].split(":");
         	if (splt.length > 1) {
 				try {
 				 	health = Integer.parseInt(splt[1]);
@@ -87,9 +87,9 @@ public class SpawnmobCmd implements CommandClass {
 				 	return true;
 				 }
         	}
-			args = CmdUtils.modifiedArgs(args,"hp:");
+			args = CmdUtils.modifiedArgs(args,"hp:", false);
 		}
-		if (CmdUtils.hasModifier(args,"-h") || args.length < 1) {
+		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/spawnmob [mob[:data],mob[:data],...] [amount] [Optional args]");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Spawn mobs");

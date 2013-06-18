@@ -30,13 +30,13 @@ public class PowertoolCmd implements CommandClass {
 		CWPlayer cwp = null;
 		
 		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h") || args.length < 1) {
+		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Bind a command to the item you are holding.");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/powertool <command> [args] (no /)");
 			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-r" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Remove powertool from held item");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-f" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Override current powertool and force it.");
+			sender.sendMessage(ChatColor.DARK_PURPLE + "-remove" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Remove powertool from held item");
+			sender.sendMessage(ChatColor.DARK_PURPLE + "-force" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Override current powertool and force it.");
 			return true;
 		}
 		
@@ -53,7 +53,7 @@ public class PowertoolCmd implements CommandClass {
 		id = item.getType().getId();
 		
 		/* reset/force */
-		if (CmdUtils.hasModifier(args,"-r")) {
+		if (CmdUtils.hasModifier(args,"-remove", true)) {
 			String pCmd = Utils.getPowerToolCommandByID(Utils.getPowerToolsList(cwp), id);
 			if (pCmd != "") {
 				cwp.setPowertool(Utils.removePowerToolCommandByID(Utils.getPowerToolsList(cwp), id));
@@ -62,12 +62,12 @@ public class PowertoolCmd implements CommandClass {
 			}
 			return true;
 		}
-		if (CmdUtils.hasModifier(args,"-f")) {
+		if (CmdUtils.hasModifier(args,"-force", true)) {
 			String pCmd = Utils.getPowerToolCommandByID(Utils.getPowerToolsList(cwp), id);
 			if (pCmd != "") {
 				cwp.setPowertool(Utils.removePowerToolCommandByID(Utils.getPowerToolsList(cwp), id));
 			}
-			args = CmdUtils.modifiedArgs(args,"-f");
+			args = CmdUtils.modifiedArgs(args,"-force", true);
 		}
 		
 		/* 1 arg (Command) */

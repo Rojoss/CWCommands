@@ -26,25 +26,24 @@ public class FreezeCmd implements CommandClass {
 		Boolean on = null;
 		
 		/* Modifiers */
-		if (CmdUtils.hasModifier(args,"-h")) {
+		if (CmdUtils.hasModifier(args,"-h", false)) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/freeze [player] [on|off]");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Freeze a player so he can't move/(jump) anymore.");
 			sender.sendMessage(pf + "Modifiers: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-j" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Allow jumping while frozen");
-			args = CmdUtils.modifiedArgs(args,"-h");
 			return true;
 		}
 		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s")) {
+		if (CmdUtils.hasModifier(args,"-s", true)) {
 			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s");
+			args = CmdUtils.modifiedArgs(args,"-s", true);
 		}
 		boolean jump = false;
-		if (CmdUtils.hasModifier(args,"-j")) {
+		if (CmdUtils.hasModifier(args,"-j", true)) {
 			jump = true;
-			args = CmdUtils.modifiedArgs(args,"-j");
+			args = CmdUtils.modifiedArgs(args,"-j", true);
 		}
 		
 		

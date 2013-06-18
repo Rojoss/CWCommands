@@ -26,7 +26,7 @@ public class HealCmd implements CommandClass {
 		int amt = 0;
 		
 		/* Modifiers */
-		if (CmdUtils.hasModifier(args,"-h")) {
+		if (CmdUtils.hasModifier(args,"-h", false)) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/heal [player] [amt]");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Heal a player or set a player his max health.");
@@ -34,23 +34,22 @@ public class HealCmd implements CommandClass {
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-m" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set Max health only, doesn't heal player. (need amt)");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-a" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Also resets hunger/saturation/fireticks/exhaustion");
-			args = CmdUtils.modifiedArgs(args,"-h");
 			return true;
 		}
 		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s")) {
+		if (CmdUtils.hasModifier(args,"-s", true)) {
 			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s");
+			args = CmdUtils.modifiedArgs(args,"-s", true);
 		}
 		boolean all = false;
-		if (CmdUtils.hasModifier(args,"-a")) {
+		if (CmdUtils.hasModifier(args,"-a", true)) {
 			all = true;
-			args = CmdUtils.modifiedArgs(args,"-a");
+			args = CmdUtils.modifiedArgs(args,"-a", true);
 		}
 		boolean maxOnly = false;
-		if (CmdUtils.hasModifier(args,"-m")) {
+		if (CmdUtils.hasModifier(args,"-m", true)) {
 			maxOnly = true;
-			args = CmdUtils.modifiedArgs(args,"-m");
+			args = CmdUtils.modifiedArgs(args,"-m", true);
 		}
 		
 		/* Console check */

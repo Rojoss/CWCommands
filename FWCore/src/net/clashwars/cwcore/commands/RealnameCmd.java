@@ -27,11 +27,10 @@ public class RealnameCmd implements CommandClass {
 		String nick = null;
 		
 		/* Modifiers */
-		if (CmdUtils.hasModifier(args,"-h")) {
+		if (CmdUtils.hasModifier(args,"-h", false)) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/realname [player]");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Lookup a player his real name in case he has a nickname.");
-			args = CmdUtils.modifiedArgs(args,"-h");
 			return true;
 		}
 		

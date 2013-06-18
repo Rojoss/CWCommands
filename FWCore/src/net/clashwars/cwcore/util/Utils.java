@@ -104,7 +104,7 @@ public class Utils {
 			String[] ptool = ptools[i].split(":", 2);
 			int ptID = Integer.parseInt(ptool[0]);
 			if (ptID == id) {
-				return implode(CmdUtils.modifiedArgs(ptools, ptool[0]), "»");
+				return implode(CmdUtils.modifiedArgs(ptools, ptool[0], false), "»");
 			}
 		}
 		return implode(ptools, "»");

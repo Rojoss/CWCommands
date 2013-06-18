@@ -112,3 +112,6 @@ commands:
     description: Teleport to a location
     usage: /<command> <x,y,z> [world] [player]
     aliases: [tppos, tploc]
+  sudo:
+    description: Force a player to run a command
+    usage: /<command> <player> <cmd>

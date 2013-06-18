@@ -21,6 +21,7 @@ import net.clashwars.cwcore.commands.RemovepotsCmd;
 import net.clashwars.cwcore.commands.SpawnerCmd;
 import net.clashwars.cwcore.commands.SpawnmobCmd;
 import net.clashwars.cwcore.commands.SpeedCmd;
+import net.clashwars.cwcore.commands.SudoCmd;
 import net.clashwars.cwcore.commands.SuicideCmd;
 import net.clashwars.cwcore.commands.TeleportCmd;
 import net.clashwars.cwcore.commands.TeleporthereCmd;
@@ -58,6 +59,7 @@ public enum CommandsEnum {
 	TELEPORT(TeleportCmd.class,"teleport", "tp"),
 	TELEPORTHERE(TeleporthereCmd.class,"teleporthere", "tphere"),
 	TELEPORTPOS(TeleportposCmd.class,"teleportpos", "tppos", "tploc"),
+	SUDO(SudoCmd.class,"sudo"),
 	;
 
 	private String[]						aliases;

@@ -23,6 +23,7 @@ import net.clashwars.cwcore.runnables.SaveRunnable;
 import net.clashwars.cwcore.runnables.SqlUpdateRunnable;
 import net.clashwars.cwcore.sql.SqlConnection;
 import net.clashwars.cwcore.sql.SqlInfo;
+import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
@@ -30,6 +31,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitScheduler;
 
 public class CWCore {
@@ -43,6 +45,7 @@ public class CWCore {
 	private Config					booksCfg;
 	private Config					chestCfg;
 	private Config					aliasesCfg;
+	private Permission              perm;
 
 	private ArrayList<LootChest>	lootChests		= new ArrayList<LootChest>();
 	private ArrayList<String>		deleteChests	= new ArrayList<String>();
@@ -55,8 +58,6 @@ public class CWCore {
 	private Set<String>				createChest		= new HashSet<String>();
 	
 	private SqlUpdateRunnable		sqlr;
-
-	//private Set<CommandClass>		commands		= new HashSet<CommandClass>();
 
 	public CWCore(CWCorePlugin cwc) {
 		this.cwc = cwc;
@@ -98,6 +99,9 @@ public class CWCore {
 
 		pm = new PlayerManager(this);
 		pm.populate();
+		
+		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+        perm = rsp.getProvider();
 
 		registerEvents();
 		registerTasks();
@@ -240,4 +244,8 @@ public class CWCore {
 	public String getPrefix() {
 		return pf;
 	}
+	
+	public Permission getPermissions() {
+        return perm;
+    }
 }

@@ -17,10 +17,16 @@ public class CmdUtils {
 	 * @param mod (the modifier to check for like "-s")
 	 * @return boolean (If it finds the modifier true else false)
 	 */
-	public static boolean hasModifier(String[] args, String mod) {
+	public static boolean hasModifier(String[] args, String mod, boolean exact) {
 		for (int i = 0; i < args.length; i++) {
-			if (args[i].toLowerCase().startsWith(mod)) {
-				return true;
+			if (exact) {
+				if (args[i].equalsIgnoreCase(mod)) {
+					return true;
+				}
+			} else {
+				if (args[i].toLowerCase().startsWith(mod)) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -33,14 +39,20 @@ public class CmdUtils {
 	 * @param mod (the modifier to remove like "-s")
 	 * @return String[] (New args list without modifiers)
 	 */
-	public static String[] modifiedArgs(String[] args, String mod) {
+	public static String[] modifiedArgs(String[] args, String mod, boolean exact) {
 		int i;
         int sloc = -1;
         String temp;
         for (i = 0; i < args.length; i++) {
-                if (args[i].toLowerCase().startsWith(mod)) {
-                        sloc = i;
-                }
+        	if (exact) {
+        		if (args[i].equalsIgnoreCase(mod)) {
+                    sloc = i;
+        		}
+        	} else {
+        		if (args[i].toLowerCase().startsWith(mod)) {
+                    sloc = i;
+        		}
+        	}
         }
         if (sloc != -1) {
                 for (i = sloc; i < args.length -1; i++) {
@@ -64,10 +76,16 @@ public class CmdUtils {
 	 * @param argument (The argument to check for like "name:")
 	 * @return int (Index of string)
 	 */
-	public static int getArgIndex(String[] args, String argument) {
+	public static int getArgIndex(String[] args, String argument, boolean exact) {
 		for (int i = 0; i < args.length; i++) {
-			if (args[i].toLowerCase().startsWith(argument)) {
-				return i;
+			if (exact) {
+				if (args[i].equalsIgnoreCase(argument)) {
+					return i;
+				}
+			} else {
+				if (args[i].toLowerCase().startsWith(argument)) {
+					return i;
+				}
 			}
 		}
 		return 0;

@@ -28,7 +28,7 @@ public class ClearinvCmd implements CommandClass {
 		int amt = -1;
 		
 		/* Modifiers */
-		if (CmdUtils.hasModifier(args,"-h")) {
+		if (CmdUtils.hasModifier(args,"-h", false)) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/" + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/clearinv [player] [item[:data]] [amt]");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Clear a player his inventory.");
@@ -45,34 +45,34 @@ public class ClearinvCmd implements CommandClass {
 		}
 		boolean all = true;
 		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s")) {
+		if (CmdUtils.hasModifier(args,"-s", true)) {
 			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s");
+			args = CmdUtils.modifiedArgs(args,"-s", true);
 		}
 		boolean armor = false;
-		if (CmdUtils.hasModifier(args,"-a")) {
+		if (CmdUtils.hasModifier(args,"-a", true)) {
 			armor = true;
-			args = CmdUtils.modifiedArgs(args,"-a");
+			args = CmdUtils.modifiedArgs(args,"-a", true);
 		}
 		boolean inventory = false;
-		if (CmdUtils.hasModifier(args,"-i")) {
+		if (CmdUtils.hasModifier(args,"-i", true)) {
 			inventory = true;
-			args = CmdUtils.modifiedArgs(args,"-i");
+			args = CmdUtils.modifiedArgs(args,"-i", true);
 		}
 		boolean bar = false;
-		if (CmdUtils.hasModifier(args,"-b")) {
+		if (CmdUtils.hasModifier(args,"-b", true)) {
 			bar = true;
-			args = CmdUtils.modifiedArgs(args,"-b");
+			args = CmdUtils.modifiedArgs(args,"-b", true);
 		}
 		boolean hand = false;
-		if (CmdUtils.hasModifier(args,"-f")) {
+		if (CmdUtils.hasModifier(args,"-f", true)) {
 			hand = true;
-			args = CmdUtils.modifiedArgs(args,"-f");
+			args = CmdUtils.modifiedArgs(args,"-f", true);
 		}
 		boolean echest = false;
-		if (CmdUtils.hasModifier(args,"-e")) {
+		if (CmdUtils.hasModifier(args,"-e", true)) {
 			echest = true;
-			args = CmdUtils.modifiedArgs(args,"-e");
+			args = CmdUtils.modifiedArgs(args,"-e", true);
 		}
 		if (armor || inventory || bar || hand || echest) {
 			all = false;

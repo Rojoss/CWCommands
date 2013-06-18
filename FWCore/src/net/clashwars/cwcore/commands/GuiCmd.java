@@ -30,7 +30,7 @@ public class GuiCmd implements CommandClass {
 		Player target = null;
 		
 		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h") || args.length < 1) {
+		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/gui <gui(craft|enderchest|enchant)> [player]");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Show a GUI to a player.");
@@ -41,21 +41,21 @@ public class GuiCmd implements CommandClass {
 			return true;
 		}
 		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s")) {
+		if (CmdUtils.hasModifier(args,"-s", true)) {
 			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s");
+			args = CmdUtils.modifiedArgs(args,"-s", true);
 		}
 		boolean targetSet = false;
 		boolean onlineTarget = false;
-		if (CmdUtils.hasModifier(args,"player:")) {
+		if (CmdUtils.hasModifier(args,"player:", false)) {
 			targetSet = true;
-			CmdUtils.getArgIndex(args, "player:");
+			CmdUtils.getArgIndex(args, "player:", false);
 			target = CmdUtils.getOfflinePlayerFromArgs(args, "player:", cwc);
 			if (target.isOnline()) {
 				target = CmdUtils.getPlayerFromArgs(args, "player:", cwc);
 				onlineTarget = true;
 			}
-			args = CmdUtils.modifiedArgs(args,"player:");
+			args = CmdUtils.modifiedArgs(args,"player:", false);
 		}
 		
 		/* Console check */

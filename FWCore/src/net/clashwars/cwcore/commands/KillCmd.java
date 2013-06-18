@@ -25,7 +25,7 @@ public class KillCmd implements CommandClass {
 		CWPlayer cwp = null;
 		
 		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h") || args.length < 1) {
+		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/kill <player>");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Kill a player");
@@ -35,14 +35,14 @@ public class KillCmd implements CommandClass {
 			return true;
 		}
 		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s")) {
+		if (CmdUtils.hasModifier(args,"-s", true)) {
 			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s");
+			args = CmdUtils.modifiedArgs(args,"-s", true);
 		}
 		boolean force = false;
-		if (CmdUtils.hasModifier(args,"-f")) {
+		if (CmdUtils.hasModifier(args,"-f", true)) {
 			force = true;
-			args = CmdUtils.modifiedArgs(args,"-f");
+			args = CmdUtils.modifiedArgs(args,"-f", true);
 		}
 		
 		/* 1 arg (Player) */

@@ -25,7 +25,7 @@ public class TeleporthereCmd implements CommandClass {
 		Player player2 = null;
 		
 		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h") || args.length < 1) {
+		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/teleporthere <player>");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Teleport player to yourself");
@@ -37,19 +37,19 @@ public class TeleporthereCmd implements CommandClass {
 			return true;
 		}
 		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s")) {
+		if (CmdUtils.hasModifier(args,"-s", true)) {
 			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s");
+			args = CmdUtils.modifiedArgs(args,"-s", true);
 		}
 		boolean all = false;
-		if (CmdUtils.hasModifier(args,"-a")) {
+		if (CmdUtils.hasModifier(args,"-a", true)) {
 			all = true;
-			args = CmdUtils.modifiedArgs(args,"-a");
+			args = CmdUtils.modifiedArgs(args,"-a", true);
 		}
 		boolean force = false;
-		if (CmdUtils.hasModifier(args,"-f")) {
+		if (CmdUtils.hasModifier(args,"-f", true)) {
 			force = true;
-			args = CmdUtils.modifiedArgs(args,"-f");
+			args = CmdUtils.modifiedArgs(args,"-f", true);
 		}
 		
 		/* Console check */
@@ -72,7 +72,7 @@ public class TeleporthereCmd implements CommandClass {
 		
 		/* Action */
 		if (all) {
-			if (CmdUtils.hasModifier(args,"-confirm")) {
+			if (CmdUtils.hasModifier(args,"-confirm", true)) {
 				for (Player p : cwc.getServer().getOnlinePlayers()) {
 					if (p != player) {
 						if (force) {
