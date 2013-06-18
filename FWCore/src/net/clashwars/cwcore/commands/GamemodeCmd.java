@@ -4,7 +4,7 @@ import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.entity.CWPlayer;
 import net.clashwars.cwcore.util.CmdUtils;
-import net.clashwars.cwcore.util.Utils;
+import net.clashwars.cwcore.util.LocationUtils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -89,7 +89,7 @@ public class GamemodeCmd implements CommandClass {
 				player.setFlying(true);
 				cwp.setFlying(true);
 			} else {
-				Utils.tpToTop(cwc, player);
+				LocationUtils.tpToTop(cwc, player);
 			}
 		}
 		if (!silent) {

@@ -3,7 +3,7 @@ package net.clashwars.cwcore.commands;
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.CmdUtils;
-import net.clashwars.cwcore.util.Utils;
+import net.clashwars.cwcore.util.LocationUtils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -31,6 +31,7 @@ public class TeleporthereCmd implements CommandClass {
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Teleport player to yourself");
 			sender.sendMessage(pf + "Modifiers: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
+			sender.sendMessage(ChatColor.DARK_PURPLE + "-f" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Force tp doesn't check for safe locations");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-a" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Teleport all players!");
 			sender.sendMessage(ChatColor.RED + "To teleport all players you also need to add" + ChatColor.DARK_RED + " -confirm");
 			return true;
@@ -44,6 +45,11 @@ public class TeleporthereCmd implements CommandClass {
 		if (CmdUtils.hasModifier(args,"-a")) {
 			all = true;
 			args = CmdUtils.modifiedArgs(args,"-a");
+		}
+		boolean force = false;
+		if (CmdUtils.hasModifier(args,"-f")) {
+			force = true;
+			args = CmdUtils.modifiedArgs(args,"-f");
 		}
 		
 		/* Console check */
@@ -69,7 +75,11 @@ public class TeleporthereCmd implements CommandClass {
 			if (CmdUtils.hasModifier(args,"-confirm")) {
 				for (Player p : cwc.getServer().getOnlinePlayers()) {
 					if (p != player) {
-						p.teleport(Utils.getTopLocation(cwc, player.getLocation(), player.getWorld()));
+						if (force) {
+							p.teleport(player.getLocation());
+						} else {
+							p.teleport(LocationUtils.getSafeDestination(player.getLocation()));
+						}
 						if (!silent) {
 							p.sendMessage(pf + "You where teleported to " + player.getDisplayName());
 						}
@@ -80,7 +90,11 @@ public class TeleporthereCmd implements CommandClass {
 				player.sendMessage(pf + ChatColor.RED + "To teleport all players you need to add -confirm to confirm you want to teleport everyone!");
 			}
 		} else {
-			player2.teleport(player);
+			if (force) {
+				player2.teleport(player.getLocation());
+			} else {
+				player2.teleport(LocationUtils.getSafeDestination(player.getLocation()));
+			}
 			if (!silent) {
 				player.sendMessage(pf + "You have teleported " + player2.getDisplayName() + ChatColor.GOLD + " to you.");
 				player2.sendMessage(pf + "You where teleported to " + player.getDisplayName());

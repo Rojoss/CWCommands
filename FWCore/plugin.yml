@@ -108,3 +108,7 @@ commands:
     description: Teleport a player to you
     usage: /<command> <player>
     aliases: [tphere]
+  teleportpos:
+    description: Teleport to a location
+    usage: /<command> <x,y,z> [world] [player]
+    aliases: [tppos, tploc]

@@ -24,6 +24,7 @@ import net.clashwars.cwcore.commands.SpeedCmd;
 import net.clashwars.cwcore.commands.SuicideCmd;
 import net.clashwars.cwcore.commands.TeleportCmd;
 import net.clashwars.cwcore.commands.TeleporthereCmd;
+import net.clashwars.cwcore.commands.TeleportposCmd;
 import net.clashwars.cwcore.commands.TimeCmd;
 import net.clashwars.cwcore.commands.TopCmd;
 import net.clashwars.cwcore.commands.VanishCmd;
@@ -56,6 +57,7 @@ public enum CommandsEnum {
 	POWERTOOL(PowertoolCmd.class,"powertool", "pt", "macro", "bind"),
 	TELEPORT(TeleportCmd.class,"teleport", "tp"),
 	TELEPORTHERE(TeleporthereCmd.class,"teleporthere", "tphere"),
+	TELEPORTPOS(TeleportposCmd.class,"teleportpos", "tppos", "tploc"),
 	;
 
 	private String[]						aliases;

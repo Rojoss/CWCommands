@@ -2,17 +2,12 @@ package net.clashwars.cwcore.util;
 
 import java.util.regex.Pattern;
 
-import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.entity.CWPlayer;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
 
 
 public class Utils {
-
 	
 	/**
 	 * Implode a StringList to a single string and specify the character between strings and specify at what string index to start and end
@@ -82,28 +77,6 @@ public class Utils {
             return false;
         }
     }
-	
-	/**
-	 * Teleport the given player to the highest block
-	 * @param cwc (Plugin)
-	 * @param player (The player to teleport)
-	 * @return void
-	 */
-	public static void tpToTop(CWCore cwc, Player player) {
-		double topY = cwc.getServer().getWorld(player.getWorld().getName()).getHighestBlockYAt(player.getLocation().getBlockX(), player.getLocation().getBlockZ());
-		Location loc = new Location(player.getWorld(), player.getLocation().getX(), topY, player.getLocation().getZ());
-		loc.setYaw(player.getLocation().getYaw());
-		loc.setPitch(player.getLocation().getPitch());
-		player.teleport(loc);
-	}
-	
-	public static Location getTopLocation(CWCore cwc, Location location, World world) {
-		double topY = world.getHighestBlockYAt(location.getBlockX(), location.getBlockZ());
-		Location loc = new Location(location.getWorld(), location.getX(), topY, location.getZ());
-		loc.setYaw(location.getYaw());
-		loc.setPitch(location.getPitch());
-		return loc;
-	}
 	
 	public static String[] getPowerToolsList(CWPlayer cwp) {
 		String[] ptools = cwp.getPowertool().split("»");
