@@ -18,6 +18,7 @@ import net.clashwars.cwcore.config.BookConfig;
 import net.clashwars.cwcore.config.ChestConfig;
 import net.clashwars.cwcore.config.Config;
 import net.clashwars.cwcore.config.PluginConfig;
+import net.clashwars.cwcore.config.WarpsConfig;
 import net.clashwars.cwcore.entity.PlayerManager;
 import net.clashwars.cwcore.runnables.SaveRunnable;
 import net.clashwars.cwcore.runnables.SqlUpdateRunnable;
@@ -42,9 +43,10 @@ public class CWCore {
 	private SqlConnection			sql;
 	private SqlInfo					sqlInfo;
 	private Config					cfg;
-	private Config					booksCfg;
-	private Config					chestCfg;
-	private Config					aliasesCfg;
+	private BookConfig				booksCfg;
+	private ChestConfig				chestCfg;
+	private AliasesConfig			aliasesCfg;
+	private WarpsConfig				warpsCfg;
 	private Permission              perm;
 
 	private ArrayList<LootChest>	lootChests		= new ArrayList<LootChest>();
@@ -93,6 +95,10 @@ public class CWCore {
 		aliasesCfg = new AliasesConfig();
 		aliasesCfg.init();
 		aliasesCfg.load();
+		
+		warpsCfg = new WarpsConfig();
+		warpsCfg.init();
+		warpsCfg.load();
 
 		sql = new SqlConnection();
 		attemptSQLConnection();
@@ -188,16 +194,20 @@ public class CWCore {
 		return cfg;
 	}
 
-	public Config getBookConfig() {
+	public BookConfig getBookConfig() {
 		return booksCfg;
 	}
 
-	public Config getChestsConfig() {
+	public ChestConfig getChestsConfig() {
 		return chestCfg;
 	}
 	
-	public Config getAliasesConfig() {
+	public AliasesConfig getAliasesConfig() {
 		return aliasesCfg;
+	}
+	
+	public WarpsConfig getWarpsConfig() {
+		return warpsCfg;
 	}
 
 	/* Chests */

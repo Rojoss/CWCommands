@@ -29,6 +29,9 @@ import net.clashwars.cwcore.commands.TeleportposCmd;
 import net.clashwars.cwcore.commands.TimeCmd;
 import net.clashwars.cwcore.commands.TopCmd;
 import net.clashwars.cwcore.commands.VanishCmd;
+import net.clashwars.cwcore.commands.WarpCmd;
+import net.clashwars.cwcore.commands.WarpdelCmd;
+import net.clashwars.cwcore.commands.WarpsetCmd;
 import net.clashwars.cwcore.commands.WhoisCmd;
 
 public enum CommandsEnum {
@@ -62,6 +65,9 @@ public enum CommandsEnum {
 	TELEPORTPOS(TeleportposCmd.class,"teleportpos", "tppos", "tploc"),
 	SUDO(SudoCmd.class,"sudo"),
 	WHOIS(WhoisCmd.class,"whois"),
+	SETWARP(WarpsetCmd.class,"setwarp"),
+	DELWARP(WarpdelCmd.class,"delwarp"),
+	WARP(WarpCmd.class,"warp", "warps"),
 	;
 
 	private String[]						aliases;

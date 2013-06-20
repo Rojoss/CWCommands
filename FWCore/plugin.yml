@@ -118,3 +118,13 @@ commands:
   whois:
     description: Show detailed info about a player
     usage: /<command> <player>
+  setwarp:
+    description: Set a warp with the given name
+    usage: /<command> <name>
+  delwarp:
+    description: Delete a warp with the given name
+    usage: /<command> <name>
+  warp:
+    description: Teleport to a warp
+    usage: /<command> <name>
+    aliases: [warps]

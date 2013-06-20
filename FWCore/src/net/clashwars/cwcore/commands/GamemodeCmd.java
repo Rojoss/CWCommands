@@ -81,6 +81,7 @@ public class GamemodeCmd implements CommandClass {
 		
 		/* Action */
 		cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
+		
 		player.setGameMode(mode);
 		cwp.setGamemode(mode.getValue());
 		if (player.getGameMode().getValue() != 1) {
