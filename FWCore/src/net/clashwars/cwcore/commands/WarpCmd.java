@@ -74,6 +74,11 @@ public class WarpCmd implements CommandClass {
 			name = args[0];
 		}
 		
+		/* 2 args (Player) */
+		if (args.length >= 2) {
+			player = cwc.getServer().getPlayer(args[1]);
+		}
+		
 		/* null checks */
 		if (name == "" || name == " " || name == null) {
 			sender.sendMessage(pf + ChatColor.RED + "Invalid name");
@@ -101,8 +106,12 @@ public class WarpCmd implements CommandClass {
 		} else {
 			player.teleport(LocationUtils.getSafeDestination(location));
 		}
-		if (!silent)
+		if (!silent) {
 			player.sendMessage(pf + "Warping to " + ChatColor.DARK_PURPLE + name);
+			if (sender.getName() != player.getName())
+				sender.sendMessage(pf + "You have warped " + ChatColor.DARK_PURPLE + player.getDisplayName()
+					+ ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + name);
+		}
 		return true;
 	}
 
