@@ -40,7 +40,6 @@ public class WhoisCmd implements CommandClass {
 			} else {
 				if (sender.hasPermission("cwcore.cmd.whois.others")) {
 					player = cwc.getServer().getPlayer(args[0]);
-					cwp = cwc.getPlayerManager().getPlayer(player.getName());
 				} else {
 					sender.sendMessage(pf + ChatColor.RED + "insufficient permissions!" 
 							+ ChatColor.GRAY + " - " + ChatColor.DARK_GRAY + "'" + ChatColor.DARK_RED + "cwcore.cmd.whois.others" + ChatColor.DARK_GRAY + "'");
@@ -50,10 +49,11 @@ public class WhoisCmd implements CommandClass {
 		}
 		
 		/* null checks */
-		if (player == null || cwp == null) {
+		if (player == null) {
 			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
 			return true;
 		}
+		cwp = cwc.getPlayerManager().getPlayer(player.getName());
 		
 		String yes = ChatColor.GREEN + "true";
 		String no = ChatColor.DARK_RED + "false";

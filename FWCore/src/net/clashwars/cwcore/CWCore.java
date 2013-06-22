@@ -53,6 +53,7 @@ public class CWCore {
 	private ArrayList<String>		deleteChests	= new ArrayList<String>();
 	private ArrayList<String>		freeze			= new ArrayList<String>();
 	private int						chestDelay;
+	private boolean					autoRespawn;
 	private String					pf 				= ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "CW" + ChatColor.DARK_GRAY + "] " + ChatColor.GOLD;
 
 	private HashMap<String, Book>	savedBooks		= new HashMap<String, Book>();
@@ -258,4 +259,13 @@ public class CWCore {
 	public Permission getPermissions() {
         return perm;
     }
+	
+	public boolean getAutoRespawn() {
+		return autoRespawn;
+	}
+	
+	public void setAutoRespawn(boolean autoRespawn) {
+		this.autoRespawn = autoRespawn;
+	}
+	
 }

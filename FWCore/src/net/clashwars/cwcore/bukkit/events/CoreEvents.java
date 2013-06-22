@@ -7,13 +7,16 @@ import net.clashwars.cwcore.util.Utils;
 import net.minecraft.server.v1_5_R3.ContainerChest;
 import net.minecraft.server.v1_5_R3.EntityPlayer;
 import net.minecraft.server.v1_5_R3.Packet100OpenWindow;
+import net.minecraft.server.v1_5_R3.Packet205ClientCommand;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.craftbukkit.v1_5_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftInventory;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
@@ -26,6 +29,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -284,5 +288,26 @@ public class CoreEvents implements Listener {
             }
         }
     }
-	  
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void quit(PlayerDeathEvent event) {
+		
+		if (cwc.getAutoRespawn() == false) {
+			return;
+		}
+		
+		Entity e = event.getEntity();
+        if (e instanceof Player) {
+            final Player player = (Player) e;
+		
+			Bukkit.getScheduler().scheduleSyncDelayedTask(cwc.getPlugin(), new Runnable() {
+		        @Override
+		        public void run() {
+		        	Packet205ClientCommand packet = new Packet205ClientCommand();
+		        	packet.a = 1;
+					((CraftPlayer) player).getHandle().playerConnection.a(packet);
+		        }
+		    }, 5);
+		}
+	}
 }

@@ -41,6 +41,9 @@ public class PluginConfig extends Config {
             String password = cu.getString("sql.password", "pass");
             String database = cu.getString("sql.database", "clashwar_main");
             cwc.setSqlInfo(new SqlInfo(address, username, password, database));
+            
+            boolean autoRespawn = cu.getBoolean("general.autoRespawn", true);
+            cwc.setAutoRespawn(autoRespawn);
 			
             cfg.save(file);
             

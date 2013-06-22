@@ -48,14 +48,14 @@ public class KillCmd implements CommandClass {
 		/* 1 arg (Player) */
 		if (args.length >= 1) {
 			player = cwc.getServer().getPlayer(args[0]);
-			cwp = cwc.getPlayerManager().getPlayer(player);
 		}
 		
 		/* null checks */
-		if (player == null || cwp == null) {
+		if (player == null) {
 			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
 			return true;
 		}
+		cwp = cwc.getPlayerManager().getPlayer(player);
 		if (!force) {
 			if (cwp.getGamemode() == 1 || cwp.getGod() == true) {
 				sender.sendMessage(pf + ChatColor.RED + "You can't kill this player.");
