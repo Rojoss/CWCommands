@@ -2,6 +2,7 @@ package net.clashwars.cwcore.commands.internal;
 
 import net.clashwars.cwcore.commands.BroadcastCmd;
 import net.clashwars.cwcore.commands.ClearinvCmd;
+import net.clashwars.cwcore.commands.ExpCmd;
 import net.clashwars.cwcore.commands.FlyCmd;
 import net.clashwars.cwcore.commands.FreezeCmd;
 import net.clashwars.cwcore.commands.GamemodeCmd;
@@ -68,6 +69,7 @@ public enum CommandsEnum {
 	SETWARP(WarpsetCmd.class,"setwarp"),
 	DELWARP(WarpdelCmd.class,"delwarp"),
 	WARP(WarpCmd.class,"warp", "warps"),
+	EXP(ExpCmd.class,"exp"),
 	;
 
 	private String[]						aliases;
