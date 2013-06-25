@@ -27,9 +27,9 @@ public class InvseeCmd implements CommandClass {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Look into a player his inventory and edit it.");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/invsee <player>");
+			sender.sendMessage(pf + "Modifiers: ");
 			return true;
 		}
-		//TODO: Maybe add -a to see armor as well and -e to see a player his enderchest.
 		
 		/* Console check */
 		if (!(sender instanceof Player)) {

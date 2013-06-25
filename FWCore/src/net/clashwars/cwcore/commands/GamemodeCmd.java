@@ -50,7 +50,6 @@ public class GamemodeCmd implements CommandClass {
 			}
 		} else {
 			player = (Player) sender;
-			cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
 		}
 		
 		/* 1 arg (Gamemode) */

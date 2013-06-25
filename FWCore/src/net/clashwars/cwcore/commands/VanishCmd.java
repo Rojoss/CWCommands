@@ -52,13 +52,11 @@ public class VanishCmd implements CommandClass {
 			}
 		} else {
 			player = (Player) sender;
-			cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
 		}
 		
 		/* 1 arg (Player) */
 		if (args.length >= 1) {
 			player = cwc.getServer().getPlayer(args[0]);
-			cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
 		}
 		
 		/* 2 args (on/off) */
@@ -75,6 +73,7 @@ public class VanishCmd implements CommandClass {
 			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
 			return true;
 		}
+		cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
 		if (on == null) {
 			if (cwp.getVanished() == true) {
 				cwp.setVanished(false);

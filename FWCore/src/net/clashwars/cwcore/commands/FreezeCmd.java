@@ -113,6 +113,7 @@ public class FreezeCmd implements CommandClass {
 		} else {
 			// TODO: Reset speed to stored speed in MySQL
 			// TODO: Reset frozen players on server restart and when they join another server
+			// TODO: Put frozen players in MySQL
 			player.setWalkSpeed(.2F);
 			if (!jump)
 				player.removePotionEffect(PotionEffectType.JUMP);

@@ -1,5 +1,8 @@
 package net.clashwars.cwcore.commands;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.AliasUtils;
@@ -7,6 +10,7 @@ import net.clashwars.cwcore.util.CmdUtils;
 import net.clashwars.cwcore.util.ItemUtils;
 import net.clashwars.cwcore.util.Utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -27,9 +31,11 @@ public class GiveCmd implements CommandClass {
 	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
 		String pf = cwc.getPrefix();
 		Player player = null;
+		String pplayer = null;
+		String pitem = null;
 		ItemStack item = null;
 		MaterialData md = null;
-		int amt = 1;
+		int amt = 64;
 		String name = null;
 		boolean equiped = false;
 		
@@ -50,6 +56,7 @@ public class GiveCmd implements CommandClass {
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-d" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Drop items on ground instead of giving it");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-u" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "unstack items to max item stack like for soup");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-e" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Auto equip items if it's armor (WARNING: Will override!)");
+			sender.sendMessage(ChatColor.DARK_PURPLE + "-*" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Give items to players on other servers.");
 			return true;
 		}
 		boolean silent = false;
@@ -72,14 +79,21 @@ public class GiveCmd implements CommandClass {
 			equip = true;
 			args = CmdUtils.modifiedArgs(args,"-e", true);
 		}
+		boolean bungee = false;
+		if (CmdUtils.hasModifier(args,"-*", true)) {
+			bungee = true;
+			args = CmdUtils.modifiedArgs(args,"-*", true);
+		}
 		
 		/* 1 arg (Player) */
 		if (args.length >= 1) {
 			player = cwc.getServer().getPlayer(args[0]);
+			pplayer = args[0];
 		}
 		
 		/* 2 args (Item:Data) */
 		if (args.length >= 2) {
+			pitem = args[1];
 			md = AliasUtils.getFullData(args[1]);
 		}
 		
@@ -94,7 +108,7 @@ public class GiveCmd implements CommandClass {
 		}
 		
 		/* null checks */
-		if (player == null) {
+		if (player == null && !bungee) {
 			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
 		 	return true;
 		}
@@ -109,65 +123,89 @@ public class GiveCmd implements CommandClass {
 		
 		/* Check for option args */
 		item = new ItemStack(md.getItemType(), amt, md.getData());
-		if (args.length >= 4) {
+		if (args.length >= 4 && !bungee) {
 			item = ItemUtils.createItemFromCmd(args, md, amt, sender);
+		} else if (args.length >= 4 && bungee) {
+			sender.sendMessage(pf + ChatColor.RED + "Can't add optional args when giving items to players in other servers.");
+			return true;
 		}
-		if (item == null)
+		if (item == null && !bungee) {
 		 	return true;
+		}
 		
 		/* Action */
-		if (equip) {
-			if (item.getType().name().endsWith("HELMET")) {
-				player.getInventory().setHelmet(item);
-				equiped = true;
-				drop = false;
-				unstack = false;
-			} else if (item.getType().name().endsWith("CHESTPLATE")) {
-				player.getInventory().setChestplate(item);
-				equiped = true;
-				drop = false;
-				unstack = false;
-			} else if (item.getType().name().endsWith("LEGGINGS")) {
-				player.getInventory().setLeggings(item);
-				equiped = true;
-				drop = false;
-				unstack = false;
-			} else if (item.getType().name().endsWith("BOOTS")) {
-				player.getInventory().setBoots(item);
-				equiped = true;
-				drop = false;
-				unstack = false;
+		if (bungee) {
+			try {
+				ByteArrayOutputStream b = new ByteArrayOutputStream();
+				DataOutputStream out = new DataOutputStream(b);
+
+				out.writeUTF("Give");
+				out.writeUTF(sender.getName());
+				out.writeUTF(pplayer);
+				out.writeUTF(pitem);
+				out.writeInt(amt);
+				out.writeBoolean(silent);
+				out.writeBoolean(drop);
+				out.writeBoolean(unstack);
+				out.writeBoolean(equip);
+
+				Bukkit.getOnlinePlayers()[0].sendPluginMessage(cwc.getPlugin(), "CWBungee", b.toByteArray());
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+		} else {
+			if (equip) {
+				if (item.getType().name().endsWith("HELMET")) {
+					player.getInventory().setHelmet(item);
+					equiped = true;
+					drop = false;
+					unstack = false;
+				} else if (item.getType().name().endsWith("CHESTPLATE")) {
+					player.getInventory().setChestplate(item);
+					equiped = true;
+					drop = false;
+					unstack = false;
+				} else if (item.getType().name().endsWith("LEGGINGS")) {
+					player.getInventory().setLeggings(item);
+					equiped = true;
+					drop = false;
+					unstack = false;
+				} else if (item.getType().name().endsWith("BOOTS")) {
+					player.getInventory().setBoots(item);
+					equiped = true;
+					drop = false;
+					unstack = false;
+				}
+			}
+			if (!drop && !unstack && !equiped)
+				player.getInventory().addItem(item);
+			if (drop && !equiped) {
+				Location loc = player.getEyeLocation().add(player.getLocation().getDirection());
+				loc.getWorld().dropItem(loc, item);
+			}
+			if (unstack && !equiped) {
+				for (int i = 0; i < amt; i++) {
+					ItemStack uItem = item;
+					uItem.setAmount(1);
+					player.getInventory().addItem(uItem);
+				}
+			}
+			
+			name = item.getItemMeta().getDisplayName();
+			if (!silent) {
+				if (name == null) {
+					sender.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + args[1] 
+					+ ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + player.getDisplayName());
+					player.sendMessage(pf + "You received " + ChatColor.DARK_PURPLE + amt + " " + args[1] 
+							+ ChatColor.GOLD + " from " + ChatColor.DARK_PURPLE + sender.getName());
+				} else {
+					sender.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name) 
+					+ ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + player.getDisplayName());
+					player.sendMessage(pf + "You received " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name) 
+					+ ChatColor.GOLD + " from " + ChatColor.DARK_PURPLE + sender.getName());
+				}
 			}
 		}
-		if (!drop && !unstack && !equiped)
-			player.getInventory().addItem(item);
-		if (drop && !equiped) {
-			Location loc = player.getEyeLocation().add(player.getLocation().getDirection());
-			loc.getWorld().dropItem(loc, item);
-		}
-		if (unstack && !equiped) {
-			for (int i = 0; i < amt; i++) {
-				ItemStack uItem = item;
-				uItem.setAmount(1);
-				player.getInventory().addItem(uItem);
-			}
-		}
-		
-		name = item.getItemMeta().getDisplayName();
-		if (!silent) {
-			if (name == null) {
-				sender.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + args[1] 
-				+ ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + player.getDisplayName());
-				player.sendMessage(pf + "You received " + ChatColor.DARK_PURPLE + amt + " " + args[1] 
-						+ ChatColor.GOLD + " from " + ChatColor.DARK_PURPLE + sender.getName());
-			} else {
-				sender.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name) 
-				+ ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + player.getDisplayName());
-				player.sendMessage(pf + "You received " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name) 
-				+ ChatColor.GOLD + " from " + ChatColor.DARK_PURPLE + sender.getName());
-			}
-		}
-		
 		return true;
 	}
 

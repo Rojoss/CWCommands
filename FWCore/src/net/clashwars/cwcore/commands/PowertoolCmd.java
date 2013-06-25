@@ -96,7 +96,7 @@ public class PowertoolCmd implements CommandClass {
 		}
 		if (Utils.getPowerToolCommandByID(Utils.getPowerToolsList(cwp), id) != "") {
 			player.sendMessage(pf + ChatColor.RED + "There is already a powertool set for this item. Use -r to reset it.");
-			player.sendMessage(pf + ChatColor.RED + "Use -r to reset your powertool.");
+			player.sendMessage(pf + ChatColor.RED + "Use -remove to reset/remove your powertool.");
 			return true;
 		}
 		

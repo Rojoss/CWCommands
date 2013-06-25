@@ -48,7 +48,6 @@ public class GodCmd implements CommandClass {
 			}
 		} else {
 			player = (Player) sender;
-			cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
 		}
 		
 		/* 1 arg (Player) */
@@ -70,6 +69,7 @@ public class GodCmd implements CommandClass {
 			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
 			return true;
 		}
+		cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
 		if (on == null) {
 			if (cwp.getGod() == true) {
 				cwp.setGod(false);

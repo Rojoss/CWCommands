@@ -1,11 +1,15 @@
 package net.clashwars.cwcore.commands;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.AliasUtils;
 import net.clashwars.cwcore.util.CmdUtils;
 import net.clashwars.cwcore.util.InvUtils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -24,6 +28,8 @@ public class ClearinvCmd implements CommandClass {
 	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
 		String pf = cwc.getPrefix();
 		Player player = null;
+		String pplayer = null;
+		String pitem = null;
 		MaterialData md = null;
 		int amt = -1;
 		
@@ -41,6 +47,7 @@ public class ClearinvCmd implements CommandClass {
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-b" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Clear hotbar");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-f" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Clear item in fist/hand");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-e" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Clear items in enderchest");
+			sender.sendMessage(ChatColor.DARK_PURPLE + "-*" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Clear items from players on other servers.");
 			return true;
 		}
 		boolean all = true;
@@ -74,6 +81,11 @@ public class ClearinvCmd implements CommandClass {
 			echest = true;
 			args = CmdUtils.modifiedArgs(args,"-e", true);
 		}
+		boolean bungee = false;
+		if (CmdUtils.hasModifier(args,"-*", true)) {
+			bungee = true;
+			args = CmdUtils.modifiedArgs(args,"-*", true);
+		}
 		if (armor || inventory || bar || hand || echest) {
 			all = false;
 		}
@@ -85,17 +97,20 @@ public class ClearinvCmd implements CommandClass {
 				return true;
 			}
 		} else {
+			pplayer = sender.getName();
 			player = (Player) sender;
 		}
 		
 		/* 1 arg (Player) */
 		if (args.length >= 1) {
 			player = cwc.getServer().getPlayer(args[0]);
+			pplayer = args[0];
 		}
 		
 		/* 2 args material:data) */
 		if (args.length >= 2) {
 			md = AliasUtils.getFullData(args[1]);
+			pitem = args[1];
 		}
 		
 		/* 3 args (Amount) */
@@ -109,7 +124,7 @@ public class ClearinvCmd implements CommandClass {
 		}
 		
 		/* null checks */
-		if (player == null) {
+		if (player == null && !bungee) {
 			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
 			return true;
 		}
@@ -118,28 +133,52 @@ public class ClearinvCmd implements CommandClass {
 		 	return true;
 		}
 		
-		/* Action without material */
-		if (all) {
-			InvUtils.clearInventorySlots(player, false, 0, -1, md, amt);
-			player.getInventory().setArmorContents(null);
+		/* Action */
+		if (bungee) {
+			try {
+				ByteArrayOutputStream b = new ByteArrayOutputStream();
+				DataOutputStream out = new DataOutputStream(b);
+
+				out.writeUTF("ClearInv");
+				out.writeUTF(sender.getName());
+				out.writeUTF(pplayer);
+				out.writeUTF(pitem);
+				out.writeInt(amt);
+				out.writeBoolean(silent);
+				out.writeBoolean(armor);
+				out.writeBoolean(inventory);
+				out.writeBoolean(bar);
+				out.writeBoolean(hand);
+				out.writeBoolean(echest);
+				out.writeBoolean(all);
+
+				Bukkit.getOnlinePlayers()[0].sendPluginMessage(cwc.getPlugin(), "CWBungee", b.toByteArray());
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
 		} else {
-			if (armor)
+			if (all) {
+				InvUtils.clearInventorySlots(player, false, 0, -1, md, amt);
 				player.getInventory().setArmorContents(null);
-			if (inventory)
-				InvUtils.clearInventorySlots(player, false, 9, 36, md, amt);
-			if (bar)
-				InvUtils.clearInventorySlots(player, false, 0, 9, md, amt);
-			if (hand)
-				InvUtils.clearInventorySlots(player, false, player.getInventory().getHeldItemSlot(), player.getInventory().getHeldItemSlot() + 1, md, amt);
-			if (echest)
-				InvUtils.clearInventorySlots(player, true, 0, -1, md, amt);
-		}
-		
-		if (!silent) {
-			player.sendMessage(pf + "Items in your " + (echest ? "enderchest" : "inventory") + " have been cleared!");
-			if (sender.getName() != player.getName())
-				sender.sendMessage(pf + "You have cleared items in " + ChatColor.DARK_PURPLE + player.getDisplayName() 
-				+ ChatColor.GOLD + " his " + (echest ? "enderchest" : "inventory") + ".");
+			} else {
+				if (armor)
+					player.getInventory().setArmorContents(null);
+				if (inventory)
+					InvUtils.clearInventorySlots(player, false, 9, 36, md, amt);
+				if (bar)
+					InvUtils.clearInventorySlots(player, false, 0, 9, md, amt);
+				if (hand)
+					InvUtils.clearInventorySlots(player, false, player.getInventory().getHeldItemSlot(), player.getInventory().getHeldItemSlot() + 1, md, amt);
+				if (echest)
+					InvUtils.clearInventorySlots(player, true, 0, -1, md, amt);
+			}
+			
+			if (!silent) {
+				player.sendMessage(pf + "Items in your " + (echest ? "enderchest" : "inventory") + " have been cleared!");
+				if (sender.getName() != player.getName())
+					sender.sendMessage(pf + "You have cleared items in " + ChatColor.DARK_PURPLE + player.getDisplayName() 
+					+ ChatColor.GOLD + " his " + (echest ? "enderchest" : "inventory") + ".");
+			}
 		}
 		return true;
 	}

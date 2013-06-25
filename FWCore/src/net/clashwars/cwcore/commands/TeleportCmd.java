@@ -1,19 +1,23 @@
 package net.clashwars.cwcore.commands;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.CmdUtils;
 import net.clashwars.cwcore.util.LocationUtils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class TeleportCmd implements CommandClass {
-	
-	private CWCore cwc;
-	
+
+	private CWCore	cwc;
+
 	public TeleportCmd(CWCore cwc) {
 		this.cwc = cwc;
 	}
@@ -23,28 +27,37 @@ public class TeleportCmd implements CommandClass {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		Player target = null;
-		
+		String pplayer = null;
+		String ptarget = null;
+
 		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
-			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
+		if (CmdUtils.hasModifier(args, "-h", false) || args.length < 1) {
+			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/" + lbl
+					+ ChatColor.DARK_GRAY + "  =====");
 			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/teleport <target-player> [player]");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Teleport yourself or a given player to <target-player>");
 			sender.sendMessage(pf + "Modifiers: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-f" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Force tp doesn't check for safe locations");
+			sender.sendMessage(ChatColor.DARK_PURPLE + "-*" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Teleport to players at other servers.");
 			return true;
 		}
 		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
+		if (CmdUtils.hasModifier(args, "-s", true)) {
 			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
+			args = CmdUtils.modifiedArgs(args, "-s", true);
 		}
 		boolean force = false;
-		if (CmdUtils.hasModifier(args,"-f", true)) {
+		if (CmdUtils.hasModifier(args, "-f", true)) {
 			force = true;
-			args = CmdUtils.modifiedArgs(args,"-f", true);
+			args = CmdUtils.modifiedArgs(args, "-f", true);
 		}
-		
+		boolean bungee = false;
+		if (CmdUtils.hasModifier(args,"-*", true)) {
+			bungee = true;
+			args = CmdUtils.modifiedArgs(args,"-*", true);
+		}
+
 		/* Console check */
 		if (!(sender instanceof Player)) {
 			if (args.length < 2) {
@@ -53,39 +66,60 @@ public class TeleportCmd implements CommandClass {
 			}
 		} else {
 			player = (Player) sender;
+			pplayer = sender.getName();
 		}
-		
+
 		/* 1 arg (Teleport Target) */
 		if (args.length >= 1) {
 			target = cwc.getServer().getPlayer(args[0]);
+			ptarget = args[0];
 		}
-		
+
 		/* 2 args (Player) */
 		if (args.length >= 2) {
 			player = cwc.getServer().getPlayer(args[1]);
+			pplayer = args[1];
 		}
 
 		/* null checks */
-		if (target == null) {
+		if (target == null && !bungee) {
 			sender.sendMessage(pf + ChatColor.RED + "Invalid player target.");
 			return true;
 		}
-		if (player == null && args.length >= 2) {
+		if (player == null && args.length >= 2 && !bungee) {
 			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
 			return true;
 		}
 		
+		
 		/* Action */
-		if (force) {
-			player.teleport(target);
+		if (bungee) {
+			try {
+				ByteArrayOutputStream b = new ByteArrayOutputStream();
+				DataOutputStream out = new DataOutputStream(b);
+
+				out.writeUTF("TP");
+				out.writeUTF(pplayer);
+				out.writeUTF(ptarget);
+				out.writeBoolean(silent);
+				out.writeBoolean(force);
+
+				Bukkit.getOnlinePlayers()[0].sendPluginMessage(cwc.getPlugin(), "CWBungee", b.toByteArray());
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
 		} else {
-			player.teleport(LocationUtils.getSafeDestination(target.getLocation()));
-		}
-		if (!silent) { 
-			player.sendMessage(pf + "You have been teleported to " + target.getDisplayName());
-			if (sender.getName() != player.getName())
-				sender.sendMessage(pf + "You have teleported " + ChatColor.DARK_PURPLE + player.getDisplayName()
-					+ ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + target.getDisplayName());
+			if (force) {
+                player.teleport(target);
+			} else {
+                player.teleport(LocationUtils.getSafeDestination(target.getLocation()));
+			}
+			if (!silent) { 
+                player.sendMessage(pf + "You have been teleported to " + target.getDisplayName());
+                if (sender.getName() != player.getName())
+                        sender.sendMessage(pf + "You have teleported " + ChatColor.DARK_PURPLE + player.getDisplayName()
+                                + ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + target.getDisplayName());
+        }
 		}
 		return true;
 	}

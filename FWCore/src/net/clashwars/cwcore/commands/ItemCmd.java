@@ -29,7 +29,7 @@ public class ItemCmd implements CommandClass {
 		Player player = null;
 		ItemStack item = null;
 		MaterialData md = null;
-		int amt = 1;
+		int amt = 64;
 		String name = null;
 		boolean equiped = false;
 		

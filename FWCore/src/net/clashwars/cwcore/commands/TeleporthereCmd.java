@@ -1,10 +1,14 @@
 package net.clashwars.cwcore.commands;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.CmdUtils;
 import net.clashwars.cwcore.util.LocationUtils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -22,7 +26,9 @@ public class TeleporthereCmd implements CommandClass {
 	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
 		String pf = cwc.getPrefix();
 		Player player = null;
+		String pplayer = null;
 		Player player2 = null;
+		String pplayer2 = null;
 		
 		/* Modifiers + No args */
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
@@ -34,6 +40,7 @@ public class TeleporthereCmd implements CommandClass {
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-f" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Force tp doesn't check for safe locations");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-a" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Teleport all players!");
 			sender.sendMessage(ChatColor.RED + "To teleport all players you also need to add" + ChatColor.DARK_RED + " -confirm");
+			sender.sendMessage(ChatColor.DARK_PURPLE + "-*" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Teleport players from other servers.");
 			return true;
 		}
 		boolean silent = false;
@@ -51,53 +58,82 @@ public class TeleporthereCmd implements CommandClass {
 			force = true;
 			args = CmdUtils.modifiedArgs(args,"-f", true);
 		}
+		boolean bungee = false;
+		if (CmdUtils.hasModifier(args,"-*", true)) {
+			bungee = true;
+			args = CmdUtils.modifiedArgs(args,"-*", true);
+		}
 		
 		/* Console check */
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(pf + ChatColor.RED + "Only players can use this command.");
 			return true;
+		} else {
+			player = (Player) sender;
+			pplayer = sender.getName();
 		}
-		player = (Player) sender;
 		
 		/* 1 arg (player2) */
 		if (args.length >= 1) {
 			player2 = cwc.getServer().getPlayer(args[0]);
+			pplayer2 = args[0];
 		}
 
 		/* null checks */
-		if (player2 == null && all == false) {
+		if (player2 == null && !all && !bungee) {
 			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
+			return true;
+		}
+		if (all && bungee) {
+			sender.sendMessage(pf + ChatColor.RED + "Can't teleport all players from other servers.");
 			return true;
 		}
 		
 		/* Action */
-		if (all) {
-			if (CmdUtils.hasModifier(args,"-confirm", true)) {
-				for (Player p : cwc.getServer().getOnlinePlayers()) {
-					if (p != player) {
-						if (force) {
-							p.teleport(player.getLocation());
-						} else {
-							p.teleport(LocationUtils.getSafeDestination(player.getLocation()));
-						}
-						if (!silent) {
-							p.sendMessage(pf + "You where teleported to " + player.getDisplayName());
-						}
-					}
-				}
-				player.sendMessage(pf + "All players have been teleported to you!");
-			} else {
-				player.sendMessage(pf + ChatColor.RED + "To teleport all players you need to add -confirm to confirm you want to teleport everyone!");
+		if (bungee) {
+			try {
+				ByteArrayOutputStream b = new ByteArrayOutputStream();
+				DataOutputStream out = new DataOutputStream(b);
+
+				out.writeUTF("TPHere");
+				out.writeUTF(pplayer2);
+				out.writeUTF(pplayer);
+				out.writeBoolean(silent);
+				out.writeBoolean(force);
+
+				Bukkit.getOnlinePlayers()[0].sendPluginMessage(cwc.getPlugin(), "CWBungee", b.toByteArray());
+			} catch (Throwable e) {
+				e.printStackTrace();
 			}
 		} else {
-			if (force) {
-				player2.teleport(player.getLocation());
+			if (all) {
+				if (CmdUtils.hasModifier(args,"-confirm", true)) {
+					for (Player p : cwc.getServer().getOnlinePlayers()) {
+						if (p != player) {
+							if (force) {
+								p.teleport(player.getLocation());
+							} else {
+								p.teleport(LocationUtils.getSafeDestination(player.getLocation()));
+							}
+							if (!silent) {
+								p.sendMessage(pf + "You where teleported to " + player.getDisplayName());
+							}
+						}
+					}
+					player.sendMessage(pf + "All players have been teleported to you!");
+				} else {
+					player.sendMessage(pf + ChatColor.RED + "To teleport all players you need to add -confirm to confirm you want to teleport everyone!");
+				}
 			} else {
-				player2.teleport(LocationUtils.getSafeDestination(player.getLocation()));
-			}
-			if (!silent) {
-				player.sendMessage(pf + "You have teleported " + player2.getDisplayName() + ChatColor.GOLD + " to you.");
-				player2.sendMessage(pf + "You where teleported to " + player.getDisplayName());
+				if (force) {
+					player2.teleport(player.getLocation());
+				} else {
+					player2.teleport(LocationUtils.getSafeDestination(player.getLocation()));
+				}
+				if (!silent) {
+					player.sendMessage(pf + "You have teleported " + player2.getDisplayName() + ChatColor.GOLD + " to you.");
+					player2.sendMessage(pf + "You where teleported to " + player.getDisplayName());
+				}
 			}
 		}
 		return true;

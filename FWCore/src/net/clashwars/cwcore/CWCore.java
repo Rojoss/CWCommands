@@ -11,6 +11,7 @@ import net.clashwars.cwcore.bukkit.CWCorePlugin;
 import net.clashwars.cwcore.bukkit.events.CmdEvents;
 import net.clashwars.cwcore.bukkit.events.CoreEvents;
 import net.clashwars.cwcore.bukkit.events.MainEvents;
+import net.clashwars.cwcore.bukkit.events.MessageEvents;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.commands.internal.CommandsEnum;
 import net.clashwars.cwcore.config.AliasesConfig;
@@ -33,6 +34,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.scheduler.BukkitScheduler;
 
 public class CWCore {
@@ -112,6 +114,7 @@ public class CWCore {
 
 		registerEvents();
 		registerTasks();
+		registerChannels();
 
 		log("Successfully enabled.");
 	}
@@ -155,6 +158,13 @@ public class CWCore {
 
 		sch.runTaskTimerAsynchronously(getPlugin(), (sqlr = new SqlUpdateRunnable()), 0, 600);
 		sch.runTaskTimer(getPlugin(), new SaveRunnable(this), 0, 1200);
+	}
+	
+	private void registerChannels() {
+		Messenger msg = getPlugin().getServer().getMessenger();
+		
+		msg.registerIncomingPluginChannel(getPlugin(), "CWCore", new MessageEvents(this));
+		msg.registerOutgoingPluginChannel(getPlugin(), "CWBungee");
 	}
 
 	/* GETTERS & SETTERS*/

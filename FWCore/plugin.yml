@@ -108,7 +108,10 @@ commands:
     description: Teleport a player to you
     usage: /<command> <player>
     aliases: [tphere]
-
+  teleportpos:
+    description: Teleport to a location or another world
+    usage: /<command> <x,y,z> [world] [player]
+    aliases: [tppos, tploc]
   sudo:
     description: Force a player to run a command
     usage: /<command> <player> <cmd>
