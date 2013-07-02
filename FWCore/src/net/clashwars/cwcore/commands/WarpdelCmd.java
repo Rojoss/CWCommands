@@ -31,7 +31,7 @@ public class WarpdelCmd implements CommandClass {
 		
 		/* 1 arg (Name) */
 		if (args.length >= 1) {
-			name = args[0];
+			name = args[0].toLowerCase();
 		}
 		
 		/* null checks */

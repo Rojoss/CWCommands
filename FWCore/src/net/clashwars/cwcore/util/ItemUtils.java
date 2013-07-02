@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import net.clashwars.cwcore.Book;
+import net.minecraft.server.v1_5_R3.EntityFireworks;
 import net.minecraft.server.v1_5_R3.NBTTagCompound;
 import net.minecraft.server.v1_5_R3.NBTTagList;
 import net.minecraft.server.v1_5_R3.NBTTagString;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -255,5 +258,45 @@ public class ItemUtils {
 
 		return new Book(title, author, pages.toArray(new String[pages.size()]));
 	}
+	
+	public static void createFireworksExplosion(Location location, boolean flicker, boolean trail, int type, int[] colors, int[] fadeColors, int flightDuration) {
+        // create item
+        net.minecraft.server.v1_5_R3.ItemStack item = new net.minecraft.server.v1_5_R3.ItemStack(401, 1, 0);
+        
+        // get tag
+        NBTTagCompound tag = item.tag;
+        if (tag == null) {
+                tag = new NBTTagCompound();
+        }
+        
+        // create explosion tag
+        NBTTagCompound explTag = new NBTTagCompound("Explosion");
+        explTag.setByte("Flicker", flicker ? (byte)1 : (byte)0);
+        explTag.setByte("Trail", trail ? (byte)1 : (byte)0);
+        explTag.setByte("Type", (byte)type);
+        explTag.setIntArray("Colors", colors);
+        explTag.setIntArray("FadeColors", fadeColors);
+        
+        // create fireworks tag
+        NBTTagCompound fwTag = new NBTTagCompound("Fireworks");
+        fwTag.setByte("Flight", (byte)flightDuration);
+        NBTTagList explList = new NBTTagList("Explosions");
+        explList.add(explTag);
+        fwTag.set("Explosions", explList);
+        tag.setCompound("Fireworks", fwTag);
+        
+        // set tag
+        item.tag = tag;
+        
+        // create fireworks entity
+        EntityFireworks fireworks = new EntityFireworks(((CraftWorld)location.getWorld()).getHandle(), location.getX(), location.getY(), location.getZ(), item);
+        ((CraftWorld)location.getWorld()).getHandle().addEntity(fireworks);
+        
+        // cause explosion
+        if (flightDuration == 0) {
+                ((CraftWorld)location.getWorld()).getHandle().broadcastEntityEffect(fireworks, (byte)17);
+                fireworks.die();
+        }
+    }
 
 }

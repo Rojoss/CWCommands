@@ -9,11 +9,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class WarpsetCmd implements CommandClass {
+public class SetspawnCmd implements CommandClass {
 	
 	private CWCore cwc;
 	
-	public WarpsetCmd(CWCore cwc) {
+	public SetspawnCmd(CWCore cwc) {
 		this.cwc = cwc;
 	}
 
@@ -21,13 +21,12 @@ public class WarpsetCmd implements CommandClass {
 	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
 		String pf = cwc.getPrefix();
 		Player player = null;
-		String name = "";
 		
-		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
+		/* Modifiers */
+		if (CmdUtils.hasModifier(args,"-h", false)) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
-			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/setwarp <name>");
-			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Set a warp and save it.");
+			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/setspawn");
+			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Set the server spawnpoint");
 			return true;
 		}
 		
@@ -39,29 +38,15 @@ public class WarpsetCmd implements CommandClass {
 			player = (Player) sender;
 		}
 		
-		/* 1 arg (Name) */
-		if (args.length >= 1) {
-			name = args[0].toLowerCase();
-		}
-		
-		/* null checks */
-		if (name == "" || name == " " || name == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid name");
-			return true;
-		}
-		if (name.length() > 25) {
-			sender.sendMessage(pf + ChatColor.RED + "Warpname can't be more then 25 characters.");
-			return true;
-		}
-		
-		/* Action */
-		cwc.getWarpsConfig().createWarp(name, player.getLocation());
-		player.sendMessage(pf + "Warp " + ChatColor.DARK_PURPLE + name + ChatColor.GOLD + " set!");
+		/* action */
+		cwc.getServer().getWorld(player.getWorld().getName()).setSpawnLocation(player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ());
+		player.sendMessage(pf + "Spawn set to: " + ChatColor.DARK_PURPLE + player.getLocation().getBlockX() + ChatColor.DARK_GRAY + ", " 
+		+ ChatColor.DARK_PURPLE + player.getLocation().getBlockY() + ChatColor.DARK_GRAY + ", " + ChatColor.DARK_PURPLE + player.getLocation().getBlockZ());
 		return true;
 	}
 
 	@Override
 	public String[] permissions() {
-		return new String[] { "cwcore.cmd.setwarp", "cwcore.cmd.*", "cwcore.*" };
+		return new String[] { "cwcore.cmd.setspawn", "cwcore.cmd.*", "cwcore.*" };
 	}
 }

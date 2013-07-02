@@ -1,10 +1,14 @@
 package net.clashwars.cwcore.commands;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.CmdUtils;
 import net.clashwars.cwcore.util.LocationUtils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -25,6 +29,7 @@ public class WarpCmd implements CommandClass {
 	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
 		String pf = cwc.getPrefix();
 		Player player = null;
+		String pplayer = null;
 		String name = "";
 		
 		/* Modifiers + No args */
@@ -35,19 +40,7 @@ public class WarpCmd implements CommandClass {
 			sender.sendMessage(pf + "Modifiers: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-f" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Force tp doesn't check for safe locations");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-l" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "List all warps.");
-			return true;
-		}
-		if (CmdUtils.hasModifier(args,"-l", true)) {
-			String msg = ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "Warps" + ChatColor.DARK_GRAY + "] " + ChatColor.GOLD;
-			for (int i = 0; i < cwc.getWarpsConfig().getWarpNames().size(); i++) {
-				if (i == 0) {
-					msg += cwc.getWarpsConfig().getWarpNames().get(i);
-				} else {
-					msg += ChatColor.DARK_GRAY + ", " + ChatColor.GOLD + cwc.getWarpsConfig().getWarpNames().get(i);
-				}
-			}
-			sender.sendMessage(msg);
+			sender.sendMessage(ChatColor.DARK_PURPLE + "-*" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Teleport to warps on other servers.");
 			return true;
 		}
 		boolean silent = false;
@@ -60,6 +53,11 @@ public class WarpCmd implements CommandClass {
 			force = true;
 			args = CmdUtils.modifiedArgs(args,"-f", true);
 		}
+		boolean bungee = false;
+		if (CmdUtils.hasModifier(args,"-*", true)) {
+			bungee = true;
+			args = CmdUtils.modifiedArgs(args,"-*", true);
+		}
 		
 		/* Console check */
 		if (!(sender instanceof Player)) {
@@ -67,16 +65,18 @@ public class WarpCmd implements CommandClass {
 			return true;
 		} else {
 			player = (Player) sender;
+			pplayer = sender.getName();
 		}
 		
 		/* 1 arg (Name) */
 		if (args.length >= 1) {
-			name = args[0];
+			name = args[0].toLowerCase();
 		}
 		
 		/* 2 args (Player) */
 		if (args.length >= 2) {
 			player = cwc.getServer().getPlayer(args[1]);
+			pplayer = args[1];
 		}
 		
 		/* null checks */
@@ -90,27 +90,43 @@ public class WarpCmd implements CommandClass {
 		}
 		
 		/* Action */
-		ConfigurationSection warp = cwc.getWarpsConfig().getWarp(name);
-		World world = cwc.getServer().getWorld(warp.getString("Location.World"));
-		int x = warp.getInt("Location.X");
-		int y = warp.getInt("Location.Y");
-		int z = warp.getInt("Location.Z");
-		long yaw = warp.getLong("Location.Yaw");
-		long pitch = warp.getLong("Location.Pitch");
-		Location location = new Location(world, x, y, z);
-		location.setYaw(yaw);
-		location.setPitch(pitch);
-		
-		if (force) {
-			player.teleport(location);
+		if (bungee) {	
+			try {
+				ByteArrayOutputStream b = new ByteArrayOutputStream();
+				DataOutputStream out = new DataOutputStream(b);
+
+				out.writeUTF("WARP");
+				out.writeUTF(pplayer);
+				out.writeUTF(name);
+				out.writeBoolean(silent);
+				out.writeBoolean(force);
+
+				Bukkit.getOnlinePlayers()[0].sendPluginMessage(cwc.getPlugin(), "CWBungee", b.toByteArray());
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+			
 		} else {
-			player.teleport(LocationUtils.getSafeDestination(location));
-		}
-		if (!silent) {
-			player.sendMessage(pf + "Warping to " + ChatColor.DARK_PURPLE + name);
-			if (sender.getName() != player.getName())
-				sender.sendMessage(pf + "You have warped " + ChatColor.DARK_PURPLE + player.getDisplayName()
-					+ ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + name);
+			ConfigurationSection warp = cwc.getWarpsConfig().getWarp(name);
+			World world = cwc.getServer().getWorld(warp.getString("Location.World"));
+			int x = warp.getInt("Location.X");
+			int y = warp.getInt("Location.Y");
+			int z = warp.getInt("Location.Z");
+			long yaw = warp.getLong("Location.Yaw");
+			long pitch = warp.getLong("Location.Pitch");
+			Location location = new Location(world, x, y, z, yaw, pitch);
+			
+			if (force) {
+				player.teleport(location);
+			} else {
+				player.teleport(LocationUtils.getSafeDestination(location));
+			}
+			if (!silent) {
+				player.sendMessage(pf + "Warping to " + ChatColor.DARK_PURPLE + name);
+				if (sender.getName() != player.getName())
+					sender.sendMessage(pf + "You have warped " + ChatColor.DARK_PURPLE + player.getDisplayName()
+						+ ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + name);
+			}
 		}
 		return true;
 	}

@@ -17,9 +17,11 @@ import net.clashwars.cwcore.commands.ItemCmd;
 import net.clashwars.cwcore.commands.KillCmd;
 import net.clashwars.cwcore.commands.MoreCmd;
 import net.clashwars.cwcore.commands.NickCmd;
+import net.clashwars.cwcore.commands.ParticleCmd;
 import net.clashwars.cwcore.commands.PowertoolCmd;
 import net.clashwars.cwcore.commands.RealnameCmd;
 import net.clashwars.cwcore.commands.RemovepotsCmd;
+import net.clashwars.cwcore.commands.SetspawnCmd;
 import net.clashwars.cwcore.commands.SpawnerCmd;
 import net.clashwars.cwcore.commands.SpawnmobCmd;
 import net.clashwars.cwcore.commands.SpeedCmd;
@@ -33,6 +35,7 @@ import net.clashwars.cwcore.commands.TopCmd;
 import net.clashwars.cwcore.commands.VanishCmd;
 import net.clashwars.cwcore.commands.WarpCmd;
 import net.clashwars.cwcore.commands.WarpdelCmd;
+import net.clashwars.cwcore.commands.WarpsCmd;
 import net.clashwars.cwcore.commands.WarpsetCmd;
 import net.clashwars.cwcore.commands.WhoisCmd;
 
@@ -69,9 +72,12 @@ public enum CommandsEnum {
 	WHOIS(WhoisCmd.class,"whois"),
 	SETWARP(WarpsetCmd.class,"setwarp"),
 	DELWARP(WarpdelCmd.class,"delwarp"),
-	WARP(WarpCmd.class,"warp", "warps"),
+	WARP(WarpCmd.class,"warp"),
+	WARPS(WarpsCmd.class,"warps"),
 	EXP(ExpCmd.class,"exp"),
 	FIREWORK(FireworkCmd.class,"firework" , "fw"),
+	SETSPAWN(SetspawnCmd.class,"setspawn"),
+	PARTICLE(ParticleCmd.class,"particle" , "particles"),
 	;
 
 	private String[]						aliases;

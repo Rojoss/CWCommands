@@ -1,10 +1,12 @@
 package net.clashwars.cwcore.util;
 
+import java.util.Random;
 import java.util.regex.Pattern;
 
 import net.clashwars.cwcore.entity.CWPlayer;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 
 
 public class Utils {
@@ -108,5 +110,14 @@ public class Utils {
 			}
 		}
 		return implode(ptools, "»");
+	}
+	
+	public static Color getRandomColor() {
+		Random rand = new Random();
+		int r = rand.nextInt(255);
+		int g = rand.nextInt(255);
+		int b = rand.nextInt(255);
+
+		return Color.fromRGB(r, g, b);
 	}
 }

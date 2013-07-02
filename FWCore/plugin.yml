@@ -80,6 +80,9 @@ commands:
   top:
     description: Teleport to the top.
     usage: /<command>
+  setspawn:
+    description: Set the server spawn location
+    usage: /<command>
   suicide:
     description: Kill yourself.
     usage: /<command>
@@ -127,7 +130,17 @@ commands:
   warp:
     description: Teleport to a warp
     usage: /<command> <name>
-    aliases: [warps]
+  warps:
+    description: List all warps
+    usage: /<command> [server]
   exp:
     description: Take, Give, Set or get a player his experience
     usage: /<command> <get|add|take|set> <player> [amount[L]
+  firework:
+    description: Give or launch fireworks.
+    usage: /<command> <amt> [player] [optional args]
+    aliases: [fw]
+  particle:
+    description: Play particle effects.
+    usage: /<command> <particle> [params] [optional args]
+    aliases: [particles]

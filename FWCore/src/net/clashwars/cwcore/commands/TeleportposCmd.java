@@ -31,13 +31,14 @@ public class TeleportposCmd implements CommandClass {
 		String pplayer = null;
 		String locStr = "0,0,0";
 		World world = null;
+		String server = null;
 		String pworld = null;
 		Location loc = null;
 		
 		/* Modifiers + No args */
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
 			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
-			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/teleportpos <x,y,z> [world] [player]");
+			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/teleportpos <x,y,z> [world] [player] [server]");
 			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Teleport to a location or another world");
 			sender.sendMessage(pf + "Modifiers: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
@@ -91,6 +92,15 @@ public class TeleportposCmd implements CommandClass {
 			player = cwc.getServer().getPlayer(args[2]);
 		}
 		
+		/* 4 args (Server) */
+		if (args.length >= 3) {
+			if (bungee) {
+				server = args[3];
+			} else {
+				sender.sendMessage(pf + ChatColor.RED + "Can't teleport to another server without -*");
+			}
+		}
+		
 		/* null checks */
 		if (!bungee) {
 			if (player == null && args.length >= 2) {
@@ -118,6 +128,7 @@ public class TeleportposCmd implements CommandClass {
 				out.writeUTF("TPPos");
 				out.writeUTF(sender.getName());
 				out.writeUTF(pplayer);
+				out.writeUTF(server);
 				out.writeUTF(pworld);
 				out.writeUTF(locStr);
 				out.writeBoolean(silent);

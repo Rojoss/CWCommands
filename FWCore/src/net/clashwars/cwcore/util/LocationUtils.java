@@ -63,6 +63,23 @@ public class LocationUtils {
         }
     }
 	
+	public static Location stringToLocation(String locStr, World world) {
+        if (locStr == null) {
+            return null;
+        }
+
+        String[] splt = locStr.split(",");
+        if (splt.length != 3) {
+            return null;
+        }
+
+        try {
+            return new Location(world, Double.parseDouble(splt[0]), Double.parseDouble(splt[1]), Double.parseDouble(splt[2]));
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+	
 	
 	/* From Essentials */
 	public static class Vector3D {
@@ -172,7 +189,7 @@ public class LocationUtils {
 				y = world.getHighestBlockYAt(x, z);
 				if (x - 48 > loc.getBlockX())
 				{
-					return null;
+					return loc;
 				}
 			}
 		}
@@ -224,4 +241,42 @@ public class LocationUtils {
 	}
 	/* End from Essentials */
 
+	public static boolean isPathable(Block block) {
+        return isPathable(block.getType());
+	}
+	
+	public static boolean isPathable(Material material) {
+        return
+                        material == Material.AIR ||
+                        material == Material.SAPLING ||
+                        material == Material.WATER ||
+                        material == Material.STATIONARY_WATER ||
+                        material == Material.POWERED_RAIL ||
+                        material == Material.DETECTOR_RAIL ||
+                        material == Material.LONG_GRASS ||
+                        material == Material.DEAD_BUSH ||
+                        material == Material.YELLOW_FLOWER ||
+                        material == Material.RED_ROSE ||
+                        material == Material.BROWN_MUSHROOM ||
+                        material == Material.RED_MUSHROOM ||
+                        material == Material.TORCH ||
+                        material == Material.FIRE ||
+                        material == Material.REDSTONE_WIRE ||
+                        material == Material.CROPS ||
+                        material == Material.SIGN_POST ||
+                        material == Material.LADDER ||
+                        material == Material.RAILS ||
+                        material == Material.WALL_SIGN ||
+                        material == Material.LEVER ||
+                        material == Material.STONE_PLATE ||
+                        material == Material.WOOD_PLATE ||
+                        material == Material.REDSTONE_TORCH_OFF ||
+                        material == Material.REDSTONE_TORCH_ON ||
+                        material == Material.STONE_BUTTON ||
+                        material == Material.SNOW ||
+                        material == Material.SUGAR_CANE_BLOCK ||
+                        material == Material.VINE ||
+                        material == Material.WATER_LILY ||
+                        material == Material.NETHER_STALK;
+	}
 }

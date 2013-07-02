@@ -8,5 +8,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/lib/Vault.jar"/>
+	<classpathentry kind="lib" path="C:/lib/necessity/bukkit-1.5.2-R0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

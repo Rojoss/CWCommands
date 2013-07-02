@@ -25,6 +25,7 @@ import net.clashwars.cwcore.runnables.SaveRunnable;
 import net.clashwars.cwcore.runnables.SqlUpdateRunnable;
 import net.clashwars.cwcore.sql.SqlConnection;
 import net.clashwars.cwcore.sql.SqlInfo;
+import net.clashwars.cwcore.util.Effects;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.ChatColor;
@@ -50,6 +51,7 @@ public class CWCore {
 	private AliasesConfig			aliasesCfg;
 	private WarpsConfig				warpsCfg;
 	private Permission              perm;
+	private Effects				    effects;
 
 	private ArrayList<LootChest>	lootChests		= new ArrayList<LootChest>();
 	private ArrayList<String>		deleteChests	= new ArrayList<String>();
@@ -111,6 +113,8 @@ public class CWCore {
 		
 		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         perm = rsp.getProvider();
+        
+        effects = new Effects();
 
 		registerEvents();
 		registerTasks();
@@ -276,6 +280,10 @@ public class CWCore {
 	
 	public void setAutoRespawn(boolean autoRespawn) {
 		this.autoRespawn = autoRespawn;
+	}
+	
+	public Effects getEffects() {
+		return effects;
 	}
 	
 }

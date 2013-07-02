@@ -150,7 +150,7 @@ public class MessageEvents implements PluginMessageListener {
 								if (!silent) {
 									p.sendMessage(pf + "You have been teleported to " + ChatColor.DARK_PURPLE + p.getLocation().getX() + ", "
 											+ p.getLocation().getY() + ", " + p.getLocation().getZ());
-									if (sender != p.getName())
+									if (sender.equalsIgnoreCase(p.getName()))
 										sendMessage(sender, pf + "You have teleported " + ChatColor.DARK_PURPLE + p.getDisplayName() + ChatColor.GOLD
 												+ " to " + ChatColor.DARK_PURPLE + p.getLocation().getX() + ", " + p.getLocation().getY() + ", "
 												+ p.getLocation().getZ());
@@ -174,7 +174,7 @@ public class MessageEvents implements PluginMessageListener {
 								p.setHealth(0);
 								if (!silent) {
 									p.sendMessage(pf + "You where killed by " + ChatColor.DARK_PURPLE + sender);
-									if (sender != p.getName()) {
+									if (sender.equalsIgnoreCase(p.getName())) {
 										sendMessage(sender, pf + "You have killed " + ChatColor.DARK_PURPLE + p.getDisplayName());
 									}
 								}
@@ -194,6 +194,7 @@ public class MessageEvents implements PluginMessageListener {
 							boolean all = in.readBoolean();
 
 							p = cwc.getServer().getPlayer(ptarget);
+							cwc.getServer().broadcastMessage("WORKING");
 
 							if (p == null) {
 								sendMessage(sender, pf + ChatColor.RED + "Invalid player");
@@ -201,12 +202,9 @@ public class MessageEvents implements PluginMessageListener {
 							}
 
 							md = AliasUtils.getFullData(item);
-							if (md == null) {
-								sendMessage(sender, pf + ChatColor.RED + "Item " + ChatColor.GRAY + item + ChatColor.RED + " was not recognized!");
-								break;
-							}
 
-							if (p != null && md != null && amt != -1) {
+							if (p != null) {
+								cwc.getServer().broadcastMessage(all + " , " + md + " , " + amt + " , " + item);
 								if (all) {
 									InvUtils.clearInventorySlots(p, false, 0, -1, md, amt);
 									p.getInventory().setArmorContents(null);
@@ -364,6 +362,44 @@ public class MessageEvents implements PluginMessageListener {
 
 							if (message != null) {
 								cwc.getServer().broadcastMessage(Utils.integrateColor(message));
+							}
+							break;
+						case "switchserver":
+							in.readUTF();
+							ptarget = in.readUTF();
+							
+							cwp = cwc.getPlayerManager().getPlayer(ptarget);
+							cwp.fetchData();
+							break;
+						case "warpteleport":
+							teleporter = in.readUTF();
+							String warpName = in.readUTF();
+							world = in.readUTF();
+							int x = in.readInt();
+							int y = in.readInt();
+							int z = in.readInt();
+							float yaw = in.readFloat();
+							float pitch = in.readFloat();
+							silent = in.readBoolean();
+							force = in.readBoolean();
+							
+							target = cwc.getServer().getPlayer(teleporter);
+							w = cwc.getServer().getWorld(world);
+							
+							if (target == null) {
+								break;
+							}
+							
+							if (w == null) {
+								break;
+							}
+							
+							Location loc = new Location(w, x, y, z, yaw, pitch);
+							
+							target.teleport(force ? loc : LocationUtils.getSafeDestination(loc));
+							
+							if (!silent) {
+								target.sendMessage(pf + "Warping to " + ChatColor.DARK_PURPLE + warpName);
 							}
 							break;
 					}
