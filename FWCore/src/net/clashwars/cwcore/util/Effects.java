@@ -3,14 +3,14 @@ package net.clashwars.cwcore.util;
 import java.lang.reflect.Field;
 import java.util.Random;
 
-import net.minecraft.server.v1_5_R3.Packet63WorldParticles;
+import net.minecraft.server.v1_6_R1.Packet63WorldParticles;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_5_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_6_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

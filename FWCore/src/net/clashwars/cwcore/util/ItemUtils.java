@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import net.clashwars.cwcore.Book;
-import net.minecraft.server.v1_5_R3.EntityFireworks;
-import net.minecraft.server.v1_5_R3.NBTTagCompound;
-import net.minecraft.server.v1_5_R3.NBTTagList;
-import net.minecraft.server.v1_5_R3.NBTTagString;
+import net.minecraft.server.v1_6_R1.EntityFireworks;
+import net.minecraft.server.v1_6_R1.NBTTagCompound;
+import net.minecraft.server.v1_6_R1.NBTTagList;
+import net.minecraft.server.v1_6_R1.NBTTagString;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_6_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_6_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -208,7 +208,7 @@ public class ItemUtils {
 	 */
 	public static ItemStack createBook(boolean signed, Book book) {
 		ItemStack b = new ItemStack((signed ? Material.WRITTEN_BOOK : Material.BOOK_AND_QUILL), 1);
-		net.minecraft.server.v1_5_R3.ItemStack newStack = CraftItemStack.asNMSCopy(b);
+		net.minecraft.server.v1_6_R1.ItemStack newStack = CraftItemStack.asNMSCopy(b);
 
 		NBTTagCompound newTag = new NBTTagCompound();
 
@@ -239,7 +239,7 @@ public class ItemUtils {
 	 * @return Book (The Book data from the given itemStack)
 	 */
 	public static Book getBook(ItemStack book) {
-		net.minecraft.server.v1_5_R3.ItemStack nmsStack = CraftItemStack.asNMSCopy(book);
+		net.minecraft.server.v1_6_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(book);
 
 		NBTTagCompound tagCompound = nmsStack.tag;
 
@@ -261,7 +261,7 @@ public class ItemUtils {
 	
 	public static void createFireworksExplosion(Location location, boolean flicker, boolean trail, int type, int[] colors, int[] fadeColors, int flightDuration) {
         // create item
-        net.minecraft.server.v1_5_R3.ItemStack item = new net.minecraft.server.v1_5_R3.ItemStack(401, 1, 0);
+        net.minecraft.server.v1_6_R1.ItemStack item = new net.minecraft.server.v1_6_R1.ItemStack(401, 1, 0);
         
         // get tag
         NBTTagCompound tag = item.tag;

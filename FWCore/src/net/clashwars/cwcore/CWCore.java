@@ -3,8 +3,6 @@ package net.clashwars.cwcore;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import net.clashwars.cwcore.bukkit.CWCorePlugin;
@@ -16,7 +14,6 @@ import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.commands.internal.CommandsEnum;
 import net.clashwars.cwcore.config.AliasesConfig;
 import net.clashwars.cwcore.config.BookConfig;
-import net.clashwars.cwcore.config.ChestConfig;
 import net.clashwars.cwcore.config.Config;
 import net.clashwars.cwcore.config.PluginConfig;
 import net.clashwars.cwcore.config.WarpsConfig;
@@ -47,14 +44,11 @@ public class CWCore {
 	private SqlInfo					sqlInfo;
 	private Config					cfg;
 	private BookConfig				booksCfg;
-	private ChestConfig				chestCfg;
 	private AliasesConfig			aliasesCfg;
 	private WarpsConfig				warpsCfg;
 	private Permission              perm;
 	private Effects				    effects;
 
-	private ArrayList<LootChest>	lootChests		= new ArrayList<LootChest>();
-	private ArrayList<String>		deleteChests	= new ArrayList<String>();
 	private ArrayList<String>		freeze			= new ArrayList<String>();
 	private int						chestDelay;
 	private boolean					autoRespawn;
@@ -62,7 +56,6 @@ public class CWCore {
 
 	private HashMap<String, Book>	savedBooks		= new HashMap<String, Book>();
 	private HashMap<String, Player> viewList        = new HashMap<String, Player>();
-	private Set<String>				createChest		= new HashSet<String>();
 	
 	private SqlUpdateRunnable		sqlr;
 
@@ -77,7 +70,6 @@ public class CWCore {
 	public void onDisable() {
 		getServer().getScheduler().cancelTasks(getPlugin());
 		booksCfg.save();
-		chestCfg.save();
 		cfg.load();
 
 		log("Disabled.");
@@ -92,10 +84,6 @@ public class CWCore {
 		booksCfg = new BookConfig(this);
 		booksCfg.init();
 		booksCfg.load();
-
-		chestCfg = new ChestConfig(this);
-		chestCfg.init();
-		chestCfg.load();
 		
 		aliasesCfg = new AliasesConfig();
 		aliasesCfg.init();
@@ -212,10 +200,6 @@ public class CWCore {
 	public BookConfig getBookConfig() {
 		return booksCfg;
 	}
-
-	public ChestConfig getChestsConfig() {
-		return chestCfg;
-	}
 	
 	public AliasesConfig getAliasesConfig() {
 		return aliasesCfg;
@@ -226,17 +210,6 @@ public class CWCore {
 	}
 
 	/* Chests */
-	public ArrayList<LootChest> getLootChests() {
-		return lootChests;
-	}
-
-	public ArrayList<String> getDeleteChests() {
-		return deleteChests;
-	}
-
-	public Set<String> getCreateChests() {
-		return createChest;
-	}
 	
 	public HashMap<String, Player> getViewList() {
 		return viewList;
