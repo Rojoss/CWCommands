@@ -2,7 +2,11 @@ package net.clashwars.cwcore.bukkit.events;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.util.Utils;
+import net.minecraft.server.v1_6_R2.Packet205ClientCommand;
 
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
@@ -12,8 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 
 
 public class CoreEvents implements Listener {
@@ -21,32 +24,6 @@ public class CoreEvents implements Listener {
 
 	public CoreEvents(CWCore cwc) {
 		this.cwc = cwc;
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void quit(PlayerQuitEvent event) {
-		quit(event.getPlayer());
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void quit(PlayerKickEvent event) {
-		if (event.isCancelled())
-			return;
-		
-		try {
-			quit(event.getPlayer());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void quit(Player player) {
-		if (player.getOpenInventory() != null)
-			try {
-				player.closeInventory();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -86,4 +63,27 @@ public class CoreEvents implements Listener {
             }
         }
     }
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void quit(PlayerDeathEvent event) {
+		
+		if (cwc.getAutoRespawn() == false) {
+			return;
+		}
+		
+		Entity e = event.getEntity();
+        if (e instanceof Player) {
+            final Player player = (Player) e;
+		
+			Bukkit.getScheduler().scheduleSyncDelayedTask(cwc.getPlugin(), new Runnable() {
+		        @Override
+		        public void run() {
+		        	Packet205ClientCommand packet = new Packet205ClientCommand();
+		        	packet.a = 1;
+					((CraftPlayer) player).getHandle().playerConnection.a(packet);
+		        }
+		    }, 5);
+		}
+	}
+        
 }

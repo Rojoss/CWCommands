@@ -76,36 +76,38 @@ public class CWCore {
 	}
 
 	public void onEnable() {
-
+		log("Enabling...");
 		cfg = new PluginConfig(this);
 		cfg.init();
 		cfg.load();
-
+		log("1...");
 		booksCfg = new BookConfig(this);
 		booksCfg.init();
 		booksCfg.load();
-		
+		log("2...");
 		aliasesCfg = new AliasesConfig();
 		aliasesCfg.init();
 		aliasesCfg.load();
-		
+		log("3...");
 		warpsCfg = new WarpsConfig();
 		warpsCfg.init();
 		warpsCfg.load();
-
+		log("4...");
 		sql = new SqlConnection();
 		attemptSQLConnection();
-
+		log("5...");
 		pm = new PlayerManager(this);
 		pm.populate();
-		
+		log("6...");
 		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         perm = rsp.getProvider();
-        
+        log("7...");
         effects = new Effects();
-
+        log("8...");
 		registerEvents();
+		log("9...");
 		registerTasks();
+		log("10...");
 		registerChannels();
 
 		log("Successfully enabled.");
@@ -179,8 +181,12 @@ public class CWCore {
 	}
 
 	public void attemptSQLConnection() {
-		sql.connect(sqlInfo);
-		sql.createTable(sqlInfo.getDb(), "users", Constants.USERS);
+		try {
+			sql.connect(sqlInfo);
+			sql.createTable(sqlInfo.getDb(), "users", Constants.USERS);
+		} catch (Exception e) {
+			log("Could not connect to database.");
+		}
 	}
 
 	public SqlConnection getSQLConnection() {

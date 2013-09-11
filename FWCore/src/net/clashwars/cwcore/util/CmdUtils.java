@@ -1,10 +1,10 @@
 package net.clashwars.cwcore.util;
 
 import net.clashwars.cwcore.CWCore;
-import net.minecraft.server.v1_6_R1.DedicatedServer;
-import net.minecraft.server.v1_6_R1.EntityPlayer;
-import net.minecraft.server.v1_6_R1.MinecraftServer;
-import net.minecraft.server.v1_6_R1.PlayerInteractManager;
+import net.minecraft.server.v1_6_R2.DedicatedServer;
+import net.minecraft.server.v1_6_R2.EntityPlayer;
+import net.minecraft.server.v1_6_R2.MinecraftServer;
+import net.minecraft.server.v1_6_R2.PlayerInteractManager;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
