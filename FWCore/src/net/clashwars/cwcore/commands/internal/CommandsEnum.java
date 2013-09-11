@@ -14,6 +14,7 @@ import net.clashwars.cwcore.commands.HatCmd;
 import net.clashwars.cwcore.commands.HealCmd;
 import net.clashwars.cwcore.commands.InvseeCmd;
 import net.clashwars.cwcore.commands.ItemCmd;
+import net.clashwars.cwcore.commands.IteminfoCmd;
 import net.clashwars.cwcore.commands.KillCmd;
 import net.clashwars.cwcore.commands.MoreCmd;
 import net.clashwars.cwcore.commands.NickCmd;
@@ -22,6 +23,7 @@ import net.clashwars.cwcore.commands.PowertoolCmd;
 import net.clashwars.cwcore.commands.RealnameCmd;
 import net.clashwars.cwcore.commands.RemovepotsCmd;
 import net.clashwars.cwcore.commands.SetspawnCmd;
+import net.clashwars.cwcore.commands.SpawnCmd;
 import net.clashwars.cwcore.commands.SpawnerCmd;
 import net.clashwars.cwcore.commands.SpawnmobCmd;
 import net.clashwars.cwcore.commands.SpeedCmd;
@@ -78,6 +80,8 @@ public enum CommandsEnum {
 	FIREWORK(FireworkCmd.class,"firework" , "fw"),
 	SETSPAWN(SetspawnCmd.class,"setspawn"),
 	PARTICLE(ParticleCmd.class,"particle" , "particles"),
+	SPAWN(SpawnCmd.class,"spawn"),
+	ITEMINFO(IteminfoCmd.class,"iteminfo" , "ii", "itemi"),
 	;
 
 	private String[]						aliases;

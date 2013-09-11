@@ -83,6 +83,9 @@ commands:
   setspawn:
     description: Set the server spawn location
     usage: /<command>
+  spawn:
+    description: Teleport to the spawn.
+    usage: /<command>
   suicide:
     description: Kill yourself.
     usage: /<command>
@@ -144,3 +147,7 @@ commands:
     description: Play particle effects.
     usage: /<command> <particle> [params] [optional args]
     aliases: [particles]
+  iteminfo:
+    description: Show information about the item your holding.
+    usage: /<command>
+    aliases: [ii, itemi]
