@@ -76,6 +76,13 @@ public class ParticleCmd implements CommandClass {
 			target = CmdUtils.getPlayerFromArgs(args, "player:", cwc);
 			args = CmdUtils.modifiedArgs(args,"player:", false);
 		}
+		
+		boolean locSet = false;
+		if (CmdUtils.hasModifier(args,"world:", false)) {
+			if (CmdUtils.hasModifier(args,"loc:", false)) {
+				locSet = true;
+			}
+		}
 		if (CmdUtils.hasModifier(args,"amt:", false)) {
 			CmdUtils.getArgIndex(args, "amt:", false);
 			String[] splt = args[CmdUtils.getArgIndex(args, "amt:", false)].split(":");
@@ -92,7 +99,7 @@ public class ParticleCmd implements CommandClass {
 		
 		/* Console check */
 		if (!(sender instanceof Player)) {
-			if (!targetSet) {
+			if (!targetSet && !locSet) {
 				sender.sendMessage(pf + ChatColor.RED + "You need to specify a player or Location+World to use this on the console!");
 				return true;
 			}
@@ -104,7 +111,7 @@ public class ParticleCmd implements CommandClass {
 		}
 		
 		/* null checks */
-		if (player == null) {
+		if (player == null && !locSet) {
 			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
 			return true;
 		}
@@ -119,9 +126,10 @@ public class ParticleCmd implements CommandClass {
     		return true;
     	}
 		
-		loc = target.getLocation();
-		world = target.getWorld();
-		offset = new Location(world,0,0,0);
+		if (!locSet) {
+			loc = target.getLocation();
+			world = target.getWorld();
+		}
 		
 		if (CmdUtils.hasModifier(args,"world:", false)) {
 			CmdUtils.getArgIndex(args, "world:", false);
@@ -148,6 +156,7 @@ public class ParticleCmd implements CommandClass {
         	}
 			args = CmdUtils.modifiedArgs(args,"loc:", false);
 		}
+		offset = new Location(world,0,0,0);
 		boolean offsetSet = false;
 		if (CmdUtils.hasModifier(args,"offset:", false)) {
 			CmdUtils.getArgIndex(args, "offset:", false);
