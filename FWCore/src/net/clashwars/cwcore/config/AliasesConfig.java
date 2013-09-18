@@ -15,17 +15,17 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.potion.PotionEffectType;
 
 public class AliasesConfig extends Config {
-	private YamlConfiguration cfg;
-	private ConfigUtil cu;
-	private final File			dir		= new File("plugins/CWCore/");
-	private final File			file	= new File(dir + "/Aliases.yml");
+	private YamlConfiguration							cfg;
+	private ConfigUtil 									cu;
+	private final File									dir		= new File("plugins/CWCore/");
+	private final File									file	= new File(dir + "/Aliases.yml");
 	
-	public static Map<Material, Set<String>>                    searchMaterials = new HashMap<Material, Set<String>>();
-    public static Map<EntityType, Set<String>>                  searchEntities  = new HashMap<EntityType, Set<String>>();
-    public static Map<Enchantment, Set<String>>                 searchEnchants  = new HashMap<Enchantment, Set<String>>();
-	public static Map<Biome, Set<String>>						searchBiomes	= new HashMap<Biome, Set<String>>();
-	public static Map<PotionEffectType, Set<String>>			searchPotions	= new HashMap<PotionEffectType, Set<String>>();
-	public static Map<Sound, Set<String>>						searchSounds	= new HashMap<Sound, Set<String>>();
+	public static Map<Material, Set<String>>            searchMaterials = new HashMap<Material, Set<String>>();
+    public static Map<EntityType, Set<String>>          searchEntities  = new HashMap<EntityType, Set<String>>();
+    public static Map<Enchantment, Set<String>>         searchEnchants  = new HashMap<Enchantment, Set<String>>();
+	public static Map<Biome, Set<String>>				searchBiomes	= new HashMap<Biome, Set<String>>();
+	public static Map<PotionEffectType, Set<String>>	searchPotions	= new HashMap<PotionEffectType, Set<String>>();
+	public static Map<Sound, Set<String>>				searchSounds	= new HashMap<Sound, Set<String>>();
 
 	@Override
 	public void init() {
@@ -46,6 +46,9 @@ public class AliasesConfig extends Config {
             
             searchMaterials.clear();
             searchEntities.clear();
+            searchEnchants.clear();
+            searchBiomes.clear();
+            searchSounds.clear();
             searchPotions.clear();
             
             for (Material m : Material.values()) {
