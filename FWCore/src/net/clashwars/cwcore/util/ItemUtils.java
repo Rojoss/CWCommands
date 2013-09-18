@@ -139,7 +139,7 @@ public class ItemUtils {
 				
 				if (splt.length > 1) {
 					
-					enchant = AliasUtils.findEnchanttype(splt[1]);
+					enchant = AliasUtils.findEnchantment(splt[1]);
 					
 					try {
 					 	lvl = Integer.parseInt(splt[2]);

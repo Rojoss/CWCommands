@@ -162,7 +162,7 @@ public class SpawnmobCmd implements CommandClass {
 		Entity spawnedMount = null;
 		for (int i = 0; i < mobs.size(); i++) {
 			if (i == 0) {
-				mob = AliasUtils.findEntityType(mobs.get(i));
+				mob = AliasUtils.findEntity(mobs.get(i));
 				if (mob == null) {
 					sender.sendMessage(pf + ChatColor.RED + "Invalid mob.");
 					return true;
@@ -186,7 +186,7 @@ public class SpawnmobCmd implements CommandClass {
 					}
 					spawned++;
 			} else {
-				mob = AliasUtils.findEntityType(mobs.get(i));
+				mob = AliasUtils.findEntity(mobs.get(i));
 				if (mob == null) {
 					sender.sendMessage(pf + ChatColor.RED + "Invalid mob.");
 					return true;

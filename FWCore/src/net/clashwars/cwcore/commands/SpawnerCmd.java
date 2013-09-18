@@ -54,7 +54,7 @@ public class SpawnerCmd implements CommandClass {
 		
 		/* 1 arg (Mob) */
 		if (args.length >= 1) {
-			entity = AliasUtils.findEntityType(args[0]);
+			entity = AliasUtils.findEntity(args[0]);
 		}
 		
 		/* Get target block */

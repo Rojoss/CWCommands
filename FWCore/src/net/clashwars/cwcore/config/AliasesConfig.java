@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.block.Biome;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
@@ -18,10 +20,12 @@ public class AliasesConfig extends Config {
 	private final File			dir		= new File("plugins/CWCore/");
 	private final File			file	= new File(dir + "/Aliases.yml");
 	
-	public static Map<Material, Set<String>>                        searchMaterials = new HashMap<Material, Set<String>>();
-    public static Map<EntityType, Set<String>>                      searchEntities  = new HashMap<EntityType, Set<String>>();
-    public static Map<Enchantment, Set<String>>                     searchEnchants  = new HashMap<Enchantment, Set<String>>();
-    public static Map<PotionEffectType, Set<String>>        		searchPotions   = new HashMap<PotionEffectType, Set<String>>();
+	public static Map<Material, Set<String>>                    searchMaterials = new HashMap<Material, Set<String>>();
+    public static Map<EntityType, Set<String>>                  searchEntities  = new HashMap<EntityType, Set<String>>();
+    public static Map<Enchantment, Set<String>>                 searchEnchants  = new HashMap<Enchantment, Set<String>>();
+	public static Map<Biome, Set<String>>						searchBiomes	= new HashMap<Biome, Set<String>>();
+	public static Map<PotionEffectType, Set<String>>			searchPotions	= new HashMap<PotionEffectType, Set<String>>();
+	public static Map<Sound, Set<String>>						searchSounds	= new HashMap<Sound, Set<String>>();
 
 	@Override
 	public void init() {
@@ -56,14 +60,20 @@ public class AliasesConfig extends Config {
             	searchEnchants.put(en, new HashSet<String>(cu.getStringList("search-aliases.enchants." + en.getName(), en.getName())));
             }
             
-            try {
-                for (PotionEffectType p : PotionEffectType.values()) {
-                	searchPotions.put(p, new HashSet<String>(cu.getStringList("search-aliases.potions." + p.getName(), p.getName())));
-                }
-            } catch (Throwable e) {
-
-            }
-			
+            for (Biome b : Biome.values()) {
+				searchBiomes.put(b, new HashSet<String>(cu.getStringList("search-aliases.biomes." + b.name(), b.name())));
+			}
+            
+            for (Sound s : Sound.values()) {
+            	searchSounds.put(s, new HashSet<String>(cu.getStringList("search-aliases.sounds." + s.name(), s.name())));
+			}
+            
+			for (PotionEffectType p : PotionEffectType.values()) {
+				if (p != null) {
+					searchPotions.put(p, new HashSet<String>(cu.getStringList("search-aliases.potions." + p.getName(), p.getName())));
+				}
+			}
+            
             cfg.save(file);
             
 		} catch (Exception e) {
