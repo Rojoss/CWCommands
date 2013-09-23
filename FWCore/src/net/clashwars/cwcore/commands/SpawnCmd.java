@@ -43,14 +43,17 @@ public class SpawnCmd implements CommandClass {
 				sender.sendMessage(pf + ChatColor.RED + "You need to specify a player to use this on the console!");
 				return true;
 			}
-			return true;
-		} else {
-			player = (Player) sender;
 		}
 		
 		
 		if (args.length > 0) {
 			player = cwc.getServer().getPlayer(args[0]);
+		} else {
+			player = (Player) sender;
+		}
+		if (player == null) {
+			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
+			return true;
 		}
 		
 		/* action */
