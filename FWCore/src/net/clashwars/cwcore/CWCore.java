@@ -18,7 +18,6 @@ import net.clashwars.cwcore.config.Config;
 import net.clashwars.cwcore.config.PluginConfig;
 import net.clashwars.cwcore.config.WarpsConfig;
 import net.clashwars.cwcore.entity.PlayerManager;
-import net.clashwars.cwcore.runnables.SaveRunnable;
 import net.clashwars.cwcore.runnables.SqlUpdateRunnable;
 import net.clashwars.cwcore.sql.SqlConnection;
 import net.clashwars.cwcore.sql.SqlInfo;
@@ -149,7 +148,7 @@ public class CWCore {
 		BukkitScheduler sch = getServer().getScheduler();
 
 		sch.runTaskTimerAsynchronously(getPlugin(), (sqlr = new SqlUpdateRunnable()), 0, 600);
-		sch.runTaskTimer(getPlugin(), new SaveRunnable(this), 0, 1200);
+		//sch.runTaskTimer(getPlugin(), new SaveRunnable(this), 0, 1200);
 	}
 	
 	private void registerChannels() {

@@ -57,8 +57,8 @@ public class FireworkCmd implements CommandClass {
 					+ ChatColor.YELLOW + "0, 1, 2, 3, 4, 5");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "e:<effect>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set the effect type: "
 					+ ChatColor.YELLOW + "sball, bball, creep, burst, star");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "a:<trail|spark>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set the after effect: "
-					+ ChatColor.YELLOW + "trail or spark");
+			sender.sendMessage(ChatColor.DARK_PURPLE + "a:<trail|flicker>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set the after effect: "
+					+ ChatColor.YELLOW + "trail or flicker");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "c:<#RRGGBB>,[...],etc" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY
 					+ "Add colors can add multiple.");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "fc:<#RRGGBB>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY
