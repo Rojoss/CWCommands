@@ -138,7 +138,7 @@ public class MessageEvents implements PluginMessageListener {
 							}
 
 							if (p != null) {
-								loc = LocationUtils.stringToLocation(destination, w, p);
+								loc = LocationUtils.getLocation(destination, w);
 							}
 
 							if (loc != null && p != null && w != null) {

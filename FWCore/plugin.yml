@@ -151,3 +151,11 @@ commands:
     description: Show information about the item your holding.
     usage: /<command>
     aliases: [ii, itemi]
+  effect:
+    description: Apply a potion effect
+    usage: /<command> <effect> [duration] [strength] [optional args]
+    aliases: [potioneffect, potion]
+  sound:
+    description: Play a sound
+    usage: /<command> <sound> [volume] [pitch] [optional args]
+    aliases: [playsound]

@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 public class LocationUtils {
 	
@@ -23,12 +24,6 @@ public class LocationUtils {
 	public final static Vector3D[] VOLUME;
 	
 	
-	/**
-	 * Teleport the given player to the highest block
-	 * @param cwc (Plugin)
-	 * @param player (The player to teleport)
-	 * @return void
-	 */
 	public static void tpToTop(CWCore cwc, Player player) {
 		double topY = cwc.getServer().getWorld(player.getWorld().getName()).getHighestBlockYAt(player.getLocation().getBlockX(), player.getLocation().getBlockZ());
 		Location loc = new Location(player.getWorld(), player.getLocation().getX(), topY, player.getLocation().getZ());
@@ -37,49 +32,26 @@ public class LocationUtils {
 		player.teleport(loc);
 	}
 	
-	/**
-	 * Convert a string with x,y,z to a Location
-	 * @param locStr The string with the x,y,z
-	 * @param world The world to create the location for.
-	 * @param player The player to get the yaw/pitch
-	 * @return Location
-	 */
-	public static Location stringToLocation(String locStr, World world, Player player) {
-        if (locStr == null) {
-            return null;
-        }
-
-        String[] splt = locStr.split(",");
-        if (splt.length != 3) {
-            return null;
-        }
-
-        try {
-            float pitch = player.getLocation().getPitch();
-            float yaw = player.getLocation().getYaw();
-            return new Location(world, Double.parseDouble(splt[0]), Double.parseDouble(splt[1]), Double.parseDouble(splt[2]), yaw, pitch);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
 	
-	public static Location stringToLocation(String locStr, World world) {
-        if (locStr == null) {
-            return null;
-        }
+	public static Location getLocation(String str, World world) {
+		String[] locS = str.split(",");
 
-        String[] splt = locStr.split(",");
-        if (splt.length != 3) {
-            return null;
-        }
+		int x = Integer.parseInt(locS[0].trim());
+		int y = Integer.parseInt(locS[1].trim());
+		int z = Integer.parseInt(locS[2].trim());
 
-        try {
-            return new Location(world, Double.parseDouble(splt[0]), Double.parseDouble(splt[1]), Double.parseDouble(splt[2]));
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
+		return new Location(world, x, y, z);
+	}
 	
+	public static Vector getVector(String str) {
+		String[] locS = str.split(",");
+
+		double x = Double.parseDouble(locS[0]);
+		double y = Double.parseDouble(locS[1]);
+		double z = Double.parseDouble(locS[2]);
+
+		return new Vector(x, y, z);
+	}
 	
 	/* From Essentials */
 	public static class Vector3D {

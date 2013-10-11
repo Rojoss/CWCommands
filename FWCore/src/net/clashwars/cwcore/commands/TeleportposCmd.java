@@ -112,7 +112,7 @@ public class TeleportposCmd implements CommandClass {
 				return true;
 			}
 			
-			loc = LocationUtils.stringToLocation(locStr, world, player);
+			loc = LocationUtils.getLocation(locStr, world);
 			if (loc == null) {
 				sender.sendMessage(pf + ChatColor.RED + "Invalid location syntax: x,y,z");
 				return true;

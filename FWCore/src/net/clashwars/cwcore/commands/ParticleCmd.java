@@ -73,7 +73,7 @@ public class ParticleCmd implements CommandClass {
 		boolean targetSet = false;
 		if (CmdUtils.hasModifier(args,"player:", false)) {
 			targetSet = true;
-			target = CmdUtils.getPlayerFromArgs(args, "player:", cwc);
+			target = CmdUtils.getPlayer(args, "player:", cwc);
 			args = CmdUtils.modifiedArgs(args,"player:", false);
 		}
 		
@@ -148,7 +148,7 @@ public class ParticleCmd implements CommandClass {
 			CmdUtils.getArgIndex(args, "loc:", false);
 			String[] splt = args[CmdUtils.getArgIndex(args, "loc:", false)].split(":");
         	if (splt.length > 1) {
-        		loc = LocationUtils.stringToLocation(splt[1], world);
+        		loc = LocationUtils.getLocation(splt[1], world);
         		if (loc == null) {
         			sender.sendMessage(pf + ChatColor.RED + "Invalid location, Must be x,y,z");
 				 	return true;
@@ -162,7 +162,7 @@ public class ParticleCmd implements CommandClass {
 			CmdUtils.getArgIndex(args, "offset:", false);
 			String[] splt = args[CmdUtils.getArgIndex(args, "offset:", false)].split(":");
         	if (splt.length > 1) {
-        		offset = LocationUtils.stringToLocation(splt[1], world);
+        		offset = LocationUtils.getLocation(splt[1], world);
         		if (offset == null) {
         			sender.sendMessage(pf + ChatColor.RED + "Invalid offset, Must be x,y,z");
 				 	return true;

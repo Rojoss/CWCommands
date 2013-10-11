@@ -91,7 +91,7 @@ public class CmdUtils {
 		return 0;
 	}
 	
-	public static Player getPlayerFromArgs(String[] args, String prefix, CWCore cwc) {
+	public static Player getPlayer(String[] args, String prefix, CWCore cwc) {
 		Player player = null;
 		for (int i = 0; i < args.length; i++) {
             if (args[i].toLowerCase().startsWith(prefix)) {
@@ -105,7 +105,7 @@ public class CmdUtils {
 		return null;
 	}
 	
-	public static Player getOfflinePlayerFromArgs(String[] args, String prefix, CWCore cwc) {
+	public static Player getOfflinePlayer(String[] args, String prefix, CWCore cwc) {
 		OfflinePlayer player = null;
 		for (int i = 0; i < args.length; i++) {
             if (args[i].toLowerCase().startsWith(prefix)) {
@@ -121,5 +121,69 @@ public class CmdUtils {
             }
 		}
 		return null;
+	}
+	
+	public static String getString(String[] args, String prefix) {
+		for (int i = 0; i < args.length; i++) {
+            if (args[i].toLowerCase().startsWith(prefix)) {
+            	String[] splt = args[i].split(":");
+            	if (splt.length > 2) {
+            		String ret = splt[1];
+                    for (int j = 2; j < splt.length; j++) {
+                    	ret += ":" + splt[j];
+                    }
+                    return ret;
+            	} else {
+            		return splt[1];
+            	}
+            }
+		}
+		return null;
+	}
+	
+	public static int getInt(String[] args, String prefix) {
+		for (int i = 0; i < args.length; i++) {
+            if (args[i].toLowerCase().startsWith(prefix)) {
+            	String[] splt = args[i].split(":");
+            	if (splt.length > 1) {
+            		try {
+    				 	int value = Integer.parseInt(splt[1]);
+    				 	return value;
+    				 } catch (NumberFormatException e) {
+    				 }
+            	}
+            }
+		}
+		return -1;
+	}
+	
+	public static float getFloat(String[] args, String prefix) {
+		for (int i = 0; i < args.length; i++) {
+            if (args[i].toLowerCase().startsWith(prefix)) {
+            	String[] splt = args[i].split(":");
+            	if (splt.length > 1) {
+            		try {
+    				 	float value = Float.parseFloat(splt[1]);
+    				 	return value;
+    				 } catch (NumberFormatException e) {
+    				 }
+            	}
+            }
+		}
+		return -1;
+	}
+	
+	public static boolean getBool(String[] args, String prefix) {
+		for (int i = 0; i < args.length; i++) {
+            if (args[i].toLowerCase().startsWith(prefix)) {
+            	String[] splt = args[i].split(":");
+            	if (splt.length > 1) {
+            		if (splt[1].equalsIgnoreCase("true")) {
+            			return true;
+            		}
+            	}
+            }
+		}
+		return false;
 	}
 }

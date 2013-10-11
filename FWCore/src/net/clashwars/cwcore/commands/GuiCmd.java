@@ -50,9 +50,9 @@ public class GuiCmd implements CommandClass {
 		if (CmdUtils.hasModifier(args,"player:", false)) {
 			targetSet = true;
 			CmdUtils.getArgIndex(args, "player:", false);
-			target = CmdUtils.getOfflinePlayerFromArgs(args, "player:", cwc);
+			target = CmdUtils.getOfflinePlayer(args, "player:", cwc);
 			if (target.isOnline()) {
-				target = CmdUtils.getPlayerFromArgs(args, "player:", cwc);
+				target = CmdUtils.getPlayer(args, "player:", cwc);
 				onlineTarget = true;
 			}
 			args = CmdUtils.modifiedArgs(args,"player:", false);

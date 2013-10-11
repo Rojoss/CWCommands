@@ -2,6 +2,7 @@ package net.clashwars.cwcore.commands.internal;
 
 import net.clashwars.cwcore.commands.BroadcastCmd;
 import net.clashwars.cwcore.commands.ClearinvCmd;
+import net.clashwars.cwcore.commands.EffectCmd;
 import net.clashwars.cwcore.commands.ExpCmd;
 import net.clashwars.cwcore.commands.FireworkCmd;
 import net.clashwars.cwcore.commands.FlyCmd;
@@ -23,6 +24,7 @@ import net.clashwars.cwcore.commands.PowertoolCmd;
 import net.clashwars.cwcore.commands.RealnameCmd;
 import net.clashwars.cwcore.commands.RemovepotsCmd;
 import net.clashwars.cwcore.commands.SetspawnCmd;
+import net.clashwars.cwcore.commands.SoundCmd;
 import net.clashwars.cwcore.commands.SpawnCmd;
 import net.clashwars.cwcore.commands.SpawnerCmd;
 import net.clashwars.cwcore.commands.SpawnmobCmd;
@@ -82,6 +84,8 @@ public enum CommandsEnum {
 	PARTICLE(ParticleCmd.class,"particle" , "particles"),
 	SPAWN(SpawnCmd.class,"spawn"),
 	ITEMINFO(IteminfoCmd.class,"iteminfo" , "ii", "itemi"),
+	EFFECT(EffectCmd.class,"effect" , "potioneffect", "potion"),
+	SOUND(SoundCmd.class,"sound" , "playsound")
 	;
 
 	private String[]						aliases;

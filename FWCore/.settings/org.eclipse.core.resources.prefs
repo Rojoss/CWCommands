@@ -1,6 +1,7 @@
 eclipse.preferences.version=1
 encoding//src/net/clashwars/cwcore/commands/BroadcastCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/ClearinvCmd.java=UTF-8
+encoding//src/net/clashwars/cwcore/commands/EffectCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/ExpCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/FireworkCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/FlyCmd.java=UTF-8
@@ -22,6 +23,7 @@ encoding//src/net/clashwars/cwcore/commands/PowertoolCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/RealnameCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/RemovepotsCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/SetspawnCmd.java=UTF-8
+encoding//src/net/clashwars/cwcore/commands/SoundCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/SpawnCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/SpawnerCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/SpawnmobCmd.java=UTF-8

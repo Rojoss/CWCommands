@@ -24,16 +24,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
 
 public class ItemUtils {
-
-	/**
-	 * Create a itemStack From a command.
-	 * Will set displayName, Lore, Durability, Enchantments, playerSkulls and colored armor.
-	 * @param args (The arguments from a command or a stringlist.)
-	 * @param md (The material data like item:data)
-	 * @param amt (The amount of the item to give.)
-	 * @param player (The player to send error messages to.)
-	 * @return ItemStack (The itemStack with all data added to it if specified)
-	 */
+	
 	public static ItemStack createItemFromCmd(String[] args, MaterialData md, int amt, CommandSender sender) {
 		ItemStack item = null;
 		String name = null;
@@ -188,24 +179,49 @@ public class ItemUtils {
 		return item;
 	}
 	
-	/**
-	 * Create a book ItemStack with the given values.
-	 * @param signed (Does the book needs to be signed or not)
-	 * @param title (The title to set for the book)
-	 * @param author (The author to set for the book)
-	 * @param pages (Pages with text for the book)
-	 * @return ItemStack (The itemstack with a book with the given values)
-	 */
+	public static ItemStack createItem(String itemStr) {
+		ItemStack item = null;
+		MaterialData md = null;
+		
+		String[] splt = itemStr.split(":");
+		
+		if (splt.length > 0) {
+			String iStr = splt[0];
+			if (splt.length > 1) {
+				if (!splt[1].equals("")) {
+					iStr += ":" + splt[1];
+				}
+			}
+			md = AliasUtils.getFullData(iStr);
+			item = new ItemStack(md.getItemType(), 1, md.getData());
+			
+			if (splt.length > 2) { // ID:DATA:ENCHANTS  -  Sharpness:1,Knockback:5,etc
+				if (!splt[2].equals("")) {
+					String[] enchants = splt[2].split(",");
+					String[] e = null;
+					for (int i = 0; i < enchants.length; i++) {
+						e = enchants[0].split("-");
+						item.addUnsafeEnchantment(AliasUtils.findEnchantment(e[0]), Integer.parseInt(e[1]));
+					}
+				}
+			}
+			
+			if (splt.length > 3) { // ID:DATA:ENCHANTS:NAME
+				if (!splt[3].equals("")) {
+					item.getItemMeta().setDisplayName(splt[3]);
+				}
+			}
+			
+			return item;
+		}
+		return new ItemStack(0);
+	}
+	
+
 	public static ItemStack createBook(boolean signed, String title, String author, String... pages) {
 		return createBook(signed, new Book(title, author, pages));
 	}
 	
-	/**
-	 * This will create the ItemStack with the given values from createBoook
-	 * @param signed (Does the book needs to be signed or not)
-	 * @param book (The book to create a itemstack from)
-	 * @return ItemStack (The itemstack with the book with the given Book)
-	 */
 	public static ItemStack createBook(boolean signed, Book book) {
 		ItemStack b = new ItemStack((signed ? Material.WRITTEN_BOOK : Material.BOOK_AND_QUILL), 1);
 		net.minecraft.server.v1_6_R2.ItemStack newStack = CraftItemStack.asNMSCopy(b);
@@ -232,12 +248,6 @@ public class ItemUtils {
 		return CraftItemStack.asBukkitCopy(newStack);
 	}
 	
-	
-	/**
-	 * Get book data from a itemStack.
-	 * @param book (The book to get the data from)
-	 * @return Book (The Book data from the given itemStack)
-	 */
 	public static Book getBook(ItemStack book) {
 		net.minecraft.server.v1_6_R2.ItemStack nmsStack = CraftItemStack.asNMSCopy(book);
 
