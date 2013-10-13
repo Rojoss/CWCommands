@@ -31,9 +31,7 @@ public class PowertoolCmd implements CommandClass {
 		
 		/* Modifiers + No args */
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
-			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
-			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Bind a command to the item you are holding.");
-			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/powertool <command> [args] (no /)");
+			CmdUtils.commandHelp(sender, lbl);
 			sender.sendMessage(pf + "Modifiers: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-remove" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Remove powertool from held item");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-force" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Override current powertool and force it.");

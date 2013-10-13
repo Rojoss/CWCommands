@@ -1,47 +1,13 @@
 package net.clashwars.cwcore.commands.internal;
 
-import net.clashwars.cwcore.commands.BroadcastCmd;
-import net.clashwars.cwcore.commands.ClearinvCmd;
-import net.clashwars.cwcore.commands.EffectCmd;
-import net.clashwars.cwcore.commands.ExpCmd;
-import net.clashwars.cwcore.commands.FireworkCmd;
-import net.clashwars.cwcore.commands.FlyCmd;
-import net.clashwars.cwcore.commands.FreezeCmd;
-import net.clashwars.cwcore.commands.GamemodeCmd;
-import net.clashwars.cwcore.commands.GiveCmd;
-import net.clashwars.cwcore.commands.GodCmd;
-import net.clashwars.cwcore.commands.GuiCmd;
-import net.clashwars.cwcore.commands.HatCmd;
-import net.clashwars.cwcore.commands.HealCmd;
-import net.clashwars.cwcore.commands.InvseeCmd;
-import net.clashwars.cwcore.commands.ItemCmd;
-import net.clashwars.cwcore.commands.IteminfoCmd;
-import net.clashwars.cwcore.commands.KillCmd;
-import net.clashwars.cwcore.commands.MoreCmd;
-import net.clashwars.cwcore.commands.NickCmd;
-import net.clashwars.cwcore.commands.ParticleCmd;
-import net.clashwars.cwcore.commands.PowertoolCmd;
-import net.clashwars.cwcore.commands.RealnameCmd;
-import net.clashwars.cwcore.commands.RemovepotsCmd;
-import net.clashwars.cwcore.commands.SetspawnCmd;
-import net.clashwars.cwcore.commands.SoundCmd;
-import net.clashwars.cwcore.commands.SpawnCmd;
-import net.clashwars.cwcore.commands.SpawnerCmd;
-import net.clashwars.cwcore.commands.SpawnmobCmd;
-import net.clashwars.cwcore.commands.SpeedCmd;
-import net.clashwars.cwcore.commands.SudoCmd;
-import net.clashwars.cwcore.commands.SuicideCmd;
-import net.clashwars.cwcore.commands.TeleportCmd;
-import net.clashwars.cwcore.commands.TeleporthereCmd;
-import net.clashwars.cwcore.commands.TeleportposCmd;
-import net.clashwars.cwcore.commands.TimeCmd;
-import net.clashwars.cwcore.commands.TopCmd;
-import net.clashwars.cwcore.commands.VanishCmd;
-import net.clashwars.cwcore.commands.WarpCmd;
-import net.clashwars.cwcore.commands.WarpdelCmd;
-import net.clashwars.cwcore.commands.WarpsCmd;
-import net.clashwars.cwcore.commands.WarpsetCmd;
-import net.clashwars.cwcore.commands.WhoisCmd;
+import java.util.List;
+
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.PluginCommandYamlParser;
+import org.bukkit.plugin.Plugin;
+
+import net.clashwars.cwcore.commands.*;
 
 public enum CommandsEnum {
 	BROADCAST(BroadcastCmd.class,"broadcast","bc","bcmsg"),
@@ -85,7 +51,8 @@ public enum CommandsEnum {
 	SPAWN(SpawnCmd.class,"spawn"),
 	ITEMINFO(IteminfoCmd.class,"iteminfo" , "ii", "itemi"),
 	EFFECT(EffectCmd.class,"effect" , "potioneffect", "potion"),
-	SOUND(SoundCmd.class,"sound" , "playsound")
+	SOUND(SoundCmd.class,"sound" , "playsound"),
+	CMDS(CmdsCmd.class,"cmds" , "commands", "command", "cmd")
 	;
 
 	private String[]						aliases;

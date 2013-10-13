@@ -35,11 +35,7 @@ public class ClearinvCmd implements CommandClass {
 		
 		/* Modifiers */
 		if (CmdUtils.hasModifier(args,"-h", false)) {
-			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/" + lbl + ChatColor.DARK_GRAY + "  =====");
-			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/clearinv [player] [item[:data]] [amt]");
-			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Clear a player his inventory.");
-			sender.sendMessage(pf + "Example: " + ChatColor.GRAY + "/ci -a -h - will clear all items at armor/fist");
-			sender.sendMessage(pf + "Example2: " + ChatColor.GRAY + "/ci worst dia 30 -h - Will clear 30 dia in hotbar");
+			CmdUtils.commandHelp(sender, lbl);
 			sender.sendMessage(pf + "Modifiers: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-a" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Clear armor");

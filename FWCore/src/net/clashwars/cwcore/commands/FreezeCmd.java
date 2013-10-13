@@ -27,9 +27,7 @@ public class FreezeCmd implements CommandClass {
 		
 		/* Modifiers */
 		if (CmdUtils.hasModifier(args,"-h", false)) {
-			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
-			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/freeze [player] [on|off]");
-			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Freeze a player so he can't move/(jump) anymore.");
+			CmdUtils.commandHelp(sender, lbl);
 			sender.sendMessage(pf + "Modifiers: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-j" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Allow jumping while frozen");

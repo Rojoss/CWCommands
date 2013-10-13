@@ -31,9 +31,7 @@ public class GuiCmd implements CommandClass {
 		
 		/* Modifiers + No args */
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
-			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
-			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/gui <gui(craft|enderchest|enchant)> [player]");
-			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Show a GUI to a player.");
+			CmdUtils.commandHelp(sender, lbl);
 			sender.sendMessage(pf + "Optional arguments: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "player:<player>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "See enderchest of another player");
 			sender.sendMessage(pf + "Modifiers: ");

@@ -47,10 +47,7 @@ public class FireworkCmd implements CommandClass {
 
 		/* Modifiers + No args */
 		if (CmdUtils.hasModifier(args, "-h", false)) {
-			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/" + lbl
-					+ ChatColor.DARK_GRAY + "  =====");
-			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/firework <amt> [player] [optional args]");
-			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Give or launch fireworks.");
+			CmdUtils.commandHelp(sender, lbl);
 			sender.sendMessage(pf + "Optional args: ");
 			sender.sendMessage(pf + ChatColor.GRAY + "If any of the optional args are missing it will randomize it! :)");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "p:<power>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set the power: "

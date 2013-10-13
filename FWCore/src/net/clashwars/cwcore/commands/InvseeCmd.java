@@ -24,9 +24,7 @@ public class InvseeCmd implements CommandClass {
 		
 		/* Modifiers + No args */
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
-			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
-			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Look into a player his inventory and edit it.");
-			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/invsee <player>");
+			CmdUtils.commandHelp(sender, lbl);
 			sender.sendMessage(pf + "Modifiers: ");
 			return true;
 		}

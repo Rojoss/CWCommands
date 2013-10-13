@@ -31,9 +31,7 @@ public class IteminfoCmd implements CommandClass {
 		
 		/* Modifiers */
 		if (CmdUtils.hasModifier(args,"-h", false)) {
-			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
-			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/iteminfo of /ii");
-			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Show information about the item your holding.");
+			CmdUtils.commandHelp(sender, lbl);
 			sender.sendMessage(pf + "Modifiers: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-d" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Show extra details (durability, names, lore, enchants, aliases)");
 			return true;

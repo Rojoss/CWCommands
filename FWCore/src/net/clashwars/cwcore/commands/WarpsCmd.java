@@ -26,9 +26,7 @@ public class WarpsCmd implements CommandClass {
 		
 		/* Modifiers + No args */
 		if (CmdUtils.hasModifier(args,"-h", false)) {
-			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
-			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/warps [server]");
-			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "List all warps");
+			CmdUtils.commandHelp(sender, lbl);
 			sender.sendMessage(pf + "Modifiers: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-*" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "List warps from all servers.");
 			return true;

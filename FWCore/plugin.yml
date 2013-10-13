@@ -4,24 +4,28 @@ version: '1.0'
 author: ClashWars
 description: ClashWars Core plugin
 commands:
+  cmds:
+    description: Show this command help pages
+    usage: /<command> <page> [plugin]
+    aliases: [commands,command,cmd]
   broadcast:
     description: Broadcast a message
     usage: /<command> <msg>
     aliases: [bc,bcmsg]
   freeze:
-    description: Freeze a player
+    description: Toggle freeze mode
     usage: /<command> [player] [on|off]
     aliases: [lock]
   god:
-    description: Give a player godmode
+    description: Toggle god mode
     usage: /<command> [player] [on|off]
     aliases: [godmode]
   fly:
-    description: Give a player flymode
+    description: Toggle fly mode
     usage: /<command> [player] [on|off]
     aliases: [flymode]
   vanish:
-    description: Vanish a player
+    description: Toggle invisibility
     usage: /<command> [player] [on|off]
     aliases: [v,invis]
   gamemode:
@@ -45,49 +49,49 @@ commands:
     aliases: [rname]
   time:
     description: Change the time
-    usage: /<command> <get|500ticks|24:00|10pm|day|dawn|noon|afternoon|dusk|midnight|night>
+    usage: /<command> <get|500ticks|24:00|10pm|time_name>
     aliases: [day,night]
   removepots:
-    description: Remove potion effects from a player
+    description: Remove potion effects
     usage: /<command> [player]
     aliases: [removepotions,rpots]
   invsee:
-    description: See/Edit a player his inventory
+    description: See/Modify a player his inventory
     usage: /<command> <player>
     aliases: [invedit]
   item:
     description: Spawn items
-    usage: /<command> <item[:data]> [amt] [optional args]
+    usage: /<command> <item[:data]> [amt]
     aliases: [i]
   give:
     description: Give items to a player
-    usage: /<command> <player> <item[:data]> [amt] [optional args]
+    usage: /<command> <player> <item[:data]> [amt]
   clearinv:
     description: Clear items in a player his inventory
     usage: /<command> [player] [item[:data]] [amount]
     aliases: [ci,clearinventory]
   hat:
-    description: Set a player his hat
-    usage: /<command> <item[:data]> [player] [optional args]
+    description: Equip a hat
+    usage: /<command> <item[:data]> [player]
     aliases: [head]
   more:
-    description: Create more items of the item in hand.
+    description: Spawn more items in hand
     usage: /<command> [amt]
     aliases: [stack]
   gui:
-    description: Open a GUI like workbench, enchanttable, enderchest
+    description: Open a GUI like workbench
     usage: /<command> <gui> [player]
   top:
     description: Teleport to the top.
     usage: /<command>
   setspawn:
-    description: Set the server spawn location
+    description: Set the server spawn
     usage: /<command>
   spawn:
     description: Teleport to the spawn.
     usage: /<command>
   suicide:
-    description: Kill yourself.
+    description: Kill yourself
     usage: /<command>
     aliases: [killme]
   kill:
@@ -99,15 +103,15 @@ commands:
     usage: /<command> <mob>
     aliases: [mobspawner,monsterspawner,changespawner]
   spawnmob:
-    description: Spawn mobs
-    usage: /<command> [mob[:data],mob[:data],...] [amount] [Optional args]
+    description: Advanced mob/entity spawning
+    usage: /<command> mob[,mob,mob] [amt]
     aliases: [spawnm,mobspawn,sm,mspawn]
   powertool:
-    description: Bind a command to the item you are holding.
-    usage: /<command> <cmd> <args>
+    description: Bind a command to a tool
+    usage: /<command> <cmd + args>
     aliases: [pt,macro,bind]
   teleport:
-    description: Teleport yourself or a given player to <target-player>
+    description: Teleport to a player
     usage: /<command> <target-player> [player]
     aliases: [tp]
   teleporthere:
@@ -115,47 +119,47 @@ commands:
     usage: /<command> <player>
     aliases: [tphere]
   teleportpos:
-    description: Teleport to a location or another world
+    description: Teleport to a location or world
     usage: /<command> <x,y,z> [world] [player]
     aliases: [tppos, tploc]
   sudo:
     description: Force a player to run a command
-    usage: /<command> <player> <cmd>
+    usage: /<command> <player> <cmd + args>
   whois:
     description: Show detailed info about a player
     usage: /<command> <player>
   setwarp:
-    description: Set a warp with the given name
+    description: Set a warp
     usage: /<command> <name>
   delwarp:
-    description: Delete a warp with the given name
+    description: Delete a warp
     usage: /<command> <name>
   warp:
-    description: Teleport to a warp
+    description: Teleport to a warp location
     usage: /<command> <name>
   warps:
     description: List all warps
-    usage: /<command> [server]
+    usage: /<command>
   exp:
-    description: Take, Give, Set or get a player his experience
-    usage: /<command> <get|add|take|set> <player> [amount[L]
+    description: modify a player his experience
+    usage: /<command> <get|add|take|set> <player> [amount[L]]
   firework:
     description: Give or launch fireworks.
-    usage: /<command> <amt> [player] [optional args]
+    usage: /<command> <amt> [player]
     aliases: [fw]
   particle:
     description: Play particle effects.
-    usage: /<command> <particle> [params] [optional args]
+    usage: /<command> <particle> [params]
     aliases: [particles]
   iteminfo:
-    description: Show information about the item your holding.
+    description: Show information about held item
     usage: /<command>
     aliases: [ii, itemi]
   effect:
     description: Apply a potion effect
-    usage: /<command> <effect> [duration] [strength] [optional args]
+    usage: /<command> <effect> [duration] [strength]
     aliases: [potioneffect, potion]
   sound:
     description: Play a sound
-    usage: /<command> <sound> [volume] [pitch] [optional args]
+    usage: /<command> <sound> [volume] [pitch]
     aliases: [playsound]

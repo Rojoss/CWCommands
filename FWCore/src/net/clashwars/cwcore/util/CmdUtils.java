@@ -6,17 +6,49 @@ import net.minecraft.server.v1_6_R2.EntityPlayer;
 import net.minecraft.server.v1_6_R2.MinecraftServer;
 import net.minecraft.server.v1_6_R2.PlayerInteractManager;
 
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CmdUtils {
 	
-	/**
-	 * Check if  a command has modifiers in them like -s etc.
-	 * @param args (All command arguments)
-	 * @param mod (the modifier to check for like "-s")
-	 * @return boolean (If it finds the modifier true else false)
-	 */
+	public static String descFromName(String str) {	
+		for (Command cmd : CWCore.cmdList){
+			if (cmd.getName().equalsIgnoreCase(str)) {
+				return cmd.getDescription();
+			}
+		}
+		return "";
+	}
+	
+	public static String syntaxFromName(String str) {	
+		for (Command cmd : CWCore.cmdList){
+			if (cmd.getName().equalsIgnoreCase(str)) {
+				return cmd.getUsage();
+			}
+		}
+		return "";
+	}
+	
+	public static String aliasesFromName(String str) {	
+		for (Command cmd : CWCore.cmdList){
+			if (cmd.getName().equalsIgnoreCase(str)) {
+				return cmd.getAliases().toString();
+			}
+		}
+		return "";
+	}
+	
+	public static void commandHelp(CommandSender sender, String lbl) {
+		sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
+		sender.sendMessage(CWCore.pf + "Usage: " + ChatColor.DARK_PURPLE + lbl + " " + CmdUtils.syntaxFromName(lbl));
+		sender.sendMessage(CWCore.pf + "Desc: " + ChatColor.GRAY + CmdUtils.descFromName(lbl));
+		sender.sendMessage(CWCore.pf + "Aliases: " + ChatColor.GRAY + CmdUtils.aliasesFromName(lbl));
+	}
+	
+	
 	public static boolean hasModifier(String[] args, String mod, boolean exact) {
 		for (int i = 0; i < args.length; i++) {
 			if (exact) {
@@ -32,13 +64,6 @@ public class CmdUtils {
 		return false;
 	}
 	
-	/**
-	 * Return arguments without the modifier
-	 * This is used to remove the modifier so it can be used on any place in the command.
-	 * @param args (All command arguments)
-	 * @param mod (the modifier to remove like "-s")
-	 * @return String[] (New args list without modifiers)
-	 */
 	public static String[] modifiedArgs(String[] args, String mod, boolean exact) {
 		int i;
         int sloc = -1;
@@ -69,13 +94,6 @@ public class CmdUtils {
         return args2;
 	}
 	
-	/**
-	 * Return the index in the StringList of the argument given.
-	 * This is used to check for optional arguments like "name:&6name"
-	 * @param args (All command arguments)
-	 * @param argument (The argument to check for like "name:")
-	 * @return int (Index of string)
-	 */
 	public static int getArgIndex(String[] args, String argument, boolean exact) {
 		for (int i = 0; i < args.length; i++) {
 			if (exact) {

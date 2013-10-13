@@ -23,9 +23,7 @@ public class WarpdelCmd implements CommandClass {
 		
 		/* Modifiers + No args */
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
-			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
-			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/delwarp <name>");
-			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Delete a warp.");
+			CmdUtils.commandHelp(sender, lbl);
 			return true;
 		}
 		

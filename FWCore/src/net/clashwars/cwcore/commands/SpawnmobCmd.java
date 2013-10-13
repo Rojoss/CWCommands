@@ -33,9 +33,7 @@ public class SpawnmobCmd implements CommandClass {
 		int amt = 1;
 		
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
-			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
-			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/spawnmob <mob>[,mob,...] [amount] [Optional args]");
-			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Advanced moband entity spawning system.");
+			CmdUtils.commandHelp(sender, lbl);
 			sender.sendMessage(pf + "Optional args: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "p:<player>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Spawn the mob at this player");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "name:<name>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set display name of the mob");

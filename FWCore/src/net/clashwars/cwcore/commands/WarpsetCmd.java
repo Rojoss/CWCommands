@@ -25,9 +25,7 @@ public class WarpsetCmd implements CommandClass {
 		
 		/* Modifiers + No args */
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
-			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
-			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/setwarp <name>");
-			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Set a warp and save it.");
+			CmdUtils.commandHelp(sender, lbl);
 			return true;
 		}
 		

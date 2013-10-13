@@ -24,9 +24,7 @@ public class SuicideCmd implements CommandClass {
 		
 		/* Modifiers */
 		if (CmdUtils.hasModifier(args,"-h", false)) {
-			sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
-			sender.sendMessage(pf + "Usage: " + ChatColor.DARK_PURPLE + "/suicide");
-			sender.sendMessage(pf + "Desc: " + ChatColor.GRAY + "Kill yourself.");
+			CmdUtils.commandHelp(sender, lbl);
 			return true;
 		}
 		

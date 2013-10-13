@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.TreeType;
 import org.bukkit.block.Biome;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -26,6 +27,7 @@ public class AliasesConfig extends Config {
 	public static Map<Biome, Set<String>>				searchBiomes	= new HashMap<Biome, Set<String>>();
 	public static Map<PotionEffectType, Set<String>>	searchPotions	= new HashMap<PotionEffectType, Set<String>>();
 	public static Map<Sound, Set<String>>				searchSounds	= new HashMap<Sound, Set<String>>();
+	public static Map<TreeType, Set<String>>			searchTrees		= new HashMap<TreeType, Set<String>>();
 
 	@Override
 	public void init() {
@@ -50,6 +52,7 @@ public class AliasesConfig extends Config {
             searchBiomes.clear();
             searchSounds.clear();
             searchPotions.clear();
+            searchTrees.clear();
             
             for (Material m : Material.values()) {
                 searchMaterials.put(m, new HashSet<String>(cu.getStringList("search-aliases.materials." + m.name(), m.name())));
@@ -69,6 +72,10 @@ public class AliasesConfig extends Config {
             
             for (Sound s : Sound.values()) {
             	searchSounds.put(s, new HashSet<String>(cu.getStringList("search-aliases.sounds." + s.name(), s.name())));
+			}
+            
+            for (TreeType t : TreeType.values()) {
+            	searchTrees.put(t, new HashSet<String>(cu.getStringList("search-aliases.trees." + t.name(), t.name())));
 			}
             
 			for (PotionEffectType p : PotionEffectType.values()) {
