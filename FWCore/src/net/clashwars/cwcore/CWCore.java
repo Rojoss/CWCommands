@@ -60,7 +60,6 @@ public class CWCore {
 	private HashMap<String, Player> 		viewList		= new HashMap<String, Player>();
 	public static List<Command> 			cmdList 		= new ArrayList<Command>();
 	public static List<Plugin> 				plugins 		= null;
-	private ArrayList<String>				freeze			= new ArrayList<String>();
 	
 	private SqlUpdateRunnable				sqlr;
 
@@ -155,7 +154,6 @@ public class CWCore {
 		BukkitScheduler sch = getServer().getScheduler();
 
 		sch.runTaskTimerAsynchronously(getPlugin(), (sqlr = new SqlUpdateRunnable()), 0, 600);
-		//sch.runTaskTimer(getPlugin(), new SaveRunnable(this), 0, 1200);
 	}
 	
 	private void registerChannels() {
@@ -249,10 +247,6 @@ public class CWCore {
 	/* PlayerManager */
 	public PlayerManager getPlayerManager() {
 		return pm;
-	}
-
-	public ArrayList<String> getFrozenPlayers() {
-		return freeze;
 	}
 	
 	/* Other */

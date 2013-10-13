@@ -2,6 +2,7 @@ package net.clashwars.cwcore.commands;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.util.HashMap;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
@@ -16,46 +17,42 @@ import org.bukkit.command.CommandSender;
 public class BroadcastCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;;
 	
 	public BroadcastCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("p", "No prefix");
+		modifiers.put("*", "Broadcast the message on all servers.");
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
-		String pf = cwc.getPrefix();
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String msg = "";
 		
-		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h", true) || args.length < 1) {
-			CmdUtils.commandHelp(sender, lbl);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-p" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No prefix");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-*" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Broadcast on all servers.");
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
+		if (CmdUtils.hasModifier(cmdArgs,"-h", true) || args.length < 1) {
+			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		boolean prefix = true;
-		if (CmdUtils.hasModifier(args,"-p", true)) {
-			prefix = false;
-			args = CmdUtils.modifiedArgs(args,"-p", true);
-		}
-		boolean bungee = false;
-		if (CmdUtils.hasModifier(args,"-*", true)) {
-			bungee = true;
-			args = CmdUtils.modifiedArgs(args,"-*", true);
-		}
 		
-		/* args */
+		boolean prefix = !CmdUtils.hasModifier(cmdArgs, "p");
+		boolean bungee = CmdUtils.hasModifier(cmdArgs, "*");
+		
+		//Args
 		String message = Utils.implode(args, " ", 0);
 		if (prefix) {
 			msg = "" + ChatColor.DARK_GRAY + ChatColor.BOLD + "[" 
 			+ ChatColor.DARK_RED + ChatColor.BOLD + "CW BC" + ChatColor.DARK_GRAY + ChatColor.BOLD + "] " 
-			+ ChatColor.GOLD + ChatColor.BOLD + Utils.integrateColor(message);
+			+ ChatColor.GOLD + ChatColor.BOLD + message;
 		} else {
 			msg = message;
 		}
 		
-		/* Action */
+		
+		//Action
 		if (bungee) {
 			try {
 				ByteArrayOutputStream b = new ByteArrayOutputStream();

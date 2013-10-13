@@ -1,5 +1,6 @@
 package net.clashwars.cwcore.util;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -7,6 +8,7 @@ import net.clashwars.cwcore.entity.CWPlayer;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.FireworkEffect.Type;
 
 
 public class Utils {
@@ -44,12 +46,9 @@ public class Utils {
 		return implode(arr, " ");
 	}
 	
-	/**
-	 * Add color to a string for like nicknames and itemnames etc.
-	 * It will replace all color codes like &1<>9 &a<>f And the format codes.
-	 * @param str (The string to add the color to)
-	 * @return String (String with integrated colors)
-	 */
+	
+	
+	//Integrate colors in a string
 	public static String integrateColor(String str) {
 		for (ChatColor c : ChatColor.values()) {
 			str = str.replaceAll("&" + c.getChar() + "|&" + Character.toUpperCase(c.getChar()), c.toString());
@@ -57,20 +56,16 @@ public class Utils {
 		return str;
 	}
 	
-	/**
-	 * Remove color codes like &6 from a string
-	 * @param str (The string to remove the color from)
-	 * @return String (String without colors)
-	 */
+	
+	
+	//Remove color codes from a string.
 	public static String stripColorCodes(String str) {
 		return Pattern.compile("&([0-9a-fk-orA-FK-OR])").matcher(str).replaceAll("");
 	}
 	
-	/**
-	 * Check if a string is a number or not.
-	 * @param str (The string to check)
-	 * @return Boolean
-	 */
+	
+	
+	//Check if string is a number.
 	public static boolean isNumber(String str) {
         try {
             Integer.parseInt(str);
@@ -79,6 +74,8 @@ public class Utils {
             return false;
         }
     }
+	
+	
 	
 	public static String[] getPowerToolsList(CWPlayer cwp) {
 		String[] ptools = cwp.getPowertool().split("»");
@@ -112,6 +109,9 @@ public class Utils {
 		return implode(ptools, "»");
 	}
 	
+	
+	
+	//Get a random Color
 	public static Color getRandomColor() {
 		Random rand = new Random();
 		int r = rand.nextInt(255);
@@ -119,5 +119,74 @@ public class Utils {
 		int b = rand.nextInt(255);
 
 		return Color.fromRGB(r, g, b);
+	}
+
+	
+	
+	//Get int from string
+	public static int getInt(String str) {
+		try {
+		 	return Integer.parseInt(str);
+		 } catch (NumberFormatException e) {
+		 }
+		return -1;
+	}
+	
+	//Get float from string
+	public static float getFloat(String str) {
+		try {
+		 	return Float.parseFloat(str);
+		 } catch (NumberFormatException e) {
+		 }
+		return -1;
+	}
+	
+	//Get colors or a color from string
+	public static ArrayList<Color> getColors(String str) {
+		ArrayList<Color> colors = new ArrayList<Color>();
+		
+		String[] clrs = str.split(",");
+		if (clrs.length > 0) {
+			for (String color : clrs) {
+				colors.add(getColor(color));
+			}
+		} else {
+			colors.add(getColor(str));
+		}
+		
+		return colors;
+	}
+	public static Color getColor(String str) {
+		int color = -1;
+		
+		if (str.contains("#")) {
+			String[] clr = str.split("#");
+			if (clr[1].matches("[0-9A-Fa-f]+")) {
+				color = Integer.parseInt(clr[1], 16);
+			}
+		} else {
+			if (str.matches("[0-9A-Fa-f]+")) {
+				color = Integer.parseInt(str, 16);
+			}
+		}
+		
+		return Color.fromRGB(color);
+	}
+	
+	//Get a firework type effect from string
+	public static Type getFireworkEffect(String str) {
+		Type effectType = null;
+		if (str.startsWith("sb")) {
+			effectType = Type.BALL;
+		} else if (str.startsWith("bb")) {
+			effectType = Type.BALL_LARGE;
+		} else if (str.startsWith("c")) {
+			effectType = Type.CREEPER;
+		} else if (str.startsWith("bu")) {
+			effectType = Type.BURST;
+		} else if (str.startsWith("s")) {
+			effectType = Type.STAR;
+		}
+		return effectType;
 	}
 }

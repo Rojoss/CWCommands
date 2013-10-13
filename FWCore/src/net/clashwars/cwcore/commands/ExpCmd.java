@@ -1,5 +1,7 @@
 package net.clashwars.cwcore.commands;
 
+import java.util.HashMap;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.CmdUtils;
@@ -13,33 +15,34 @@ import org.bukkit.entity.Player;
 public class ExpCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public ExpCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("s", "No messages");
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		String type = null;
 		int amt = -1;
 		Boolean levels = false;
 		
-		/* Modifiers + No args */
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 2) {
-			CmdUtils.commandHelp(sender, lbl);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
+			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
+
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		
-		/* 1 arg (Action Type) */
+		
+		//Args
 		if (args.length >= 1) {
 			if (args[0].startsWith("ge") || args[0].startsWith("sh")) {
 				type = "get";
@@ -50,14 +53,20 @@ public class ExpCmd implements CommandClass {
 			} else if (args[0].startsWith("se")) {
 				type = "set";
 			}
+			if (type == null) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid action. It can be get, add, take or set.");
+				return true;
+			}
 		}
 		
-		/* 2 args (Player) */
 		if (args.length >= 2) {
 			player = cwc.getServer().getPlayer(args[1]);
+			if (player == null) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
+				return true;
+			}
 		}
 		
-		/* 3 args (Amount) */
 		if (args.length >= 3 && type != "get") {
 			String sAmt = args[2];
 			if (sAmt.toLowerCase().endsWith("l")) {
@@ -72,17 +81,8 @@ public class ExpCmd implements CommandClass {
 	    	}
 		}
 		
-		/* null checks */
-		if (type == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid action. It can be get, add, take or set.");
-			return true;
-		}
-		if (player == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
-			return true;
-		}
 		
-		/* Action */
+		//Action
 		ExperienceManager expMan = new ExperienceManager(player);
 		
 		if (type == "get") {

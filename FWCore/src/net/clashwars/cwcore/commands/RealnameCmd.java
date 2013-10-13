@@ -28,7 +28,7 @@ public class RealnameCmd implements CommandClass {
 		
 		/* Modifiers */
 		if (CmdUtils.hasModifier(args,"-h", false)) {
-			CmdUtils.commandHelp(sender, lbl);
+			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
 		

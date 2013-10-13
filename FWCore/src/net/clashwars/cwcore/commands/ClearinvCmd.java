@@ -2,6 +2,7 @@ package net.clashwars.cwcore.commands;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.util.HashMap;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
@@ -19,13 +20,23 @@ import org.bukkit.material.MaterialData;
 public class ClearinvCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public ClearinvCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("s", "No messages");
+		modifiers.put("a", "Clear armor slots");
+		modifiers.put("i", "Clear inventory slots");
+		modifiers.put("b", "Clear hotbar slots");
+		modifiers.put("f", "Clear items in first");
+		modifiers.put("e", "Clear items in enderchest");
+		modifiers.put("*", "Look for players on other servers.");
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		String pplayer = null;
@@ -33,60 +44,27 @@ public class ClearinvCmd implements CommandClass {
 		MaterialData md = null;
 		int amt = -1;
 		
-		/* Modifiers */
-		if (CmdUtils.hasModifier(args,"-h", false)) {
-			CmdUtils.commandHelp(sender, lbl);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-a" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Clear armor");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-i" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Clear inventory");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-b" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Clear hotbar");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-f" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Clear item in fist/hand");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-e" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Clear items in enderchest");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-*" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Clear items from players on other servers.");
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
+		if (CmdUtils.hasModifier(cmdArgs,"-h", true)) {
+			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
+		
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
+		boolean armor = CmdUtils.hasModifier(cmdArgs, "a");
+		boolean inventory = CmdUtils.hasModifier(cmdArgs, "i");
+		boolean bar = CmdUtils.hasModifier(cmdArgs, "b");
+		boolean hand = CmdUtils.hasModifier(cmdArgs, "f");
+		boolean echest = CmdUtils.hasModifier(cmdArgs, "e");
+		boolean bungee = CmdUtils.hasModifier(cmdArgs, "*");
 		boolean all = true;
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
-		boolean armor = false;
-		if (CmdUtils.hasModifier(args,"-a", true)) {
-			armor = true;
-			args = CmdUtils.modifiedArgs(args,"-a", true);
-		}
-		boolean inventory = false;
-		if (CmdUtils.hasModifier(args,"-i", true)) {
-			inventory = true;
-			args = CmdUtils.modifiedArgs(args,"-i", true);
-		}
-		boolean bar = false;
-		if (CmdUtils.hasModifier(args,"-b", true)) {
-			bar = true;
-			args = CmdUtils.modifiedArgs(args,"-b", true);
-		}
-		boolean hand = false;
-		if (CmdUtils.hasModifier(args,"-f", true)) {
-			hand = true;
-			args = CmdUtils.modifiedArgs(args,"-f", true);
-		}
-		boolean echest = false;
-		if (CmdUtils.hasModifier(args,"-e", true)) {
-			echest = true;
-			args = CmdUtils.modifiedArgs(args,"-e", true);
-		}
-		boolean bungee = false;
-		if (CmdUtils.hasModifier(args,"-*", true)) {
-			bungee = true;
-			args = CmdUtils.modifiedArgs(args,"-*", true);
-		}
 		if (armor || inventory || bar || hand || echest) {
 			all = false;
 		}
 		
-		/* Console check */
+		
+		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 1) {
 				sender.sendMessage(pf + ChatColor.RED + "You need to specify a player to use this on the console!!");
@@ -97,19 +75,18 @@ public class ClearinvCmd implements CommandClass {
 			player = (Player) sender;
 		}
 		
-		/* 1 arg (Player) */
+		
+		//Args
 		if (args.length >= 1) {
 			player = cwc.getServer().getPlayer(args[0]);
 			pplayer = args[0];
 		}
 		
-		/* 2 args material:data) */
 		if (args.length >= 2) {
 			md = AliasUtils.getFullData(args[1]);
 			pitem = args[1];
 		}
 		
-		/* 3 args (Amount) */
 		if (args.length >= 3) {
 			try {
 			 	amt = Integer.parseInt(args[2]);
@@ -119,7 +96,8 @@ public class ClearinvCmd implements CommandClass {
 			 }
 		}
 		
-		/* null checks */
+		
+		//Action
 		if (player == null && !bungee) {
 			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
 			return true;
@@ -129,7 +107,6 @@ public class ClearinvCmd implements CommandClass {
 		 	return true;
 		}
 		
-		/* Action */
 		if (bungee) {
 			try {
 				ByteArrayOutputStream b = new ByteArrayOutputStream();

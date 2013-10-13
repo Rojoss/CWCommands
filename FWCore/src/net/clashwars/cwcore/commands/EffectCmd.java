@@ -1,5 +1,7 @@
 package net.clashwars.cwcore.commands;
 
+import java.util.HashMap;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.AliasUtils;
@@ -15,57 +17,43 @@ import org.bukkit.potion.PotionEffectType;
 public class EffectCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public EffectCmd(CWCore cwc) {
 		this.cwc = cwc;
+		optionalArgs.put("p:<player>", "Apply effect on this player");
+		modifiers.put("s", "No messages");
+		modifiers.put("a", "Ambient effect (From  Beacons)");
+		modifiers.put("r", "Restricted wont override previous effects");
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		PotionEffectType effect = null;
 		int secs = 60;
 		int strength = 1;
 		
-		/* Modifiers + No args */
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
-			CmdUtils.commandHelp(sender, lbl);
-			sender.sendMessage(pf + "Optional args: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "player:<player>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Apply effect on this player.");
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-a" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Ambient effect (From  Beacons)");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-r" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Restricted wont override previous effects.");
+			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
 		
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
-		boolean ambient = false;
-		if (CmdUtils.hasModifier(args,"-a", true)) {
-			ambient = true;
-			args = CmdUtils.modifiedArgs(args,"-a", true);
-		}
-		boolean restricted = false;
-		if (CmdUtils.hasModifier(args,"-r", true)) {
-			restricted = true;
-			args = CmdUtils.modifiedArgs(args,"-r", true);
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
+		boolean ambient = CmdUtils.hasModifier(cmdArgs, "a");
+		boolean restricted = CmdUtils.hasModifier(cmdArgs, "r");
+		boolean targetSet = CmdUtils.hasOptionalArg(cmdArgs, "p:");
+		String ps = CmdUtils.getOptionalArg(cmdArgs, "p:");
+		if (ps != null) {
+			player = cwc.getServer().getPlayer(ps);
 		}
 		
-		boolean targetSet = false;
-		if (CmdUtils.hasModifier(args,"player:", false)) {
-			targetSet = true;
-			player = CmdUtils.getPlayer(args, "player:", cwc);
-			args = CmdUtils.modifiedArgs(args,"player:", false);
-		} else {
-			
-		}
-		
-		/* Console check */
+		//Console
 		if (!(sender instanceof Player)) {
 			if (targetSet == false) {
 				sender.sendMessage(pf + ChatColor.RED + "Specify a player to apply the effect on for console usage.");
@@ -77,12 +65,11 @@ public class EffectCmd implements CommandClass {
 			}
 		}
 		
-		/* 1 arg (Effect) */
+		//Args
 		if (args.length >= 1) {
 			effect = AliasUtils.findPotion(args[0]);
 		}
 		
-		/* 2 args (duration) */
 		if (args.length >= 2) {
 			try {
 			 	secs = Integer.parseInt(args[1]);
@@ -92,7 +79,6 @@ public class EffectCmd implements CommandClass {
 			 }
 		}
 		
-		/* 3 args (strength) */
 		if (args.length >= 3) {
 			try {
 			 	strength = Integer.parseInt(args[2]);
@@ -107,7 +93,8 @@ public class EffectCmd implements CommandClass {
 			return true;
 		}
 		
-		/* Action */
+
+		//Action
 		int s = strength;
 		if (strength > 0) {
 			s = strength - 1;

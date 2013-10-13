@@ -33,7 +33,7 @@ public class SpawnmobCmd implements CommandClass {
 		int amt = 1;
 		
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
-			CmdUtils.commandHelp(sender, lbl);
+			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			sender.sendMessage(pf + "Optional args: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "p:<player>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Spawn the mob at this player");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "name:<name>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set display name of the mob");

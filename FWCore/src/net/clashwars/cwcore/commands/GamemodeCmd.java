@@ -1,5 +1,7 @@
 package net.clashwars.cwcore.commands;
 
+import java.util.HashMap;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.entity.CWPlayer;
@@ -15,32 +17,33 @@ import org.bukkit.entity.Player;
 public class GamemodeCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public GamemodeCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("s", "No messages");
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		GameMode mode = null;
 		Player player = null;
 		CWPlayer cwp = null;
 		
-		/* Modifiers + No args */
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
-			CmdUtils.commandHelp(sender, lbl);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
+			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
+
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		
-		/* Console check */
+		
+		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 2) {
 				sender.sendMessage(pf + ChatColor.RED + "You need to specify a player to use this on the console!");
@@ -50,38 +53,35 @@ public class GamemodeCmd implements CommandClass {
 			player = (Player) sender;
 		}
 		
-		/* 1 arg (Gamemode) */
+		//Args
 		if (args.length >= 1) {
-			if (args[0].equalsIgnoreCase("0")) {
+			if (args[0].equalsIgnoreCase("0") || args[0].toLowerCase().startsWith("s")) {
 				mode = GameMode.SURVIVAL;
-			} else if (args[0].equalsIgnoreCase("1")) {
+			} else if (args[0].equalsIgnoreCase("1") || args[0].toLowerCase().startsWith("c")) {
 				mode = GameMode.CREATIVE;
-			} else if (args[0].equalsIgnoreCase("2")) {
+			} else if (args[0].equalsIgnoreCase("2") || args[0].toLowerCase().startsWith("a")) {
 				mode = GameMode.ADVENTURE;
+			}
+			if (mode == null) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid gamemode.");
+				return true;
 			}
 		}
 		
-		/* 2 args (Player) */
 		if (args.length >= 2) {
 			player = cwc.getServer().getPlayer(args[1]);
+			if (player == null) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
+				return true;
+			}
 		}
-		
-		/* null checks */
-		if (mode == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid gamemode.");
-			return true;
-		}
-		if (player == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
-			return true;
-		}
-		
-		/* Action */
 		cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
 		
+		
+		//Action
 		player.setGameMode(mode);
 		cwp.setGamemode(mode.getValue());
-		if (player.getGameMode().getValue() != 1) {
+		if (player.getGameMode() != GameMode.CREATIVE) {
 			if (cwp.getFlying() == true) {
 				player.setAllowFlight(true);
 				player.setFlying(true);
@@ -89,7 +89,12 @@ public class GamemodeCmd implements CommandClass {
 			} else {
 				LocationUtils.tpToTop(cwc, player);
 			}
+		} else {
+			player.setAllowFlight(true);
+			player.setFlying(true);
+			cwp.setFlying(true);
 		}
+		
 		if (!silent) {
 			player.sendMessage(pf + "Your gamemode is set to " + ChatColor.DARK_PURPLE + mode.name().toLowerCase());
 			if (sender.getName() != player.getName())

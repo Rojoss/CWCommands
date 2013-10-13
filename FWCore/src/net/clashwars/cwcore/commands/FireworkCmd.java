@@ -1,6 +1,7 @@
 package net.clashwars.cwcore.commands;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import net.clashwars.cwcore.CWCore;
@@ -25,184 +26,53 @@ import org.bukkit.inventory.meta.FireworkMeta;
 public class FireworkCmd implements CommandClass {
 
 	private CWCore	cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 
 	public FireworkCmd(CWCore cwc) {
 		this.cwc = cwc;
+		optionalArgs.put("p:<power>", "Set the power amount");
+		optionalArgs.put("e:<effect>", "Set the effect type: sball, bball, creep, burst, star");
+		optionalArgs.put("c:<#RRGGBB>[,#..]", "Set colors");
+		optionalArgs.put("fc:<#RRGGBB>", "Set fade colors");
+		modifiers.put("s", "No messages");
+		modifiers.put("fl", "Add flicker/twinkle effect");
+		modifiers.put("fa", "Add fade/trail effect");
+		modifiers.put("l", "Launch the firework");
+		modifiers.put("e", "Play firework effect without rocket");
+		modifiers.put("t", "Use target location for effect/launch");
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		int amt = 1;
 		int chance = 0;
-		int power = 0;
-		boolean trail = false;
-		boolean flicker = false;
-		Type effectType = null;
-		ArrayList<Color> colors = new ArrayList<Color>();
-		ArrayList<Color> fcolors = new ArrayList<Color>();
-		int itype = 0;
 		Location loc = null;
 
-		/* Modifiers + No args */
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
 		if (CmdUtils.hasModifier(args, "-h", false)) {
-			CmdUtils.commandHelp(sender, lbl);
-			sender.sendMessage(pf + "Optional args: ");
-			sender.sendMessage(pf + ChatColor.GRAY + "If any of the optional args are missing it will randomize it! :)");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "p:<power>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set the power: "
-					+ ChatColor.YELLOW + "0, 1, 2, 3, 4, 5");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "e:<effect>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set the effect type: "
-					+ ChatColor.YELLOW + "sball, bball, creep, burst, star");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "a:<trail|flicker>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set the after effect: "
-					+ ChatColor.YELLOW + "trail or flicker");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "c:<#RRGGBB>,[...],etc" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY
-					+ "Add colors can add multiple.");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "fc:<#RRGGBB>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY
-					+ "Add a fade colors can add multiple.");
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-l" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY
-					+ "Launch the rocket instead of giving it.");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-e" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Create the firework effect");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-t" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY
-					+ "Create/launch firework at target location.");
+			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
+			sender.sendMessage(pf + ChatColor.GOLD + "It will randomize everything you don't specify! :D");
 			return true;
 		}
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args, "-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args, "-s", true);
-		}
-		boolean launch = false;
-		if (CmdUtils.hasModifier(args, "-l", true)) {
-			launch = true;
-			args = CmdUtils.modifiedArgs(args, "-l", true);
-		}
-		boolean effectOnly = false;
-		if (CmdUtils.hasModifier(args, "-e", true)) {
-			effectOnly = true;
-			args = CmdUtils.modifiedArgs(args, "-e", true);
-		}
-		boolean targeted = false;
-		if (CmdUtils.hasModifier(args, "-t", true)) {
-			targeted = true;
-			args = CmdUtils.modifiedArgs(args, "-t", true);
-		}
+		
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
+		boolean trail = CmdUtils.hasModifier(cmdArgs, "fa");
+		boolean flicker = CmdUtils.hasModifier(cmdArgs, "fl");
+		boolean launch = CmdUtils.hasModifier(cmdArgs, "l");
+		boolean effectOnly = CmdUtils.hasModifier(cmdArgs, "e");
+		boolean targeted = CmdUtils.hasModifier(cmdArgs, "t");
+		int power = Utils.getInt(CmdUtils.getOptionalArg(cmdArgs, "p:"));
+		Type effectType = Utils.getFireworkEffect(CmdUtils.getOptionalArg(cmdArgs, "e:"));
+		ArrayList<Color> colors = Utils.getColors(CmdUtils.getOptionalArg(cmdArgs, "c:"));
+		ArrayList<Color> fcolors = Utils.getColors(CmdUtils.getOptionalArg(cmdArgs, "fc:"));
 
-		boolean powerSet = false;
-		if (CmdUtils.hasModifier(args, "p:", false)) {
-			powerSet = true;
-			CmdUtils.getArgIndex(args, "p:", false);
-
-			String[] splt = args[CmdUtils.getArgIndex(args, "p:", false)].split(":");
-			if (splt.length > 1) {
-				try {
-					power = Integer.parseInt(splt[1]);
-				} catch (NumberFormatException e) {
-					sender.sendMessage(pf + ChatColor.RED + "Invalid power amount, Must be a number.");
-					return true;
-				}
-			}
-			args = CmdUtils.modifiedArgs(args, "p:", false);
-		}
-
-		boolean effectSet = false;
-		if (CmdUtils.hasModifier(args, "e:", false)) {
-			effectSet = true;
-			CmdUtils.getArgIndex(args, "e:", false);
-			String[] splt = args[CmdUtils.getArgIndex(args, "e:", false)].split(":");
-			if (splt.length > 1) {
-				if (splt[1].startsWith("sb")) {
-					effectType = Type.BALL;
-					itype = 0;
-				} else if (splt[1].startsWith("bb")) {
-					effectType = Type.BALL_LARGE;
-					itype = 1;
-				} else if (splt[1].startsWith("c")) {
-					effectType = Type.CREEPER;
-					itype = 3;
-				} else if (splt[1].startsWith("bu")) {
-					effectType = Type.BURST;
-					itype = 4;
-				} else if (splt[1].startsWith("s")) {
-					effectType = Type.STAR;
-					itype = 2;
-				}
-			}
-			args = CmdUtils.modifiedArgs(args, "e:", false);
-		}
-
-		boolean afterEffectSet = false;
-		if (CmdUtils.hasModifier(args, "a:", false)) {
-			afterEffectSet = true;
-			CmdUtils.getArgIndex(args, "a:", false);
-			String[] splt = args[CmdUtils.getArgIndex(args, "a:", false)].split(":");
-			if (splt.length > 1) {
-				if (splt[1].contains("f")) {
-					flicker = true;
-				}
-				if (splt[1].contains("t")) {
-					trail = true;
-				}
-			}
-			args = CmdUtils.modifiedArgs(args, "a:", false);
-		}
-
-		boolean colorSet = false;
-		int color = -1;
-		if (CmdUtils.hasModifier(args, "c:", false)) {
-			colorSet = true;
-			CmdUtils.getArgIndex(args, "c:", false);
-			String[] splt = args[CmdUtils.getArgIndex(args, "c:", false)].split(":");
-			if (splt.length > 1) {
-				String[] splt2 = splt[1].split(",");
-				for (int i = 0; i < splt2.length; i++) {
-					if (splt2[i].contains("#")) {
-						String[] temp = splt2[i].split("#");
-						splt2[i] = temp[0];
-						if (temp[1].matches("[0-9A-Fa-f]+")) {
-							color = Integer.parseInt(temp[1], 16);
-						}
-					} else {
-						if (splt2[i].matches("[0-9A-Fa-f]+")) {
-							color = Integer.parseInt(splt2[i], 16);
-						}
-					}
-					Color col = Color.fromRGB(color);
-					colors.add(col);
-				}
-			}
-			args = CmdUtils.modifiedArgs(args, "c:", false);
-		}
-
-		boolean fadeSet = false;
-		if (CmdUtils.hasModifier(args, "fc:", false)) {
-			fadeSet = true;
-			CmdUtils.getArgIndex(args, "fc:", false);
-			String[] splt = args[CmdUtils.getArgIndex(args, "fc:", false)].split(":");
-			if (splt.length > 1) {
-				String[] splt2 = splt[1].split(",");
-				for (int i = 0; i < splt2.length; i++) {
-					if (splt2[i].contains("#")) {
-						String[] temp = splt2[i].split("#");
-						splt2[i] = temp[0];
-						if (temp[1].matches("[0-9A-Fa-f]+")) {
-							color = Integer.parseInt(temp[1], 16);
-						}
-					} else {
-						if (splt2[i].matches("[0-9A-Fa-f]+")) {
-							color = Integer.parseInt(splt2[i], 16);
-						}
-					}
-					Color col = Color.fromRGB(color);
-					fcolors.add(col);
-				}
-			}
-			args = CmdUtils.modifiedArgs(args, "fc:", false);
-		}
-
-		/* Console check */
+		
+		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 2) {
 				sender.sendMessage(pf + ChatColor.RED + "You need to specify a player to use this on the console!!");
@@ -212,7 +82,8 @@ public class FireworkCmd implements CommandClass {
 			player = (Player) sender;
 		}
 
-		/* 1 arg (Amount) */
+		
+		//Args
 		if (args.length >= 1) {
 			try {
 				amt = Integer.parseInt(args[0]);
@@ -222,18 +93,21 @@ public class FireworkCmd implements CommandClass {
 			}
 		}
 
-		/* 2 args (Player) */
 		if (args.length >= 2) {
 			player = cwc.getServer().getPlayer(args[1]);
+			if (player == null) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
+				return true;
+			}
 		}
 
-		/* Randomize */
-		if (!powerSet) {
-			power = (int) (Math.random() * 3);
+		
+		//Randomize
+		if (power < 0) {
+			power = (int) (Math.random() * 4);
 		}
-		if (!effectSet) {
+		if (effectType == null) {
 			chance = (int) (Math.random() * 4);
-			itype = chance;
 			switch (chance) {
 				case 0:
 					effectType = Type.BALL;
@@ -252,44 +126,21 @@ public class FireworkCmd implements CommandClass {
 					break;
 			}
 		}
-		if (!afterEffectSet) {
-			chance = (int) (Math.random() * 4);
-			switch (chance) {
-				case 0:
-					trail = true;
-					flicker = false;
-					break;
-				case 1:
-					trail = true;
-					flicker = true;
-					break;
-				case 2:
-					trail = false;
-					flicker = false;
-					break;
-				case 3:
-					trail = false;
-					flicker = true;
-					break;
+		if (colors.size() == 0) {
+			colors.add(Utils.getRandomColor());
+		}
+		for (int i = 0; i < colors.size(); i++) {
+			if (colors.get(i) == null) {
+				colors.set(i, Utils.getRandomColor());
 			}
 		}
-		if (!colorSet) {
-			chance = 1 + (int) (Math.random() * 5);
-			for (int i = 0; i < chance; i++) {
-				colors.add(Utils.getRandomColor());
-			}
+		if (fcolors.size() == 0) {
+			fcolors.add(Utils.getRandomColor());
 		}
-		if (!fadeSet) {
-			chance = 1 + (int) (Math.random() * 5);
-			for (int i = 0; i < chance; i++) {
-				colors.add(Utils.getRandomColor());
+		for (int i = 0; i < fcolors.size(); i++) {
+			if (fcolors.get(i) == null) {
+				fcolors.set(i, Utils.getRandomColor());
 			}
-		}
-
-		/* null checks */
-		if (player == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
-			return true;
 		}
 
 		/* Action */
@@ -318,7 +169,7 @@ public class FireworkCmd implements CommandClass {
 		if (effectOnly && !launch) {
 			power = 0;
 			for (int i = 0; i < amt; i++) {
-				ItemUtils.createFireworksExplosion(loc, flicker, trail, itype, toIntegerArray(colors), toIntegerArray(fcolors), power);
+				ItemUtils.createFireworksExplosion(loc, flicker, trail, effectType, toIntegerArray(colors), toIntegerArray(fcolors), power);
 			}
 		}
 		if (!effectOnly && !launch) {

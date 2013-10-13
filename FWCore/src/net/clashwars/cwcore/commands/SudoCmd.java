@@ -29,7 +29,7 @@ public class SudoCmd implements CommandClass {
 		
 		/* Modifiers + No args */
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
-			CmdUtils.commandHelp(sender, lbl);
+			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			sender.sendMessage(pf + "Optional args: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "perm:<permission>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Temporary grant a permission");
 			sender.sendMessage(pf + "Modifiers: ");

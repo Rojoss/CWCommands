@@ -1,5 +1,7 @@
 package net.clashwars.cwcore.commands;
 
+import java.util.HashMap;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.entity.CWPlayer;
@@ -13,9 +15,13 @@ import org.bukkit.entity.Player;
 public class GodCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] cmdArgs;
 	
 	public GodCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("s", "No messages");
 	}
 
 	@Override
@@ -23,22 +29,19 @@ public class GodCmd implements CommandClass {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		CWPlayer cwp = null;
-		Boolean on = null;
+		boolean on = false;
 		
-		/* Modifiers */
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
 		if (CmdUtils.hasModifier(args,"-h", false)) {
-			CmdUtils.commandHelp(sender, lbl);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
+			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
+
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		
-		/* Console check */
+
+		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 1) {
 				sender.sendMessage(pf + ChatColor.RED + "You need to specify a player to use this on the console!!");
@@ -48,63 +51,57 @@ public class GodCmd implements CommandClass {
 			player = (Player) sender;
 		}
 		
-		/* 1 arg (Player) */
+
+		//Args
 		if (args.length >= 1) {
 			player = cwc.getServer().getPlayer(args[0]);
+			if (player == null) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
+				return true;
+			}
 		}
+		cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
 		
-		/* 2 args (on/off) */
 		if (args.length >= 2) {
 			if (args[1].toLowerCase().startsWith("on")) {
 				on = true;
 			} else {
 				on = false;
 			}
-		}
-		
-		/* null checks */
-		if (player == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
-			return true;
-		}
-		cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
-		if (on == null) {
+		} else {
 			if (cwp.getGod() == true) {
 				cwp.setGod(false);
 			} else {
 				cwp.setGod(true);
 			}
-		} else {
+		}
+		
+		
 		/* Action */
-			if (on) {
-				if (cwp.getGod() == false)
-					cwp.setGod(true);
-				else {
-					sender.sendMessage(pf + ChatColor.RED + "Player already has godemode");
-					return true;
-				}
+		if (on) {
+			if (cwp.getGod() == false) {
+				cwp.setGod(true);
 			} else {
-				if (cwp.getGod() == true)
-					cwp.setGod(false);
-				else {
-					sender.sendMessage(pf + ChatColor.RED + "Player doesn't have godmode");
-					return true;
-				}
+				sender.sendMessage(pf + ChatColor.RED + "Player already has godemode enabled");
+				return true;
+			}
+		} else {
+			if (cwp.getGod() == true) {
+				cwp.setGod(false);
+			} else {
+				sender.sendMessage(pf + ChatColor.RED + "Player already has godmode disabled");
+				return true;
 			}
 		}
 		
-		if (cwp.getGod() == true) {
-			if (!silent) {
-				player.sendMessage(pf + "God mode enabled!");
-				if (sender.getName() != player.getName())
-					sender.sendMessage(pf + "You have given godmode to " + ChatColor.DARK_PURPLE + player.getDisplayName());
-			}
+		if (!silent) {
+			player.sendMessage(pf + "God mode enabled!");
+			if (sender.getName() != player.getName())
+				sender.sendMessage(pf + "You have given godmode to " + ChatColor.DARK_PURPLE + player.getDisplayName());
 		} else {
-			if (!silent) {
-				player.sendMessage(pf + "God mode disabled.");
-				if (sender.getName() != player.getName())
-					sender.sendMessage(pf + "You have removed godmode from " + ChatColor.DARK_PURPLE + player.getDisplayName());
-			}
+			player.sendMessage(pf + "God mode disabled.");
+			if (sender.getName() != player.getName())
+				sender.sendMessage(pf + "You have removed godmode from " + ChatColor.DARK_PURPLE + player.getDisplayName());
 		}
 		return true;
 	}

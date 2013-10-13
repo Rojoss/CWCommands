@@ -14,13 +14,13 @@ public class CWPlayer {
     private int                  id;
     private String               name;
 
-    private int					 credits			= 0;
     private String               nick           	= "";
     private String               tag        	    = "";
     private int                  gm			        = 0;
     private boolean              god              	= false;
     private boolean              vanished           = false;
     private boolean              flying          	= false;
+    private boolean              frozen          	= false;
     private float                walkSpeed          = 0;
     private float                flySpeed           = 0;
     private int                  maxHealth         	= 0;
@@ -42,25 +42,6 @@ public class CWPlayer {
 
     public String getName() {
         return name;
-    }
-
-    public int getCredits() {
-        return credits;
-    }
-
-    public void setCredits(int credits) {
-        this.credits = credits;
-        cwc.getSQLConnection().update("users", "credits", credits, "id", id);
-    }
-
-    public void addCredits(int credits) {
-        this.credits += credits;
-        cwc.getSQLConnection().update("users", "credits", credits, "id", id);
-    }
-    
-    public void takeCredits(int credits) {
-        this.credits -= credits;
-        cwc.getSQLConnection().update("users", "credits", credits, "id", id);
     }
     
     public String getNick() {
@@ -115,6 +96,15 @@ public class CWPlayer {
     public void setFlying(boolean flying) {
         this.flying = flying;
         cwc.getSQLConnection().update("users", "flying", flying, "id", id);
+    }
+    
+    public boolean getFrozen() {
+        return frozen;
+    }
+
+    public void setFrozen(boolean frozen) {
+        this.frozen = frozen;
+        cwc.getSQLConnection().update("users", "frozen", frozen, "id", id);
     }
     
     public float getWalkSpeed() {
@@ -181,7 +171,6 @@ public class CWPlayer {
     }
 
     public void interpretData(Map<String, Object> assoc) {
-        credits = (Integer) assoc.get("credits");
         nick = (String) assoc.get("nick");
         tag = (String) assoc.get("tag");
         gm = (Integer) assoc.get("gm");

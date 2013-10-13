@@ -1,6 +1,7 @@
 package net.clashwars.cwcore.commands;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.SortedMap;
@@ -19,22 +20,27 @@ import org.bukkit.plugin.Plugin;
 
 public class CmdsCmd implements CommandClass {
 	
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public CmdsCmd(CWCore cwc) {
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		int page = 1;
 		String plugin = null;
 		
-		/* Modifiers + No args */
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
 		if (CmdUtils.hasModifier(args,"-h", true)) {
-			CmdUtils.commandHelp(sender, lbl);
+			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
 		
-		/* args */
+		
+		//Args
 		if (args.length > 0) {
 			try {
 	            page = Integer.parseInt(args[0]);
@@ -59,7 +65,8 @@ public class CmdsCmd implements CommandClass {
 			plugin = "all";
 		}
         
-		/* Action */
+		
+		//Action
         SortedMap<Integer, String> commands = new TreeMap<Integer, String>(Collections.reverseOrder());
         
         
