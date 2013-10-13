@@ -18,6 +18,12 @@ public class CmdUtils {
 		for (Command cmd : CWCore.cmdList){
 			if (cmd.getName().equalsIgnoreCase(str)) {
 				return cmd.getDescription();
+			} else {
+				for (String alias : cmd.getAliases()) {
+					if (alias.equalsIgnoreCase(str)) {
+						return cmd.getDescription();
+					}
+				}
 			}
 		}
 		return "";
@@ -27,6 +33,12 @@ public class CmdUtils {
 		for (Command cmd : CWCore.cmdList){
 			if (cmd.getName().equalsIgnoreCase(str)) {
 				return cmd.getUsage();
+			} else {
+				for (String alias : cmd.getAliases()) {
+					if (alias.equalsIgnoreCase(str)) {
+						return cmd.getUsage();
+					}
+				}
 			}
 		}
 		return "";
@@ -36,6 +48,12 @@ public class CmdUtils {
 		for (Command cmd : CWCore.cmdList){
 			if (cmd.getName().equalsIgnoreCase(str)) {
 				return cmd.getAliases().toString();
+			} else {
+				for (String alias : cmd.getAliases()) {
+					if (alias.equalsIgnoreCase(str)) {
+						return cmd.getAliases().toString().replace("]", ", " + cmd.getName() + "]");
+					}
+				}
 			}
 		}
 		return "";
@@ -43,7 +61,7 @@ public class CmdUtils {
 	
 	public static void commandHelp(CommandSender sender, String lbl) {
 		sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
-		sender.sendMessage(CWCore.pf + "Usage: " + ChatColor.DARK_PURPLE + lbl + " " + CmdUtils.syntaxFromName(lbl));
+		sender.sendMessage(CWCore.pf + "Usage: " + ChatColor.DARK_PURPLE + CmdUtils.syntaxFromName(lbl).replace("<command>", lbl));
 		sender.sendMessage(CWCore.pf + "Desc: " + ChatColor.GRAY + CmdUtils.descFromName(lbl));
 		sender.sendMessage(CWCore.pf + "Aliases: " + ChatColor.GRAY + CmdUtils.aliasesFromName(lbl));
 	}
