@@ -1,5 +1,7 @@
 package net.clashwars.cwcore.commands;
 
+import java.util.HashMap;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.CmdUtils;
@@ -15,64 +17,68 @@ import org.bukkit.material.MaterialData;
 public class MoreCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public MoreCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("s", "No messages");
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		int amt = 0;
 		ItemStack item = null;
 		MaterialData md = null;
 		
-		/* Modifiers */
-		if (CmdUtils.hasModifier(args,"-h", false)) {
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
 			return true;
 		}
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
+
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		
-		/* Console check */
+		
+		//Console
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(pf + ChatColor.RED + "Only players can use this command.");
 			return true;
 		} else {
 			player = (Player) sender;
-			if (player.getItemInHand().getData().getItemType() != Material.AIR) {
-				md = player.getItemInHand().getData();
-			} else {
-				sender.sendMessage(pf + ChatColor.RED + "Can't give more air!");
-				return true;
+		}
+		
+		
+		if (player.getItemInHand().getData().getItemType() != Material.AIR) {
+			md = player.getItemInHand().getData();
+		} else {
+			sender.sendMessage(pf + ChatColor.RED + "Can't give more air!");
+			return true;
+		}
+		
+		//Args
+		if (args.length < 1) {
+			amt = (player.getItemInHand().getMaxStackSize() - player.getItemInHand().getAmount());
+			if (amt == 0) {
+				amt = player.getItemInHand().getMaxStackSize();
 			}
 		}
 		
-		/* No args (get max stacksize)*/
-		if (args.length < 1) {
-			amt = (player.getItemInHand().getMaxStackSize() - player.getItemInHand().getAmount());
-		}
-		
-		/* 1 arg (amount) */
 		if (args.length >= 1) {
-			player.sendMessage(pf + amt);
 			try {
 			 	amt = Integer.parseInt(args[0]);
 			 } catch (NumberFormatException e) {
 			 	sender.sendMessage(pf + ChatColor.RED + "Invalid amount.");
 			 	return true;
 			 }
-			player.sendMessage(pf + amt);
 		}
 		
-		/* Action */
+		
+		//Action
 		item = md.toItemStack(amt);
 		player.getInventory().addItem(item);
 		String type = item.getType().name().toLowerCase().replace("_", "");

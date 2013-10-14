@@ -1,5 +1,7 @@
 package net.clashwars.cwcore.commands;
 
+import java.util.HashMap;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.CmdUtils;
@@ -15,13 +17,16 @@ import org.bukkit.entity.Player;
 public class ParticleCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public ParticleCmd(CWCore cwc) {
 		this.cwc = cwc;
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		Player target = null;
@@ -31,7 +36,8 @@ public class ParticleCmd implements CommandClass {
 		Location offset = null;
 		World world = null;
 		
-		/* Modifiers + No args */
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			sender.sendMessage(pf + "Optional arguments: ");
@@ -95,7 +101,7 @@ public class ParticleCmd implements CommandClass {
 			args = CmdUtils.modifiedArgs(args,"amt:", false);
 		}
 		
-		/* Console check */
+		//Console
 		if (!(sender instanceof Player)) {
 			if (!targetSet && !locSet) {
 				sender.sendMessage(pf + ChatColor.RED + "You need to specify a player or Location+World to use this on the console!");

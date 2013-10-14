@@ -1,11 +1,14 @@
 package net.clashwars.cwcore.commands;
 
+import java.util.HashMap;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.AliasUtils;
 import net.clashwars.cwcore.util.CmdUtils;
 import net.clashwars.cwcore.util.CustomEntity;
 import net.clashwars.cwcore.util.LocationUtils;
+import net.clashwars.cwcore.util.Utils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -20,187 +23,87 @@ import org.bukkit.util.Vector;
 public class SpawnmobCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public SpawnmobCmd(CWCore cwc) {
 		this.cwc = cwc;
+		optionalArgs.put("p:<player>", "Spawn the mob at this player");
+		optionalArgs.put("loc:<x,y,z>", "Spawn the mob at this location");
+		optionalArgs.put("target:<player|x,y,z>", "Make a mob walk towards this player|loc");
+		optionalArgs.put("vel:<x,y,z>", "Add velocity to the mob when spawned");
+		optionalArgs.put("name:<name>", "Set display name of the mob");
+		optionalArgs.put("hp:<amt>", "Set health of the mob");
+		optionalArgs.put("size:<amt>", "Set the size of the mob (Slime,Magmacube)");
+		optionalArgs.put("color:<color>", "Set the color of the mob (Sheep,Horse,Wolf)");
+		optionalArgs.put("job:<librarian,priest,blacksmith,butcher>", "Set job for villagers");
+		optionalArgs.put("power:<amt>", "Set the jumping power for horses");
+		optionalArgs.put("style:<blackdot,whitedot,white,whitefield>", "Set horseStyle");
+		optionalArgs.put("type:<mule,donkey,undead,skeleton>", "Set the horse type");
+		optionalArgs.put("hand:<ID>:<enchant>.<lvl>[,<e>.<lvl>]", "Set hand item");
+		optionalArgs.put("helm:<ID>:<enchant>.<lvl>[,<e>.<lvl>]", "Set helmet item.");
+		optionalArgs.put("chest:<ID>:<enchant>.<lvl>[,<e>.<lvl>]", "Set chestplate item.");
+		optionalArgs.put("leg:<ID>:<enchant>.<lvl>[,<e>.<lvl>]", "Set leggings item.");
+		optionalArgs.put("boot:<ID>:<enchant>.<lvl>[,<e>.<lvl>]", "Set boots item.");
+		optionalArgs.put("armor:[iron|gold|dia]", "Set horse armor.");
+		optionalArgs.put("pe:<effect>.<dur>.<lvl>[,<e>.<d>.<l>]", "Set potion effects like pe:speed.10.1,jump.10.2");
+		modifiers.put("s", "No messages");
+		modifiers.put("d", "Force displayname to be always displayed.");
+		modifiers.put("b", "Spawn the mob as a baby (animals,zombie,pigzombie)");
+		modifiers.put("t", "Make the mob tamed (horse,wolf,ocelot)");
+		modifiers.put("a", "Make the mob angry (wolf,pigzombie)");
+		modifiers.put("p", "Set a creeper powered");
+		modifiers.put("c", "Add a chest to donkey/mule");
+		modifiers.put("r", "Ride the spawned mob");
+		modifiers.put("m", "Mount a saddle on the mob (Pig,Horse)");
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
+		Player player = null;
 		String[] mobs = null;
 		Location loc = null;
 		int amt = 1;
 		
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Optional args: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "p:<player>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Spawn the mob at this player");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "name:<name>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set display name of the mob");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "hp:<amt>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set health of the mob");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "loc:<x,y,z>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Spawn the mob at this location");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "target:<player|x,y,z>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Make a mob walk towards this player|loc");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "vel:<x,y,z>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Add velocity to the mob when spawned");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "size:<amt>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set the size of the mob (Slime,Magmacube)");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "color:<color>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set the color of the mob (Sheep,Horse,Wolf)");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "job:<librarian,priest,blacksmith,butcher>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set job for villagers");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "power:<amt>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set the jumping power for horses");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "style:<blackdot,whitedot,white,whitefield>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set horseStyle");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "type:<mule,donkey,undead,skeleton>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set the horse type.");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "hand:<ID>:[data]:[enchant:lvl,...]" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set item in hand.");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "helm:<ID>:[data]:[enchant:lvl,...]" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set helmet item.");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "chest:<ID>:[data]:[enchant:lvl,...]" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set chest item.");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "leg:<ID>:[data]:[enchant:lvl,...]" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set leggings item.");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "boot:<ID>:[data]:[enchant:lvl,...]" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set boots item.");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "armor:[iron|gold|dia]" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set horse armor.");
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-d" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Force displayname to be always displayed.");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-b" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Spawn the mob as a baby (animals,zombie,pigzombie)");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-t" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Make the mob tamed (horse,wolf,ocelot)");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-a" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Make the mob angry (wolf,pigzombie)");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-p" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set a creeper powered");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-c" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Add a chest to donkey/mule");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-r" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Ride the spawned mob");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-m" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Mount a saddle on the mob (Pig,Horse)");
 			return true;
 		}
 		
-		// MODIFIERS
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
+		boolean forceDisplay = CmdUtils.hasModifier(cmdArgs, "d");
+		boolean baby = CmdUtils.hasModifier(cmdArgs, "b");
+		boolean tamed = CmdUtils.hasModifier(cmdArgs, "t");
+		boolean angry = CmdUtils.hasModifier(cmdArgs, "a");
+		boolean powered = CmdUtils.hasModifier(cmdArgs, "p");
+		boolean ride = CmdUtils.hasModifier(cmdArgs, "r");
+		boolean mount = CmdUtils.hasModifier(cmdArgs, "m");
+		if (CmdUtils.getOptionalArg(cmdArgs, "p:") != null) {
+			player = cwc.getServer().getPlayer(((CmdUtils.getOptionalArg(cmdArgs, "p:"))));
 		}
-		boolean forceDisplay = false;
-		if (CmdUtils.hasModifier(args,"-d", true)) {
-			forceDisplay = true;
-			args = CmdUtils.modifiedArgs(args,"-d", true);
-		}
-		boolean baby = false;
-		if (CmdUtils.hasModifier(args,"-b", true)) {
-			baby = true;
-			args = CmdUtils.modifiedArgs(args,"-b", true);
-		}
-		boolean tamed = false;
-		if (CmdUtils.hasModifier(args,"-t", true)) {
-			tamed = true;
-			args = CmdUtils.modifiedArgs(args,"-t", true);
-		}
-		boolean angry = false;
-		if (CmdUtils.hasModifier(args,"-a", true)) {
-			angry = true;
-			args = CmdUtils.modifiedArgs(args,"-a", true);
-		}
-		boolean powered = false;
-		if (CmdUtils.hasModifier(args,"-p", true)) {
-			powered = true;
-			args = CmdUtils.modifiedArgs(args,"-p", true);
-		}
-		boolean ride = false;
-		if (CmdUtils.hasModifier(args,"-r", true)) {
-			ride = true;
-			args = CmdUtils.modifiedArgs(args,"-r", true);
-		}
-		boolean mount = false;
-		if (CmdUtils.hasModifier(args,"-m", true)) {
-			mount = true;
-			args = CmdUtils.modifiedArgs(args,"-m", true);
-		}
+		String name = CmdUtils.getOptionalArg(cmdArgs, "name:");
+		int health = Utils.getInt(CmdUtils.getOptionalArg(cmdArgs, "hp:"));
+		String locStr = CmdUtils.getOptionalArg(cmdArgs, "loc:");
+		String target = CmdUtils.getOptionalArg(cmdArgs, "target:");
+		String vel = CmdUtils.getOptionalArg(cmdArgs, "vel:");
+		int size = Utils.getInt(CmdUtils.getOptionalArg(cmdArgs, "size:"));
+		String color = CmdUtils.getOptionalArg(cmdArgs, "color:");
+		String job = CmdUtils.getOptionalArg(cmdArgs, "job:");
+		int power = Utils.getInt(CmdUtils.getOptionalArg(cmdArgs, "power:"));
+		String style = CmdUtils.getOptionalArg(cmdArgs, "style:");
+		String type = CmdUtils.getOptionalArg(cmdArgs, "type:");
+		String hand = CmdUtils.getOptionalArg(cmdArgs, "hand:");
+		String helm = CmdUtils.getOptionalArg(cmdArgs, "helm:");
+		String chest = CmdUtils.getOptionalArg(cmdArgs, "chest:");
+		String leg = CmdUtils.getOptionalArg(cmdArgs, "leg:");
+		String boot = CmdUtils.getOptionalArg(cmdArgs, "boot:");
+		String armor = CmdUtils.getOptionalArg(cmdArgs, "armor:");
 		
-		// OPTIONAL ARGS
-		Player player = null;
-		if (CmdUtils.hasModifier(args,"p:", false)) {
-			player = CmdUtils.getPlayer(args, "p:", cwc);
-			args = CmdUtils.modifiedArgs(args,"p:", false);
-		}
-		String name = "";
-		if (CmdUtils.hasModifier(args,"name:", false)) {
-			name = CmdUtils.getString(args, "name:");
-			args = CmdUtils.modifiedArgs(args,"name:", false);
-		}
-		int health = 0;
-		if (CmdUtils.hasModifier(args,"hp:", false)) {
-			health = CmdUtils.getInt(args, "hp:");
-			args = CmdUtils.modifiedArgs(args,"hp:", false);
-		}
-		String locStr = "";
-		if (CmdUtils.hasModifier(args,"loc:", false)) {
-			locStr = CmdUtils.getString(args, "loc:");
-			args = CmdUtils.modifiedArgs(args,"loc:", false);
-		}
-		String target = "";
-		if (CmdUtils.hasModifier(args,"target:", false)) {
-			locStr = CmdUtils.getString(args, "target:");
-			args = CmdUtils.modifiedArgs(args,"target:", false);
-		}
-		String vel = "";
-		if (CmdUtils.hasModifier(args,"vel:", false)) {
-			vel = CmdUtils.getString(args, "vel:");
-			args = CmdUtils.modifiedArgs(args,"vel:", false);
-		}
-		int size = 0;
-		if (CmdUtils.hasModifier(args,"size:", false)) {
-			size = CmdUtils.getInt(args, "size:");
-			args = CmdUtils.modifiedArgs(args,"size:", false);
-		}
-		String color = "";
-		if (CmdUtils.hasModifier(args,"color:", false)) {
-			color = CmdUtils.getString(args, "color:");
-			args = CmdUtils.modifiedArgs(args,"color:", false);
-		}
-		String job = "";
-		if (CmdUtils.hasModifier(args,"job:", false)) {
-			job = CmdUtils.getString(args, "job:");
-			args = CmdUtils.modifiedArgs(args,"job:", false);
-		}
-		int power = 0;
-		if (CmdUtils.hasModifier(args,"power:", false)) {
-			power = CmdUtils.getInt(args, "power:");
-			args = CmdUtils.modifiedArgs(args,"power:", false);
-		}
-		String style = "";
-		if (CmdUtils.hasModifier(args,"style:", false)) {
-			style = CmdUtils.getString(args, "style:");
-			args = CmdUtils.modifiedArgs(args,"style:", false);
-		}
-		String type = "";
-		if (CmdUtils.hasModifier(args,"type:", false)) {
-			job = CmdUtils.getString(args, "type:");
-			args = CmdUtils.modifiedArgs(args,"type:", false);
-		}
-		String hand = "";
-		if (CmdUtils.hasModifier(args,"hand:", false)) {
-			hand = CmdUtils.getString(args, "hand:");
-			args = CmdUtils.modifiedArgs(args,"hand:", false);
-		}
-		String helm = "";
-		if (CmdUtils.hasModifier(args,"helm:", false)) {
-			helm = CmdUtils.getString(args, "helm:");
-			args = CmdUtils.modifiedArgs(args,"helm:", false);
-		}
-		String chest = "";
-		if (CmdUtils.hasModifier(args,"chest:", false)) {
-			chest = CmdUtils.getString(args, "chest:");
-			args = CmdUtils.modifiedArgs(args,"chest:", false);
-		}
-		String leg = "";
-		if (CmdUtils.hasModifier(args,"leg:", false)) {
-			leg = CmdUtils.getString(args, "leg:");
-			args = CmdUtils.modifiedArgs(args,"leg:", false);
-		}
-		String boot = "";
-		if (CmdUtils.hasModifier(args,"boot:", false)) {
-			boot = CmdUtils.getString(args, "boot:");
-			args = CmdUtils.modifiedArgs(args,"boot:", false);
-		}
-		String armor = "";
-		if (CmdUtils.hasModifier(args,"armor:", false)) {
-			armor = CmdUtils.getString(args, "armor:");
-			args = CmdUtils.modifiedArgs(args,"armor:", false);
-		}
-		
-		/* Console check */
+		//Console
 		if (!(sender instanceof Player)) {
 			if (player == null) {
 				sender.sendMessage(pf + ChatColor.RED + "You need to specify a player to use this on the console! (p:<player>");
@@ -212,12 +115,12 @@ public class SpawnmobCmd implements CommandClass {
 			}
 		}
 		
-		/* 1 arg (Mobs) */
+
+		//Args
 		if (args.length >= 1) {
 			mobs = args[0].split(",");
 		}
 		
-		/* 2 args (Amount) */
 		if (args.length >= 2) {
 			try {
 			 	amt = Integer.parseInt(args[1]);
@@ -231,8 +134,9 @@ public class SpawnmobCmd implements CommandClass {
 			}
 		}
 		
-		/* Get location */
-		if (locStr != "") {
+		
+		//Action
+		if (locStr != null) {
 			loc = LocationUtils.getLocation(locStr, player.getWorld());
 		}
 		if (loc == null) {
@@ -240,17 +144,17 @@ public class SpawnmobCmd implements CommandClass {
 		}
 		loc.setY(loc.getY()+1);
 		
-		/* Get Velocity */
+		
 		Vector velocity = null;
-		if (vel != "") {
+		if (vel != null) {
 			if (LocationUtils.getVector(vel) != null) {
 				velocity = LocationUtils.getVector(vel);
 			}
 		}
 		
-		/* Get Target */
+		
 		Location targetLoc = null;
-		if (target != "") {
+		if (target != null) {
 			if (cwc.getServer().getPlayer(target) != null) {
 				targetLoc = cwc.getServer().getPlayer(target).getLocation();
 			}
@@ -260,37 +164,47 @@ public class SpawnmobCmd implements CommandClass {
 		}
 		
 		
-		/* Action */
 		int spawned = 0;
 		CustomEntity ce = null;
 		EntityType mobType = null;
 		Entity spawnedMob = null;
 		Entity mob1 = null;
+		boolean switchType = false;
 		
 		while (spawned < amt) {
 			for (int i = 0; i < mobs.length; i++) {
 				mobType = AliasUtils.findEntity(mobs[i]);
 				if (mobType == null) {
-					sender.sendMessage(pf + ChatColor.RED + "Invalid mob/entity.");
-					return true;
+					if (mobs[i].startsWith("wit") || mobs[i].startsWith("ske")) {
+						mobType = EntityType.SKELETON;
+					}
+					if (mobs[i].startsWith("zom") || mobs[i].startsWith("vil")) {
+						mobType = EntityType.ZOMBIE;
+					}
+					if (mobType == null) {
+						sender.sendMessage(pf + ChatColor.RED + "Invalid mob/entity.");
+						return true;
+					}
+					switchType = true;
 				}
 				Entity mob = loc.getWorld().spawnEntity(loc,mobType);
 				ce = new CustomEntity(mob);
 				
-				if (name != "") ce.setName(name);
+				if (switchType != false) ce.switchType();
+				if (name != null) ce.setName(name);
 				if (health > 0) ce.setHP(health);
 				if (size > 0) ce.setSize(size);
-				if (color != "") ce.setColor(color);
-				if (job != "") ce.setJob(job);
+				if (color != null) ce.setColor(color);
+				if (job != null) ce.setJob(job);
 				if (power > 0) ce.setPower(power);
-				if (style != "") ce.setStyle(style);
-				if (type != "") ce.setType(type);
-				if (hand != "") ce.setHand(hand);
-				if (helm != "") ce.setHelmet(helm);
-				if (chest != "") ce.setChest(chest);
-				if (leg != "") ce.setLeg(leg);
-				if (boot != "") ce.setBoot(boot);
-				if (armor != "") ce.setHorseArmor(armor);
+				if (style != null) ce.setStyle(style);
+				if (type != null) ce.setType(type);
+				if (hand != null) ce.setHand(hand);
+				if (helm != null) ce.setHelmet(helm);
+				if (chest != null) ce.setChest(chest);
+				if (leg != null) ce.setLeg(leg);
+				if (boot != null) ce.setBoot(boot);
+				if (armor != null) ce.setHorseArmor(armor);
 				
 				if (forceDisplay == true) ce.setDisplay();
 				if (baby == true) ce.setBaby();
@@ -298,6 +212,7 @@ public class SpawnmobCmd implements CommandClass {
 				if (angry == true) ce.setAngry();
 				if (powered == true) ce.setPowered();
 				if (mount == true) ce.setMounted();
+				ce.fixSkeleton();
 				
 				if (i == 0) {
 					spawnedMob = mob;

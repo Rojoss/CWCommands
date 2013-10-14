@@ -1,5 +1,7 @@
 package net.clashwars.cwcore.commands;
 
+import java.util.HashMap;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.AliasUtils;
@@ -17,24 +19,28 @@ import org.bukkit.entity.Player;
 public class SpawnerCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public SpawnerCmd(CWCore cwc) {
 		this.cwc = cwc;
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		EntityType entity = null;
 		Block target = null;
+		
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
 		
 		boolean silent = false;
 		if (CmdUtils.hasModifier(args,"-s", true)) {
 			silent = true;
 			args = CmdUtils.modifiedArgs(args,"-s", true);
 		}
-		/* Modifiers + No args */
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			sender.sendMessage(pf + "Modifiers: ");
@@ -42,7 +48,8 @@ public class SpawnerCmd implements CommandClass {
 			return true;
 		}
 		
-		/* Console check */
+		
+		//Console
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(pf + ChatColor.RED + "Only players can use this command.");
 			return true;

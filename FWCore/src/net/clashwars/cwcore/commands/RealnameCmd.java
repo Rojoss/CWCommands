@@ -1,5 +1,7 @@
 package net.clashwars.cwcore.commands;
 
+import java.util.HashMap;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.entity.CWPlayer;
@@ -14,25 +16,30 @@ import org.bukkit.entity.Player;
 public class RealnameCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public RealnameCmd(CWCore cwc) {
 		this.cwc = cwc;
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		CWPlayer cwp = null;
 		String nick = null;
 		
-		/* Modifiers */
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
 		if (CmdUtils.hasModifier(args,"-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
 		
-		/* Console check */
+
+		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 1) {
 				sender.sendMessage(pf + ChatColor.RED + "You need to specify a player to use this on the console!!");

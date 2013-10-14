@@ -1,12 +1,5 @@
 package net.clashwars.cwcore.commands.internal;
 
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.PluginCommandYamlParser;
-import org.bukkit.plugin.Plugin;
-
 import net.clashwars.cwcore.commands.*;
 
 public enum CommandsEnum {
@@ -22,7 +15,6 @@ public enum CommandsEnum {
 	REMOVEPOTS(RemovepotsCmd.class,"removepots","removepotions","rpots"),
 	TIME(TimeCmd.class,"time","day","night"),
 	CLEARINV(ClearinvCmd.class,"clearinv","ci","clearinventory"),
-	HAT(HatCmd.class,"hat","head"),
 	MORE(MoreCmd.class,"more","stack"),
 	GUI(GuiCmd.class,"gui"),
 	TOP(TopCmd.class,"top"),

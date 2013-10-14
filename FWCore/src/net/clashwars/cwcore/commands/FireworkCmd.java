@@ -10,6 +10,7 @@ import net.clashwars.cwcore.util.CmdUtils;
 import net.clashwars.cwcore.util.ItemUtils;
 import net.clashwars.cwcore.util.Utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -51,6 +52,9 @@ public class FireworkCmd implements CommandClass {
 		int amt = 1;
 		int chance = 0;
 		Location loc = null;
+		Type effectType = null;
+		ArrayList<Color> colors = new ArrayList<Color>();
+		ArrayList<Color> fcolors = new ArrayList<Color>();
 
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
 		
@@ -67,10 +71,12 @@ public class FireworkCmd implements CommandClass {
 		boolean effectOnly = CmdUtils.hasModifier(cmdArgs, "e");
 		boolean targeted = CmdUtils.hasModifier(cmdArgs, "t");
 		int power = Utils.getInt(CmdUtils.getOptionalArg(cmdArgs, "p:"));
-		Type effectType = Utils.getFireworkEffect(CmdUtils.getOptionalArg(cmdArgs, "e:"));
-		ArrayList<Color> colors = Utils.getColors(CmdUtils.getOptionalArg(cmdArgs, "c:"));
-		ArrayList<Color> fcolors = Utils.getColors(CmdUtils.getOptionalArg(cmdArgs, "fc:"));
-
+		if (CmdUtils.getOptionalArg(cmdArgs, "e:") != null)
+			effectType = Utils.getFireworkEffect(CmdUtils.getOptionalArg(cmdArgs, "e:"));
+		if (CmdUtils.getOptionalArg(cmdArgs, "f:") != null)
+			colors = Utils.getColors(CmdUtils.getOptionalArg(cmdArgs, "c:"));
+		if (CmdUtils.getOptionalArg(cmdArgs, "fc:") != null)
+			fcolors = Utils.getColors(CmdUtils.getOptionalArg(cmdArgs, "fc:"));
 		
 		//Console
 		if (!(sender instanceof Player)) {
@@ -82,6 +88,10 @@ public class FireworkCmd implements CommandClass {
 			player = (Player) sender;
 		}
 
+		Bukkit.broadcastMessage("length: " + args.length);
+		for (String arg : args) {
+			Bukkit.broadcastMessage(arg);
+		}
 		
 		//Args
 		if (args.length >= 1) {
@@ -127,21 +137,30 @@ public class FireworkCmd implements CommandClass {
 			}
 		}
 		if (colors.size() == 0) {
-			colors.add(Utils.getRandomColor());
-		}
-		for (int i = 0; i < colors.size(); i++) {
-			if (colors.get(i) == null) {
-				colors.set(i, Utils.getRandomColor());
+			chance = 1 + (int) (Math.random() * 5);
+			for (int i = 0; i < power + 1; i++) {
+				colors.add(Utils.getRandomColor());
+			}
+		} else {
+			for (int i = 0; i < colors.size(); i++) {
+				if (colors.get(i) == null) {
+					colors.set(i, Utils.getRandomColor());
+				}
 			}
 		}
 		if (fcolors.size() == 0) {
-			fcolors.add(Utils.getRandomColor());
-		}
-		for (int i = 0; i < fcolors.size(); i++) {
-			if (fcolors.get(i) == null) {
-				fcolors.set(i, Utils.getRandomColor());
+			chance = (int) (Math.random() * 4);
+			for (int i = 0; i < power + 1; i++) {
+				fcolors.add(Utils.getRandomColor());
+			}
+		} else {
+			for (int i = 0; i < fcolors.size(); i++) {
+				if (fcolors.get(i) == null) {
+					fcolors.set(i, Utils.getRandomColor());
+				}
 			}
 		}
+		
 
 		/* Action */
 		if (targeted) {

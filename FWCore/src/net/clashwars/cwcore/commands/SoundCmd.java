@@ -1,5 +1,7 @@
 package net.clashwars.cwcore.commands;
 
+import java.util.HashMap;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.AliasUtils;
@@ -16,13 +18,16 @@ import org.bukkit.entity.Player;
 public class SoundCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public SoundCmd(CWCore cwc) {
 		this.cwc = cwc;
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		Location loc = null;
@@ -30,7 +35,8 @@ public class SoundCmd implements CommandClass {
 		float volume = 1.0F;
 		float pitch = 1.0F;
 		
-		/* Modifiers + No args */
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			sender.sendMessage(pf + "Optional args: ");
@@ -72,8 +78,7 @@ public class SoundCmd implements CommandClass {
 		}
 		
 		
-		
-		/* Console check */
+		//Console
 		if (!(sender instanceof Player)) {
 			if (targetSet == false) {
 				sender.sendMessage(pf + ChatColor.RED + "Specify a player to play sounds for them.");

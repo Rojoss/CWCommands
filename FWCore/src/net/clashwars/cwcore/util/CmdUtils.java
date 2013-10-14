@@ -60,8 +60,12 @@ public class CmdUtils {
 			}
 		}
 		
-		String[] cmdArgs = cmd.split(" ");
-		return cmdArgs;
+		if (cmd.isEmpty()) {
+			return new String[0];
+		} else {
+			String[] cmdArgs = cmd.split(" ");
+			return cmdArgs;
+		}
 	}
 	
 	

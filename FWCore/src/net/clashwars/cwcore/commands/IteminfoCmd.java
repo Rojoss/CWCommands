@@ -1,6 +1,7 @@
 package net.clashwars.cwcore.commands;
 
 import java.util.Map.Entry;
+import java.util.HashMap;
 import java.util.Set;
 
 import net.clashwars.cwcore.CWCore;
@@ -19,30 +20,28 @@ import org.bukkit.inventory.ItemStack;
 public class IteminfoCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
 	
 	public IteminfoCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("d", "Show extra details (durability, names, lore, enchants, aliases)");
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		
-		/* Modifiers */
-		if (CmdUtils.hasModifier(args,"-h", false)) {
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-d" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Show extra details (durability, names, lore, enchants, aliases)");
 			return true;
 		}
-		boolean details = false;
-		if (CmdUtils.hasModifier(args,"-d", true)) {
-			details = true;
-			args = CmdUtils.modifiedArgs(args,"-d", true);
-		}
 		
-		/* Console check */
+		boolean details = CmdUtils.hasModifier(cmdArgs, "d");
+		
+		
+		//Console
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(pf + ChatColor.RED + "Only players can use this command.");
 			return true;
@@ -50,13 +49,14 @@ public class IteminfoCmd implements CommandClass {
 			player = (Player) sender;
 		}
 		
+		
+		//Action
 		ItemStack item = player.getItemInHand();
 		if (item == null || item.getType() == Material.AIR) {
 			sender.sendMessage(pf + ChatColor.RED + "You need to hold an item.");
 			return true;
 		}
 		
-		/* action */
 		player.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "Item info for: " + ChatColor.GOLD + item.getType() + ChatColor.DARK_GRAY + "  =====");
 		
 		if (item.getData().getData() > 0) {

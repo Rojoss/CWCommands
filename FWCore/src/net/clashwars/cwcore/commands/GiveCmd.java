@@ -40,6 +40,7 @@ public class GiveCmd implements CommandClass {
 		modifiers.put("d", "Drop items on ground instead of giving it");
 		modifiers.put("u", "unstack items to max item stack like for soup");
 		modifiers.put("e", "Auto equip items if it's armor (WARNING: Will override!");
+		modifiers.put("h", "Force set item as hat (helmet)");
 		modifiers.put("*", "Look for players on other servers.");
 	}
 
@@ -65,6 +66,7 @@ public class GiveCmd implements CommandClass {
 		boolean drop = CmdUtils.hasModifier(cmdArgs, "d");
 		boolean unstack = CmdUtils.hasModifier(cmdArgs, "u");
 		boolean equip = CmdUtils.hasModifier(cmdArgs, "e");
+		boolean hat = CmdUtils.hasModifier(cmdArgs, "e");
 		boolean bungee = CmdUtils.hasModifier(cmdArgs, "*");
 		String name = CmdUtils.getOptionalArg(cmdArgs, "name:");
 		String lore = CmdUtils.getOptionalArg(cmdArgs, "lore:");
@@ -148,6 +150,8 @@ public class GiveCmd implements CommandClass {
 				} else if (item.getType().name().endsWith("BOOTS")) {
 					player.getInventory().setBoots(item);
 				}
+			} else if (hat) {
+				player.getInventory().setHelmet(item);
 			} else if (drop) {
 				Location loc = player.getEyeLocation().add(player.getLocation().getDirection());
 				loc.getWorld().dropItem(loc, item);
@@ -163,15 +167,16 @@ public class GiveCmd implements CommandClass {
 			
 			if (!silent) {
 				name = item.getItemMeta().getDisplayName();
+				String str1 = hat == true ? " hat" : "";
 				if (name == null) {
-					sender.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + args[1] 
+					sender.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + args[1] + str1
 					+ ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + player.getDisplayName());
-					player.sendMessage(pf + "You received " + ChatColor.DARK_PURPLE + amt + " " + args[1] 
+					player.sendMessage(pf + "You received " + ChatColor.DARK_PURPLE + amt + " " + args[1]  + str1
 							+ ChatColor.GOLD + " from " + ChatColor.DARK_PURPLE + sender.getName());
 				} else {
-					sender.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name) 
-					+ ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + player.getDisplayName());
-					player.sendMessage(pf + "You received " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name) 
+					sender.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name) + str1
+					+ ChatColor.GOLD + str1 + " to " + ChatColor.DARK_PURPLE + player.getDisplayName());
+					player.sendMessage(pf + "You received " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name) + str1
 					+ ChatColor.GOLD + " from " + ChatColor.DARK_PURPLE + sender.getName());
 				}
 			}

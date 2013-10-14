@@ -1,5 +1,7 @@
 package net.clashwars.cwcore.commands;
 
+import java.util.HashMap;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.entity.CWPlayer;
@@ -13,44 +15,35 @@ import org.bukkit.entity.Player;
 public class HealCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public HealCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("s", "No messages");
+		modifiers.put("m", "Set Max health only, doesn't heal player. (need amt)");
+		modifiers.put("n", "No hunger/saturation/fireticks/exhaustion");
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
-		Boolean setHealth = false;
 		int amt = 0;
 		
-		/* Modifiers */
-		if (CmdUtils.hasModifier(args,"-h", false)) {
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-m" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set Max health only, doesn't heal player. (need amt)");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-a" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Also resets hunger/saturation/fireticks/exhaustion");
 			return true;
 		}
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
-		boolean all = false;
-		if (CmdUtils.hasModifier(args,"-a", true)) {
-			all = true;
-			args = CmdUtils.modifiedArgs(args,"-a", true);
-		}
-		boolean maxOnly = false;
-		if (CmdUtils.hasModifier(args,"-m", true)) {
-			maxOnly = true;
-			args = CmdUtils.modifiedArgs(args,"-m", true);
-		}
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
+		boolean maxOnly = CmdUtils.hasModifier(cmdArgs, "m");
+		boolean noExtra = CmdUtils.hasModifier(cmdArgs, "n");
 		
-		/* Console check */
+		
+		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 1) {
 				sender.sendMessage(pf + ChatColor.RED + "You need to specify a player to use this on the console!!");
@@ -60,44 +53,36 @@ public class HealCmd implements CommandClass {
 			player = (Player) sender;
 		}
 		
-		/* 1 arg (player) */
 		if (args.length >= 1) {
 			player = cwc.getPlugin().getServer().getPlayer(args[0]);
+			if (player == null) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
+				return true;
+			}
 		}
+		CWPlayer cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
 		
-		/* 2 args (amount) */
 		if (args.length >= 2) {
 			 try {
 			 	amt = Integer.parseInt(args[1]);
-			 	setHealth = true;
+			 	if (amt < 2) {
+					sender.sendMessage(pf + ChatColor.RED + "Health must be more then 1.");
+					return true;
+				}
+			 	player.resetMaxHealth();
+				player.setMaxHealth(amt);
+				cwp.setMaxHealth(amt);
 			 } catch (NumberFormatException e) {
 			 	sender.sendMessage(pf + ChatColor.RED + "Invalid amount.");
 			 	return true;
 			 }
 		}
 		
-		/* null checks */
-		if (player == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
-			return true;
-		}
-		if (amt < 2) {
-			if (setHealth) {
-				sender.sendMessage(pf + ChatColor.RED + "Health must be more then 1.");
-				return true;
-			}
-		}
 		
-		/* Action */
-		CWPlayer cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
-		if (setHealth) {
-			player.resetMaxHealth();
-			player.setMaxHealth(amt);
-			cwp.setMaxHealth(amt);
-		}
+		//Action
 		if (!maxOnly) {
 			player.setHealth(player.getMaxHealth());
-			if (all) {
+			if (!noExtra) {
 				player.setFireTicks(0);
 				player.setSaturation(5.0F);
 				player.setFoodLevel(20);

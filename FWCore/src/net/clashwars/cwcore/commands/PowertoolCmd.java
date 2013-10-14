@@ -1,5 +1,7 @@
 package net.clashwars.cwcore.commands;
 
+import java.util.HashMap;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.entity.CWPlayer;
@@ -15,13 +17,16 @@ import org.bukkit.inventory.ItemStack;
 public class PowertoolCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public PowertoolCmd(CWCore cwc) {
 		this.cwc = cwc;
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		String command = "";
 		ItemStack item = null;
@@ -29,7 +34,8 @@ public class PowertoolCmd implements CommandClass {
 		Player player = null;
 		CWPlayer cwp = null;
 		
-		/* Modifiers + No args */
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			sender.sendMessage(pf + "Modifiers: ");
@@ -38,7 +44,8 @@ public class PowertoolCmd implements CommandClass {
 			return true;
 		}
 		
-		/* Console check */
+		
+		//Console
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(pf + ChatColor.RED + "Only players can use this command.");
 			return true;

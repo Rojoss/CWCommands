@@ -1,10 +1,12 @@
 package net.clashwars.cwcore.commands;
 
+import java.util.HashMap;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.AliasUtils;
 import net.clashwars.cwcore.util.CmdUtils;
-import net.clashwars.cwcore.util.ItemUtils;
+import net.clashwars.cwcore.util.CustomItem;
 import net.clashwars.cwcore.util.Utils;
 
 import org.bukkit.ChatColor;
@@ -18,60 +20,57 @@ import org.bukkit.material.MaterialData;
 public class ItemCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public ItemCmd(CWCore cwc) {
 		this.cwc = cwc;
+		optionalArgs.put("name:<name>", "Set display name of item");
+		optionalArgs.put("lore:<lore>", "Set lore of item, _ for space, | for newline");
+		optionalArgs.put("dur:<durability>", "Set the durability of items");
+		optionalArgs.put("e:<enchant>.<lvl>[,<e>.<lvl>]", "Set enchantments like e:sharp.10,dur.1");
+		optionalArgs.put("pe:<effect>.<dur>.<lvl>[,<e>.<d>.<l>]", "Set potion effects like pe:speed.10.1,jump.10.2");
+		optionalArgs.put("head:<player>", "Set player names for heads Needs 144:3 item");
+		optionalArgs.put("color:<#RRGGBB>", "Set color for leather armor");
+		modifiers.put("s", "No messages");
+		modifiers.put("d", "Drop items on ground instead of giving it");
+		modifiers.put("u", "unstack items to max item stack like for soup");
+		modifiers.put("e", "Auto equip items if it's armor (WARNING: Will override!");
+		modifiers.put("h", "Force set item as hat (helmet)");
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		ItemStack item = null;
+		CustomItem ci = null;
 		MaterialData md = null;
 		int amt = 64;
-		String name = null;
-		boolean equiped = false;
 		
-		/* Modifiers + No args */
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
-		boolean drop = false;
-		if (CmdUtils.hasModifier(args,"-d", true)) {
-			drop = true;
-			args = CmdUtils.modifiedArgs(args,"-d", true);
-		}
-		boolean unstack = false;
-		if (CmdUtils.hasModifier(args,"-u", true)) {
-			unstack = true;
-			args = CmdUtils.modifiedArgs(args,"-u", true);
-		}
-		boolean equip = false;
-		if (CmdUtils.hasModifier(args,"-e", true)) {
-			equip = true;
-			args = CmdUtils.modifiedArgs(args,"-e", true);
-		}
-		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Optional args: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "name:<name>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set display name of item");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "lore:<lore>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set lore of item, _ for space, | for newline");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "dur:<durability>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set the durability of items");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "e:<enchantment>:<level>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set enchantments like e:sharpness:10");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "player:<player>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set player names for skulls Needs skull:3 item");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "color:<#RRGGBB>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set color for leather armor");
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-d" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Drop items on ground instead of giving it");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-u" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "unstack items to max item stack like for soup");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-e" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Auto equip items if it's armor (WARNING: Will override!)");
 			return true;
 		}
 		
-		/* Console check */
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
+		boolean drop = CmdUtils.hasModifier(cmdArgs, "d");
+		boolean unstack = CmdUtils.hasModifier(cmdArgs, "u");
+		boolean equip = CmdUtils.hasModifier(cmdArgs, "e");
+		boolean hat = CmdUtils.hasModifier(cmdArgs, "e");
+		String name = CmdUtils.getOptionalArg(cmdArgs, "name:");
+		String lore = CmdUtils.getOptionalArg(cmdArgs, "lore:");
+		String dur = CmdUtils.getOptionalArg(cmdArgs, "dur:");
+		String enchant = CmdUtils.getOptionalArg(cmdArgs, "e:");
+		String effect = CmdUtils.getOptionalArg(cmdArgs, "pe:");
+		String head = CmdUtils.getOptionalArg(cmdArgs, "head:");
+		String color = CmdUtils.getOptionalArg(cmdArgs, "color:");
+		
+		
+		//Console
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(pf + ChatColor.RED + "Only players can use this command. Use /give instead.");
 			return true;
@@ -79,12 +78,16 @@ public class ItemCmd implements CommandClass {
 			player = (Player) sender;
 		}
 		
-		/* 1 arg (Item:Data) */
+		
+		//Args
 		if (args.length >= 1) {
 			md = AliasUtils.getFullData(args[0]);
+			if (md == null) {
+				sender.sendMessage(pf + ChatColor.RED + "Item " + ChatColor.GRAY + args[0] + ChatColor.RED + " was not recognized!");
+			 	return true;
+			}
 		}
 		
-		/* 2 args (Amount) */
 		if (args.length >= 2) {
 			try {
 			 	amt = Integer.parseInt(args[1]);
@@ -94,70 +97,57 @@ public class ItemCmd implements CommandClass {
 			 }
 		}
 		
-		/* null checks */
-		if (md == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Item " + ChatColor.GRAY + args[0] + ChatColor.RED + " was not recognized!");
-		 	return true;
-		}
-		if (drop && unstack) {
-			sender.sendMessage(pf + ChatColor.RED + "You can't drop and unstack items!");
-		 	return true;
-		}
 		
-		/* Check for option args */
+		//Action
 		item = new ItemStack(md.getItemType(), amt, md.getData());
-		if (args.length >= 3) {
-			item = ItemUtils.createItemFromCmd(args, md, amt, sender);
-		}
-		if (item == null)
-		 	return true;
+		
+		ci = new CustomItem(item);
+		
+		if (name != null) ci.setName(name);
+		if (lore != null) ci.setLore(lore);
+		if (dur != null) ci.setDurability(dur);
+		if (enchant != null) ci.setEnchants(enchant);
+		if (effect != null) ci.setPotionEffects(effect);
+		if (head != null) ci.setHead(head);
+		if (color != null) ci.setLeatherColor(color);
+		item = ci.getItem();
 		
 		/* Action */
 		if (equip) {
 			if (item.getType().name().endsWith("HELMET")) {
 				player.getInventory().setHelmet(item);
-				equiped = true;
-				drop = false;
-				unstack = false;
 			} else if (item.getType().name().endsWith("CHESTPLATE")) {
 				player.getInventory().setChestplate(item);
-				equiped = true;
-				drop = false;
-				unstack = false;
 			} else if (item.getType().name().endsWith("LEGGINGS")) {
 				player.getInventory().setLeggings(item);
-				equiped = true;
-				drop = false;
-				unstack = false;
 			} else if (item.getType().name().endsWith("BOOTS")) {
 				player.getInventory().setBoots(item);
-				equiped = true;
-				drop = false;
-				unstack = false;
 			}
-		}
-		if (!drop && !unstack && !equiped)
-			player.getInventory().addItem(item);
-		if (drop && !equiped) {
+		} else if (hat) {
+			player.getInventory().setHelmet(item);
+		} else if (drop) {
 			Location loc = player.getEyeLocation().add(player.getLocation().getDirection());
 			loc.getWorld().dropItem(loc, item);
-		}
-		if (unstack && !equiped) {
+		} else if (unstack) {
 			for (int i = 0; i < amt; i++) {
 				ItemStack uItem = item;
 				uItem.setAmount(1);
 				player.getInventory().addItem(uItem);
 			}
-		}
+		} else {
+			player.getInventory().addItem(item);
+		}	
 		
-		name = item.getItemMeta().getDisplayName();
+		
 		if (!silent) {
-			if (name == null)
-				player.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + args[0]);
-			else
-				player.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name));
+			name = item.getItemMeta().getDisplayName();
+			String str1 = hat == true ? " hat" : "";
+			if (name == null) {
+				player.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + args[0] + str1);
+			} else {
+				player.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name) + str1);
+			}
 		}
-		
 		return true;
 	}
 

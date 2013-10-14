@@ -13,6 +13,8 @@ import org.bukkit.entity.Pig;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.Tameable;
 import org.bukkit.entity.Villager;
@@ -278,6 +280,25 @@ public class CustomEntity {
 		if (e instanceof Horse) {
 			if (((Horse)e).getVariant() == Variant.DONKEY || ((Horse)e).getVariant() == Variant.MULE) {
 				((Horse)e).setCarryingChest(true);
+			}
+		}
+	}
+
+	public void switchType() {
+		if (e instanceof Zombie) {
+			((Zombie)e).setVillager(true);
+		}
+		if (e instanceof Skeleton) {
+			((Skeleton)e).setSkeletonType(SkeletonType.WITHER);
+		}
+	}
+	
+	public void fixSkeleton() {
+		if (e instanceof Skeleton) {
+			if (((Skeleton)e).getSkeletonType() == SkeletonType.WITHER){
+				((Skeleton)e).getEquipment().setItemInHand(new ItemStack(Material.STONE_SWORD));
+			} else {
+				((Skeleton)e).getEquipment().setItemInHand(new ItemStack(Material.BOW));
 			}
 		}
 	}

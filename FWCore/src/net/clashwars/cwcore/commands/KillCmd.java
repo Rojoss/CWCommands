@@ -2,6 +2,7 @@ package net.clashwars.cwcore.commands;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.util.HashMap;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
@@ -17,65 +18,58 @@ import org.bukkit.entity.Player;
 public class KillCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public KillCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("s", "No messages");
+		modifiers.put("f", "Force kill");
+		modifiers.put("*", "Look for players on other servers.");
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		String pplayer = null;
 		CWPlayer cwp = null;
 		
-		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-f" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Force kill");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-*" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Kill players on other servers.");
 			return true;
 		}
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
-		boolean force = false;
-		if (CmdUtils.hasModifier(args,"-f", true)) {
-			force = true;
-			args = CmdUtils.modifiedArgs(args,"-f", true);
-		}
-		boolean bungee = false;
-		if (CmdUtils.hasModifier(args,"-*", true)) {
-			bungee = true;
-			args = CmdUtils.modifiedArgs(args,"-*", true);
-		}
 		
-		/* 1 arg (Player) */
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
+		boolean force = CmdUtils.hasModifier(cmdArgs, "f");
+		boolean bungee = CmdUtils.hasModifier(cmdArgs, "*");
+		
+		
+		//Args
 		if (args.length >= 1) {
 			player = cwc.getServer().getPlayer(args[0]);
 			pplayer = args[0];
-		}
-		
-		/* null checks */
-		if (!bungee) { 
-			if (player == null) {
-				sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
-				return true;
-			}
-			cwp = cwc.getPlayerManager().getPlayer(player);
-			if (!force) {
-				if (cwp.getGamemode() == 1 || cwp.getGod() == true) {
-					sender.sendMessage(pf + ChatColor.RED + "You can't kill this player.");
+			
+			if (!bungee) { 
+				if (player == null) {
+					sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
 					return true;
 				}
 			}
 		}
-			
+		cwp = cwc.getPlayerManager().getPlayer(player);
+		
+		
 		/* Action */
+		if (!force) {
+			if (cwp.getGamemode() == 1 || cwp.getGod() == true) {
+				sender.sendMessage(pf + ChatColor.RED + "You can't kill this player.");
+				return true;
+			}
+		}
 		if (bungee) {
 			try {
 				ByteArrayOutputStream b = new ByteArrayOutputStream();
