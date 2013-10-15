@@ -1,6 +1,9 @@
-package net.clashwars.cwcore.util;
+package net.clashwars.cwcore.compnents;
 
 import java.util.List;
+
+import net.clashwars.cwcore.util.ItemUtils;
+import net.clashwars.cwcore.util.Utils;
 
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Creature;

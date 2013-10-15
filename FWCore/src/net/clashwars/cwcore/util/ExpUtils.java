@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
  * See http://forums.bukkit.org/threads/experiencemanager-was-experienceutils-make-giving-taking-exp-a-bit-more-intuitive.54450/page-3#post-1273622
  * 
  */
-public class ExperienceManager {
+public class ExpUtils {
 	// this is to stop the lookup tables growing without control
 	private static int hardMaxLevel = 100000;
 
@@ -34,11 +34,11 @@ public class ExperienceManager {
 	}
 
 	/**
-	 * Create a new ExperienceManager for the given player.
+	 * Create a new ExpUtils for the given player.
 	 * 
-	 * @param player The player for this ExperienceManager object
+	 * @param player The player for this ExpUtils object
 	 */
-	public ExperienceManager(Player player) {
+	public ExpUtils(Player player) {
 		if (player == null)
 			throw new IllegalArgumentException("Player cannot be null.");
 
@@ -51,7 +51,7 @@ public class ExperienceManager {
 	}
 
 	public static void setHardMaxLevel(int hardMaxLevel) {
-		ExperienceManager.hardMaxLevel = hardMaxLevel;
+		ExpUtils.hardMaxLevel = hardMaxLevel;
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class ExperienceManager {
 	}
 
 	/**
-	 * Get the Player associated with this ExperienceManager.
+	 * Get the Player associated with this ExpUtils.
 	 * 
 	 * @return the Player object
 	 * @throws IllegalStateException if the player is no longer online

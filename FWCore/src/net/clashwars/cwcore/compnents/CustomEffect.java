@@ -1,8 +1,11 @@
-package net.clashwars.cwcore.util;
+package net.clashwars.cwcore.compnents;
 
 import java.lang.reflect.Field;
 import java.util.Random;
 
+import net.clashwars.cwcore.constants.Effects;
+import net.clashwars.cwcore.util.LocationUtils;
+import net.clashwars.cwcore.util.Utils;
 import net.minecraft.server.v1_6_R2.Packet63WorldParticles;
 
 import org.bukkit.Effect;
@@ -14,12 +17,12 @@ import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class Effects {
+public class CustomEffect {
 	
 	Random rand = new Random();
 	Field[] field = new Field[9];
 	
-	public Effects() {
+	public CustomEffect() {
 		try {
             field[0] = Packet63WorldParticles.class.getDeclaredField("a");
             field[1] = Packet63WorldParticles.class.getDeclaredField("b");
@@ -37,7 +40,36 @@ public class Effects {
             e.printStackTrace();
     }
 	}
-
+	
+	
+	private String getParticle(String name) {
+		for (Effects eff : Effects.values()) {
+			for (String alias : eff.getAliases()) {
+				if (alias.equalsIgnoreCase(name)) {
+					return eff.name();
+				}
+			}
+		}
+		if (Utils.getInt(name) >= 0) {
+			int id = Utils.getInt(name);
+			for (Effects eff : Effects.values()) {
+				if (eff.getID() == id) {
+					return eff.name();
+				}
+			}
+		}
+		for (Effects eff : Effects.values()) {
+			for (String alias : eff.getAliases()) {
+				if (alias.startsWith(name.length() > 2 ? name.substring(0, 3) : name.substring(0, 1))) {
+					return eff.name();
+				}
+			}
+		}
+		return null;
+	}
+	
+	
+	
 	public void playSignal(Location loc) {
 		loc.getWorld().playEffect(loc, Effect.ENDER_SIGNAL, 0);
 	}
@@ -47,7 +79,7 @@ public class Effects {
 	}
 	
 	public void playExplosion(Location loc) {
-		loc.getWorld().createExplosion(loc, 0F);
+		loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 1F, false, false);
 	}
 	
 	public void playLightning(Location loc) {
@@ -134,9 +166,6 @@ public class Effects {
         location.getWorld().playEffect(location, Effect.POTION_BREAK, pot);
 	}
 	
-	
-	
-	
     private void smoke(World w, Block b, int r) {
         Location loc = b.getLocation();
         if (r <= 5) {
@@ -150,14 +179,6 @@ public class Effects {
                 w.playEffect(loc, Effect.SMOKE, rand.nextInt(9));
         }
     }
-	
-	private boolean inRange(int x1, int z1, int x2, int z2, int r) {
-        return sq(x1-x2) + sq(z1-z2) < sq(r);
-	}
-
-	private int sq(int v) {
-        return v*v;
-	}
 
 	public void playBlockBreak(Location location, String param) {
 		int id = 1;
@@ -173,6 +194,17 @@ public class Effects {
         }
 	}
 	
+	private boolean inRange(int x1, int z1, int x2, int z2, int r) {
+		return sq(x1-x2) + sq(z1-z2) < sq(r);
+	}
+
+	private int sq(int v) {
+		return v*v;
+	}
+	
+	
+	
+	
 	public void playParticle(Location location, String name, String horSpread, String verSpread, String speed, String count) {
         float hs = Float.parseFloat(horSpread);
         float vs = Float.parseFloat(verSpread);
@@ -180,10 +212,10 @@ public class Effects {
         int c = Integer.parseInt(count);
         String n = getParticle(name);
         
-        playParticleEffect(location, n, hs, vs, s, c, 15);
+        playParticleEffect(location, n, hs, vs, s, c);
 	}
 	
-	public void playParticleEffect(Location location, String name, float spreadHoriz, float spreadVert, float speed, int count, int radius) {
+	public void playParticleEffect(Location location, String name, float spreadHoriz, float spreadVert, float speed, int count) {
         Packet63WorldParticles packet = new Packet63WorldParticles();
         try {
         	field[0].set(packet, name);
@@ -196,7 +228,7 @@ public class Effects {
         	field[7].setFloat(packet, speed);
         	field[8].setInt(packet, count);
                 
-            int rSq = radius * radius;
+            int rSq = 15 * 15;
             
             for (Player player : location.getWorld().getPlayers()) {
                 if (player.getLocation().distanceSquared(location) <= rSq) {
@@ -209,138 +241,5 @@ public class Effects {
         }
     }
 	
-	private String getParticle(String name) {
-		String n = name.toLowerCase();
-		
-		switch (n) {
-			case "hugeexplosion":
-			case "hugeexplode":
-				n = "hugeexplosion";
-				break;
-			case "largeexplode":
-			case "largeexplosion":
-				n = "largeexplode";
-				break;
-			case "fireworksspark":
-			case "firework":
-				n = "fireworksSpark";
-				break;
-			case "bubble":
-				n = "bubble";
-				break;
-			case "suspended":
-			case "suspend":
-				n = "suspended";
-				break;
-			case "depthsuspend":
-			case "depthsuspended":
-				n = "depthsuspend";
-				break;
-			case "townaura":
-			case "aura":
-				n = "townaura";
-				break;
-			case "crit":
-				n = "crit";
-				break;
-			case "magiccrit":
-			case "sharpness":
-				n = "magicCrit";
-				break;
-			case "smoke":
-				n = "smoke";
-				break;
-			case "mobspell":
-				n = "mobSpell";
-				break;
-			case "mobspellambient":
-				n = "mobSpellAmbient";
-				break;
-			case "spell":
-				n = "spell";
-				break;
-			case "instantspell":
-				n = "instantSpell";
-				break;
-			case "witchmagic":
-			case "witch":
-				n = "witchMagic";
-				break;
-			case "note":
-			case "notes":
-			case "music":
-				n = "note";
-				break;
-			case "portal":
-				n = "portal";
-				break;
-			case "enchantmenttable":
-			case "enchant":
-			case "letters":
-				n = "enchantmenttable";
-				break;
-			case "explode":
-			case "explosion":
-				n = "explode";
-				break;
-			case "flame":
-			case "flames":
-				n = "flame";
-				break;
-			case "lava":
-				n = "lava";
-				break;
-			case "footstep":
-			case "steps":
-				n = "footstep";
-				break;
-			case "splash":
-			case "potion":
-				n = "splash";
-				break;
-			case "largesmoke":
-			case "bigsmoke":
-				n = "largesmoke";
-				break;
-			case "cloud":
-				n = "cloud";
-				break;
-			case "reddust":
-			case "dust":
-				n = "reddust";
-				break;
-			case "snowballpoof":
-			case "snowball":
-				n = "snowballpoof";
-				break;
-			case "dripwater":
-			case "waterd":
-				n = "dripWater";
-				break;
-			case "driplava":
-			case "lavad":
-				n = "dripLava";
-				break;
-			case "snowshovel":
-			case "snowbreak":
-				n = "snowshovel";
-				break;
-			case "slime":
-				n = "slime";
-				break;
-			case "heart":
-			case "hearts":
-				n = "heart";
-				break;
-			case "angryvillager":
-			case "angry":
-				n = "angryVillager";
-				break;
-			case "happyvillager":
-			case "happy":
-				n = "happyVillager";
-				break;
-		}
-		return n;
-	}
+	
 }

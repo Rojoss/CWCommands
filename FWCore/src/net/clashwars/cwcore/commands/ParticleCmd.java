@@ -37,11 +37,8 @@ public class ParticleCmd implements CommandClass {
 	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
-		Player target = null;
 		boolean played = false;
 		Location loc = null;
-		Location offset = null;
-		World world = null;
 		
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
 		
@@ -53,7 +50,7 @@ public class ParticleCmd implements CommandClass {
 		if (CmdUtils.hasModifier(args,"-l", true)) {
 			String sep = ChatColor.DARK_GRAY + ", " + ChatColor.GOLD;
 			sender.sendMessage(ChatColor.DARK_GRAY + "===== " + ChatColor.DARK_RED + "Particle List" + ChatColor.DARK_GRAY + " =====");
-			sender.sendMessage(ChatColor.DARK_RED + "Effects without args: " + ChatColor.GOLD 
+			sender.sendMessage(ChatColor.DARK_RED + "CustomEffect without args: " + ChatColor.GOLD 
 					+ "singnal" + sep + "flames"  + sep + "explosion" + sep + "lightning" + sep + "bigsmoke");
 			sender.sendMessage(ChatColor.GOLD + "cloud" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "<radius>");
 			sender.sendMessage(ChatColor.GOLD + "smoke" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "<direction(0<>8)>");
@@ -71,92 +68,46 @@ public class ParticleCmd implements CommandClass {
 		
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		if (CmdUtils.getOptionalArg(cmdArgs, "p:") != null) {
-			target = cwc.getServer().getPlayer(((CmdUtils.getOptionalArg(cmdArgs, "p:"))));
+			player = cwc.getServer().getPlayer(((CmdUtils.getOptionalArg(cmdArgs, "p:"))));
 		}
-		String name = CmdUtils.getOptionalArg(cmdArgs, "name:");
 		int amt = Utils.getInt(CmdUtils.getOptionalArg(cmdArgs, "amt:"));
 		String locStr = CmdUtils.getOptionalArg(cmdArgs, "loc:");
+		String offsetStr = CmdUtils.getOptionalArg(cmdArgs, "offset:");
+		World world = Utils.getWorld(CmdUtils.getOptionalArg(cmdArgs, "loc:"));
 		
 		
 		//Console
 		if (!(sender instanceof Player)) {
-			if (!targetSet && !locSet) {
+			if (player == null && locStr == null) {
 				sender.sendMessage(pf + ChatColor.RED + "You need to specify a player or Location+World to use this on the console!");
 				return true;
 			}
 		} else {
-			player = (Player) sender;
-			if (!targetSet) {
-				target = (Player) sender;
+			if (player == null) {
+				player = (Player) sender;
 			}
 		}
 		
-		/* null checks */
-		if (player == null && !locSet) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
-			return true;
-		}
-		if (target == null && targetSet == true) {
-			if (targetSet) {
-				sender.sendMessage(pf + ChatColor.RED + "Invalid target player.");
-				return true;
-			}
-		}
+		
+		
+
 		if (amt > 100) {
     		sender.sendMessage(pf + ChatColor.RED + "Amount can't be more then 100!");
     		return true;
     	}
-		
-		if (!locSet) {
-			loc = target.getLocation();
-			world = target.getWorld();
+		if (world == null) {
+			world = player.getWorld();
 		}
 		
-		if (CmdUtils.hasModifier(args,"world:", false)) {
-			CmdUtils.getArgIndex(args, "world:", false);
-			String[] splt = args[CmdUtils.getArgIndex(args, "world:", false)].split(":");
-        	if (splt.length > 1) {
-        		if (cwc.getServer().getWorld(splt[1]) == null) {
-				 	sender.sendMessage(pf + ChatColor.RED + "Invalid world.");
-				 	return true;
-				} else {
-					world = cwc.getServer().getWorld(splt[1]);
-				}
-        	}
-			args = CmdUtils.modifiedArgs(args,"world:", false);
+		if (LocationUtils.getLocation(locStr, world) != null) {
+			loc = LocationUtils.getLocation(locStr, world);
 		}
-		if (CmdUtils.hasModifier(args,"loc:", false)) {
-			CmdUtils.getArgIndex(args, "loc:", false);
-			String[] splt = args[CmdUtils.getArgIndex(args, "loc:", false)].split(":");
-        	if (splt.length > 1) {
-        		loc = LocationUtils.getLocation(splt[1], world);
-        		if (loc == null) {
-        			sender.sendMessage(pf + ChatColor.RED + "Invalid location, Must be x,y,z");
-				 	return true;
-        		}
-        	}
-			args = CmdUtils.modifiedArgs(args,"loc:", false);
+		if (offsetStr != null) {
+			loc.add(LocationUtils.getLocation(offsetStr, world));
 		}
-		offset = new Location(world,0,0,0);
-		boolean offsetSet = false;
-		if (CmdUtils.hasModifier(args,"offset:", false)) {
-			CmdUtils.getArgIndex(args, "offset:", false);
-			String[] splt = args[CmdUtils.getArgIndex(args, "offset:", false)].split(":");
-        	if (splt.length > 1) {
-        		offset = LocationUtils.getLocation(splt[1], world);
-        		if (offset == null) {
-        			sender.sendMessage(pf + ChatColor.RED + "Invalid offset, Must be x,y,z");
-				 	return true;
-        		}
-        		offsetSet = true;
-        	}
-			args = CmdUtils.modifiedArgs(args,"offset:", false);
-		}
+		
 		
 		/* Action */
-		if (offsetSet) {
-			loc.add(offset);
-		}
 		if (args.length >= 1) {
 			String str = args[0].toLowerCase();
 			for (int i = 0; i < amt; i++) {
@@ -164,16 +115,6 @@ public class ParticleCmd implements CommandClass {
 					case "signal":
 					case "ender":
 						cwc.getEffects().playSignal(loc);
-						played = true;
-						break;
-					case "flames":
-					case "flame":
-						cwc.getEffects().playFlames(loc);
-						played = true;
-						break;
-					case "explosion":
-					case "explode":
-						cwc.getEffects().playExplosion(loc);
 						played = true;
 						break;
 					case "lightning":
@@ -243,11 +184,11 @@ public class ParticleCmd implements CommandClass {
 		}
 		
 		if (!silent && played) {
-			String locStr = "" + ChatColor.GRAY + loc.getBlockX() + ChatColor.DARK_GRAY + "," + ChatColor.GRAY + loc.getBlockY() + ChatColor.DARK_GRAY + "," + ChatColor.GRAY + loc.getBlockZ();
+			String locS = "" + ChatColor.GRAY + loc.getBlockX() + ChatColor.DARK_GRAY + "," + ChatColor.GRAY + loc.getBlockY() + ChatColor.DARK_GRAY + "," + ChatColor.GRAY + loc.getBlockZ();
 			if (args[0].startsWith("p")) {
-				sender.sendMessage(pf + "Particle effect " + args[1] + " played at " + locStr);
+				sender.sendMessage(pf + "Particle effect " + args[1] + " played at " + locS);
 			} else {
-				sender.sendMessage(pf + "Effect " + args[0] + " played at " + locStr);
+				sender.sendMessage(pf + "Effect " + args[0] + " played at " + locS);
 			}
 		}
 		return true;

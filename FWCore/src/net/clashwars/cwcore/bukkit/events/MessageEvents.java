@@ -8,7 +8,7 @@ import java.io.DataOutputStream;
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.entity.CWPlayer;
 import net.clashwars.cwcore.util.AliasUtils;
-import net.clashwars.cwcore.util.ExperienceManager;
+import net.clashwars.cwcore.util.ExpUtils;
 import net.clashwars.cwcore.util.InvUtils;
 import net.clashwars.cwcore.util.LocationUtils;
 import net.clashwars.cwcore.util.Utils;
@@ -322,7 +322,7 @@ public class MessageEvents implements PluginMessageListener {
 
 							if (p != null) {
 								cwp = cwc.getPlayerManager().getPlayer(p.getName());
-								ExperienceManager expMan = new ExperienceManager(p);
+								ExpUtils expMan = new ExpUtils(p);
 
 								String yes = ChatColor.GREEN + "true";
 								String no = ChatColor.DARK_RED + "false";

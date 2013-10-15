@@ -15,6 +15,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 
@@ -197,6 +198,7 @@ public class Utils {
 		return effectType;
 	}
 	
+	//Get a fake offline player which can be used as a regular player.
 	public static Player getFakeOfflinePlayer(String player) {
 		OfflinePlayer oPlayer = null;
 		oPlayer = Bukkit.getServer().getOfflinePlayer(player);
@@ -206,5 +208,17 @@ public class Utils {
 		entityPlayer.getBukkitEntity().loadData();
 		
 		return entityPlayer.getBukkitEntity();
+	}
+	
+	//Get a world from a string like <x>,<y>,<z>:<world>
+	public static World getWorld(String str) {
+		
+		String[] strings = str.split(":");
+		if (str.length() > 1) {
+			if (Bukkit.getServer().getWorld(strings[1]) != null) {
+				return Bukkit.getServer().getWorld(strings[1]);
+			}
+		}
+		return Bukkit.getServer().getWorlds().get(0);
 	}
 }

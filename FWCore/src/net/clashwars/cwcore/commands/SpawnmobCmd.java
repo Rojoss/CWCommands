@@ -4,9 +4,9 @@ import java.util.HashMap;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
+import net.clashwars.cwcore.compnents.CustomEntity;
 import net.clashwars.cwcore.util.AliasUtils;
 import net.clashwars.cwcore.util.CmdUtils;
-import net.clashwars.cwcore.util.CustomEntity;
 import net.clashwars.cwcore.util.LocationUtils;
 import net.clashwars.cwcore.util.Utils;
 

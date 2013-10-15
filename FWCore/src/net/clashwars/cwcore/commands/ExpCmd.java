@@ -5,7 +5,7 @@ import java.util.HashMap;
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.CmdUtils;
-import net.clashwars.cwcore.util.ExperienceManager;
+import net.clashwars.cwcore.util.ExpUtils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -83,7 +83,7 @@ public class ExpCmd implements CommandClass {
 		
 		
 		//Action
-		ExperienceManager expMan = new ExperienceManager(player);
+		ExpUtils expMan = new ExpUtils(player);
 		
 		if (type == "get") {
 			sender.sendMessage(pf + ChatColor.DARK_PURPLE + player.getDisplayName() + ChatColor.GOLD + " has " + ChatColor.DARK_PURPLE + expMan.getCurrentExp() 

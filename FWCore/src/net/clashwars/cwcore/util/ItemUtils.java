@@ -3,6 +3,7 @@ package net.clashwars.cwcore.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.clashwars.cwcore.compnents.CustomItem;
 import net.minecraft.server.v1_6_R2.EntityFireworks;
 import net.minecraft.server.v1_6_R2.NBTTagCompound;
 import net.minecraft.server.v1_6_R2.NBTTagList;

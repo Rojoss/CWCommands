@@ -436,7 +436,7 @@ public class CommandsOLD {
 			return true;
 		} else if (args[0].equalsIgnoreCase("info")) {
 			player.sendMessage(ChatColor.DARK_PURPLE + "Power (Flight duration): " + meta.getPower());
-			player.sendMessage(ChatColor.DARK_PURPLE + "Effects (" + meta.getEffectsSize() + "):");
+			player.sendMessage(ChatColor.DARK_PURPLE + "CustomEffect (" + meta.getEffectsSize() + "):");
 
 			for (int i = 0; i < meta.getEffectsSize(); i++) {
 				FireworkEffect effect = meta.getEffects().get(i);

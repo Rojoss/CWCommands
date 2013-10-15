@@ -16,15 +16,16 @@ import net.clashwars.cwcore.bukkit.events.MainEvents;
 import net.clashwars.cwcore.bukkit.events.MessageEvents;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.commands.internal.CommandsEnum;
+import net.clashwars.cwcore.compnents.CustomEffect;
 import net.clashwars.cwcore.config.AliasesConfig;
 import net.clashwars.cwcore.config.Config;
 import net.clashwars.cwcore.config.PluginConfig;
 import net.clashwars.cwcore.config.WarpsConfig;
+import net.clashwars.cwcore.constants.Mysql;
 import net.clashwars.cwcore.entity.PlayerManager;
 import net.clashwars.cwcore.runnables.SqlUpdateRunnable;
 import net.clashwars.cwcore.sql.SqlConnection;
 import net.clashwars.cwcore.sql.SqlInfo;
-import net.clashwars.cwcore.util.Effects;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.ChatColor;
@@ -52,7 +53,7 @@ public class CWCore {
 	private AliasesConfig					aliasesCfg;
 	private WarpsConfig						warpsCfg;
 	private Permission             	 		perm;
-	private Effects				   	 		effects;
+	private CustomEffect				   	 		effects;
 
 	private boolean							autoRespawn;
 	public static String					pf 				= ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "CW" + ChatColor.DARK_GRAY + "] " + ChatColor.GOLD;
@@ -101,7 +102,7 @@ public class CWCore {
 		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         perm = rsp.getProvider();
 
-        effects = new Effects();
+        effects = new CustomEffect();
 
 		registerEvents();
 		registerTasks();
@@ -212,7 +213,7 @@ public class CWCore {
 	public void attemptSQLConnection() {
 		try {
 			sql.connect(sqlInfo);
-			sql.createTable(sqlInfo.getDb(), "users", Constants.USERS);
+			sql.createTable(sqlInfo.getDb(), "users", Mysql.USERS);
 		} catch (Exception e) {
 			log("Could not connect to database.");
 		}
@@ -275,7 +276,7 @@ public class CWCore {
 		this.autoRespawn = autoRespawn;
 	}
 	
-	public Effects getEffects() {
+	public CustomEffect getEffects() {
 		return effects;
 	}
 	

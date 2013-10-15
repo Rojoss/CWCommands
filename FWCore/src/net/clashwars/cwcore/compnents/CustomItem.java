@@ -1,8 +1,12 @@
-package net.clashwars.cwcore.util;
+package net.clashwars.cwcore.compnents;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import net.clashwars.cwcore.util.AliasUtils;
+import net.clashwars.cwcore.util.ItemUtils;
+import net.clashwars.cwcore.util.Utils;
 
 import org.bukkit.Color;
 import org.bukkit.Material;

@@ -1,9 +1,9 @@
-package net.clashwars.cwcore;
+package net.clashwars.cwcore.constants;
 
 import net.clashwars.cwcore.sql.SqlType;
 import net.clashwars.cwcore.sql.SqlValue;
 
-public class Constants {
+public class Mysql {
 	public static final SqlValue[]   USERS;
 	
 	static {

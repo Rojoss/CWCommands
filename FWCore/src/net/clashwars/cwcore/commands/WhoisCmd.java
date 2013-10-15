@@ -7,7 +7,7 @@ import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.entity.CWPlayer;
 import net.clashwars.cwcore.util.CmdUtils;
-import net.clashwars.cwcore.util.ExperienceManager;
+import net.clashwars.cwcore.util.ExpUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -91,7 +91,7 @@ public class WhoisCmd implements CommandClass {
 			}
 		} else {
 			cwp = cwc.getPlayerManager().getPlayer(player.getName());
-			ExperienceManager expMan = new ExperienceManager(player);
+			ExpUtils expMan = new ExpUtils(player);
 			
 			String yes = ChatColor.GREEN + "true";
 			String no = ChatColor.DARK_RED + "false";
