@@ -6,6 +6,7 @@ import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.CmdUtils;
 import net.clashwars.cwcore.util.LocationUtils;
+import net.clashwars.cwcore.util.Utils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -23,6 +24,13 @@ public class ParticleCmd implements CommandClass {
 	
 	public ParticleCmd(CWCore cwc) {
 		this.cwc = cwc;
+		optionalArgs.put("p:<player>", "Play effect at this player");
+		optionalArgs.put("loc:<x,y,z>[:world]", "Play the effect on this location");
+		optionalArgs.put("amt:<amount>", "Set amount of particles");
+		optionalArgs.put("offset:<x,y,z>", "Offset where the effect plays");
+		modifiers.put("s", "No messages");
+		modifiers.put("l", "List all particles with all args");
+		
 	}
 
 	@Override
@@ -30,7 +38,6 @@ public class ParticleCmd implements CommandClass {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		Player target = null;
-		int amt = 1;
 		boolean played = false;
 		Location loc = null;
 		Location offset = null;
@@ -40,17 +47,9 @@ public class ParticleCmd implements CommandClass {
 		
 		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Optional arguments: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "player:<player>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Play effect on given player.");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "loc:<x,y,z>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Play effect on given location.");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "world:<worldname>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set the world if you use location.");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "amt:<amount>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set amount of particles.");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "offset:<x,y,z>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Offset the given location to play effect.");
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-l" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "List all particles with all args.");
 			return true;
 		}
+		
 		if (CmdUtils.hasModifier(args,"-l", true)) {
 			String sep = ChatColor.DARK_GRAY + ", " + ChatColor.GOLD;
 			sender.sendMessage(ChatColor.DARK_GRAY + "===== " + ChatColor.DARK_RED + "Particle List" + ChatColor.DARK_GRAY + " =====");
@@ -69,37 +68,15 @@ public class ParticleCmd implements CommandClass {
 					+ "snowbreak" + sep + "slime" + sep + "heart" + sep + "angry" + sep + "happy");
 			return true;
 		}
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
-		boolean targetSet = false;
-		if (CmdUtils.hasModifier(args,"player:", false)) {
-			targetSet = true;
-			target = CmdUtils.getPlayer(args, "player:", cwc);
-			args = CmdUtils.modifiedArgs(args,"player:", false);
-		}
 		
-		boolean locSet = false;
-		if (CmdUtils.hasModifier(args,"world:", false)) {
-			if (CmdUtils.hasModifier(args,"loc:", false)) {
-				locSet = true;
-			}
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
+		if (CmdUtils.getOptionalArg(cmdArgs, "p:") != null) {
+			target = cwc.getServer().getPlayer(((CmdUtils.getOptionalArg(cmdArgs, "p:"))));
 		}
-		if (CmdUtils.hasModifier(args,"amt:", false)) {
-			CmdUtils.getArgIndex(args, "amt:", false);
-			String[] splt = args[CmdUtils.getArgIndex(args, "amt:", false)].split(":");
-        	if (splt.length > 1) {
-				try {
-				 	amt = Integer.parseInt(splt[1]);
-				 } catch (NumberFormatException e) {
-				 	sender.sendMessage(pf + ChatColor.RED + "Invalid amount, Must be a number.");
-				 	return true;
-				 }
-        	}
-			args = CmdUtils.modifiedArgs(args,"amt:", false);
-		}
+		String name = CmdUtils.getOptionalArg(cmdArgs, "name:");
+		int amt = Utils.getInt(CmdUtils.getOptionalArg(cmdArgs, "amt:"));
+		String locStr = CmdUtils.getOptionalArg(cmdArgs, "loc:");
+		
 		
 		//Console
 		if (!(sender instanceof Player)) {

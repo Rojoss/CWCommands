@@ -184,55 +184,16 @@ public class CustomItem extends ItemStack {
 	
 	//Set potion effects for a input string like <potion>[.<dur>.<lvl>][,<potion>[.<dur>.<lvl>]],etc
 		public void setPotionEffects(String str) {
-			List<PotionEffect> effects = new ArrayList<PotionEffect>();
+			List<PotionEffect> effects = ItemUtils.getPotionEffects(str);
 			
-			if (str.contains(",")) {
-				String[] potionEffects = str.split(",");
-				if (potionEffects.length > 1) {
-					for (String e : potionEffects) {
-						String[] potionEffect = e.split("\\.");
-						PotionEffectType ef = AliasUtils.findPotion(potionEffect[0]);
-						if (ef == null) {
-							ef = PotionEffectType.SPEED;
-						}
-						if (potionEffect.length > 2) {
-							int lvl = Utils.getInt(potionEffect[2]);
-							if (lvl > 0) {
-								lvl -= 1;
-							}
-							effects.add(new PotionEffect(ef, Utils.getInt(potionEffect[1]) * 20, lvl));
-						} else if (potionEffect.length > 1) {
-							effects.add(new PotionEffect(ef, Utils.getInt(potionEffect[1]) * 20, 0));
-						} else {
-							effects.add(new PotionEffect(ef, 600, 0));
-						}
-					}
+			if (effects != null && !effects.contains(null)) {
+				i.setType(Material.POTION);
+				if (i.getDurability() == 0) {
+					i.setDurability((short) 64);
 				}
-			} else {
-				String[] potionEffect = str.split("\\.");
-				PotionEffectType ef = AliasUtils.findPotion(potionEffect[0]);
-				if (ef == null) {
-					ef = PotionEffectType.SPEED;
+				for (PotionEffect effect : effects) {
+					pmeta.addCustomEffect(effect, true);
 				}
-				if (potionEffect.length > 2) {
-					int lvl = Utils.getInt(potionEffect[2]);
-					if (lvl > 0) {
-						lvl -= 1;
-					}
-					effects.add(new PotionEffect(ef, Utils.getInt(potionEffect[1]) * 20, lvl));
-				} else if (potionEffect.length > 1) {
-					effects.add(new PotionEffect(ef, Utils.getInt(potionEffect[1]) * 20, 0));
-				} else {
-					effects.add(new PotionEffect(ef, 600, 0));
-				}
-			}
-			
-			i.setType(Material.POTION);
-			if (i.getDurability() == 0) {
-				i.setDurability((short) 64);
-			}
-			for (PotionEffect effect : effects) {
-				pmeta.addCustomEffect(effect, true);
 			}
 		}
 	

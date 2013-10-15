@@ -102,6 +102,7 @@ public class SpawnmobCmd implements CommandClass {
 		String leg = CmdUtils.getOptionalArg(cmdArgs, "leg:");
 		String boot = CmdUtils.getOptionalArg(cmdArgs, "boot:");
 		String armor = CmdUtils.getOptionalArg(cmdArgs, "armor:");
+		String effects = CmdUtils.getOptionalArg(cmdArgs, "pe:");
 		
 		//Console
 		if (!(sender instanceof Player)) {
@@ -205,6 +206,7 @@ public class SpawnmobCmd implements CommandClass {
 				if (leg != null) ce.setLeg(leg);
 				if (boot != null) ce.setBoot(boot);
 				if (armor != null) ce.setHorseArmor(armor);
+				if (effects != null) ce.setEffects(effects);
 				
 				if (forceDisplay == true) ce.setDisplay();
 				if (baby == true) ce.setBaby();

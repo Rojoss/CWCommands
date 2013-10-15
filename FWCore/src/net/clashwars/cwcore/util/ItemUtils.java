@@ -1,54 +1,87 @@
 package net.clashwars.cwcore.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.server.v1_6_R2.EntityFireworks;
 import net.minecraft.server.v1_6_R2.NBTTagCompound;
 import net.minecraft.server.v1_6_R2.NBTTagList;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class ItemUtils {
 	
-	public static ItemStack createItem(String itemStr) {
-		ItemStack item = null;
-		MaterialData md = null;
-		
-		String[] splt = itemStr.split(":");
-		
+	//Get a custom item from a string like this: <item>[:ID]:<enchant>[.lvl],<e>[.lvl],etc
+	public static CustomItem getItem(String str) {
+		String[] splt = str.split(":");
+		ItemStack i = null;
+		CustomItem ci = null;
 		if (splt.length > 0) {
-			String iStr = splt[0];
-			if (splt.length > 1) {
-				if (!splt[1].equals("")) {
-					iStr += ":" + splt[1];
-				}
-			}
-			md = AliasUtils.getFullData(iStr);
-			item = new ItemStack(md.getItemType(), 1, md.getData());
-			
-			if (splt.length > 2) { // ID:DATA:ENCHANTS  -  Sharpness:1,Knockback:5,etc
-				if (!splt[2].equals("")) {
-					String[] enchants = splt[2].split(",");
-					String[] e = null;
-					for (int i = 0; i < enchants.length; i++) {
-						e = enchants[0].split("-");
-						item.addUnsafeEnchantment(AliasUtils.findEnchantment(e[0]), Integer.parseInt(e[1]));
+			MaterialData md = AliasUtils.getFullData(splt[0]);
+			i = md.toItemStack();
+			ci = new CustomItem(i);
+		}
+		if (splt.length > 1) {
+			ci.setEnchants(splt[1]);
+		}
+		return ci;
+	}
+	
+	
+	//Get potion effects for a input string like <potion>[.<dur>.<lvl>][,<potion>[.<dur>.<lvl>]],etc
+	public static List<PotionEffect> getPotionEffects(String str) {
+		List<PotionEffect> effects = new ArrayList<PotionEffect>();
+		
+		if (str.contains(",")) {
+			String[] potionEffects = str.split(",");
+			if (potionEffects.length > 1) {
+				for (String e : potionEffects) {
+					String[] potionEffect = e.split("\\.");
+					PotionEffectType ef = AliasUtils.findPotion(potionEffect[0]);
+					if (ef == null) {
+						ef = PotionEffectType.SPEED;
+					}
+					if (potionEffect.length > 2) {
+						int lvl = Utils.getInt(potionEffect[2]);
+						if (lvl > 0) {
+							lvl -= 1;
+						}
+						effects.add(new PotionEffect(ef, Utils.getInt(potionEffect[1]) * 20, lvl));
+					} else if (potionEffect.length > 1) {
+						effects.add(new PotionEffect(ef, Utils.getInt(potionEffect[1]) * 20, 0));
+					} else {
+						effects.add(new PotionEffect(ef, 600, 0));
 					}
 				}
 			}
-			
-			if (splt.length > 3) { // ID:DATA:ENCHANTS:NAME
-				if (!splt[3].equals("")) {
-					item.getItemMeta().setDisplayName(splt[3]);
-				}
+		} else {
+			String[] potionEffect = str.split("\\.");
+			PotionEffectType ef = AliasUtils.findPotion(potionEffect[0]);
+			if (ef == null) {
+				ef = PotionEffectType.SPEED;
 			}
-			
-			return item;
+			if (potionEffect.length > 2) {
+				int lvl = Utils.getInt(potionEffect[2]);
+				if (lvl > 0) {
+					lvl -= 1;
+				}
+				effects.add(new PotionEffect(ef, Utils.getInt(potionEffect[1]) * 20, lvl));
+			} else if (potionEffect.length > 1) {
+				effects.add(new PotionEffect(ef, Utils.getInt(potionEffect[1]) * 20, 0));
+			} else {
+				effects.add(new PotionEffect(ef, 600, 0));
+			}
 		}
-		return new ItemStack(0);
+		return effects;
 	}
+	
 	
 	public static void createFireworksExplosion(Location location, boolean flicker, boolean trail, Type type, int[] colors, int[] fadeColors, int flightDuration) {
         //Get type

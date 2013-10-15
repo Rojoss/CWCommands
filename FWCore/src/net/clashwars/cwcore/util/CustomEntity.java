@@ -1,5 +1,7 @@
 package net.clashwars.cwcore.util;
 
+import java.util.List;
+
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Creeper;
@@ -23,6 +25,7 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Colorable;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -174,42 +177,35 @@ public class CustomEntity {
 	}
 	
 	public void setHand(String arg) {
-		ItemStack i = ItemUtils.createItem(arg);
-		if (i != null) {
-			ec.getEquipment().setItemInHand(i);
+		if (ItemUtils.getItem(arg) != null) {
+			ec.getEquipment().setItemInHand(ItemUtils.getItem(arg).getItem());
 			if (e instanceof Enderman) {
-				((Enderman)e).setCarriedMaterial(i.getData());
+				((Enderman)e).setCarriedMaterial(ItemUtils.getItem(arg).getItem().getData());
 			}
 		}
 	}
 	
 	public void setHelmet(String arg) {
-		ItemStack i = ItemUtils.createItem(arg);
-		if (i != null) {
-			ec.getEquipment().setHelmet(i);
-		} else {
-			Bukkit.getServer().broadcastMessage("Debu1");
+		if (ItemUtils.getItem(arg) != null) {
+			ec.getEquipment().setHelmet(ItemUtils.getItem(arg).getItem());
 		}
 	}
 	
 	public void setChest(String arg) {
-		ItemStack i = ItemUtils.createItem(arg);
-		if (i != null) {
-			ec.getEquipment().setChestplate(i);
+		if (ItemUtils.getItem(arg) != null) {
+			ec.getEquipment().setChestplate(ItemUtils.getItem(arg).getItem());
 		}
 	}
 	
 	public void setLeg(String arg) {
-		ItemStack i = ItemUtils.createItem(arg);
-		if (i != null) {
-			ec.getEquipment().setLeggings(i);
+		if (ItemUtils.getItem(arg) != null) {
+			ec.getEquipment().setLeggings(ItemUtils.getItem(arg).getItem());
 		}
 	}
 	
 	public void setBoot(String arg) {
-		ItemStack i = ItemUtils.createItem(arg);
-		if (i != null) {
-			ec.getEquipment().setBoots(i);
+		if (ItemUtils.getItem(arg) != null) {
+			ec.getEquipment().setBoots(ItemUtils.getItem(arg).getItem());
 		}
 	}
 	
@@ -223,6 +219,16 @@ public class CustomEntity {
 			}
 			if (arg.toLowerCase().startsWith("di")) {
 				((Horse)e).getInventory().setArmor(new ItemStack(Material.DIAMOND_BARDING,1));
+			}
+		}
+	}
+	
+	public void setEffects(String arg) {
+		List<PotionEffect> effects = ItemUtils.getPotionEffects(arg);
+		
+		if (effects != null && !effects.contains(null)) {
+			for (PotionEffect effect : effects) {
+				ec.addPotionEffect(effect, true);
 			}
 		}
 	}
