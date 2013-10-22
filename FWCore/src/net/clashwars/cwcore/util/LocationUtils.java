@@ -34,8 +34,11 @@ public class LocationUtils {
 	
 	
 	public static Location getLocation(String str, World world) {
+		String[] splt = str.split(":");
 		String[] locS = str.split(",");
-
+		if (splt.length > 0) {
+			locS = splt[0].split(",");
+		}
 		int x = Integer.parseInt(locS[0].trim());
 		int y = Integer.parseInt(locS[1].trim());
 		int z = Integer.parseInt(locS[2].trim());

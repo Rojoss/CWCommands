@@ -7,10 +7,12 @@ import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.AliasUtils;
 import net.clashwars.cwcore.util.CmdUtils;
 import net.clashwars.cwcore.util.LocationUtils;
+import net.clashwars.cwcore.util.Utils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -24,6 +26,11 @@ public class SoundCmd implements CommandClass {
 	
 	public SoundCmd(CWCore cwc) {
 		this.cwc = cwc;
+		optionalArgs.put("p:<player>", "Play effect at this player");
+		optionalArgs.put("loc:<x,y,z>[:world]", "Play the effect on this location");
+		modifiers.put("s", "No messages");
+		modifiers.put("p", "Personal sound others can't hear.");
+		modifiers.put("a", "Play sound at all players.");
 	}
 
 	@Override
@@ -37,50 +44,24 @@ public class SoundCmd implements CommandClass {
 		
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
 		
-		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Optional args: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "player:<player>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Play effect at this player.");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "loc:<x,y,z>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Play sound effect at specific location");
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-p" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Personal sound others can't hear.");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-a" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Play sound for all players.");
 			return true;
 		}
 		
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
+		boolean personal = CmdUtils.hasModifier(cmdArgs, "p");
+		boolean all = CmdUtils.hasModifier(cmdArgs, "a");
+		if (CmdUtils.getOptionalArg(cmdArgs, "p:") != null) {
+			player = cwc.getServer().getPlayer(((CmdUtils.getOptionalArg(cmdArgs, "p:"))));
 		}
-		boolean personal = false;
-		if (CmdUtils.hasModifier(args,"-p", true)) {
-			personal = true;
-			args = CmdUtils.modifiedArgs(args,"-p", true);
-		}
-		boolean all = false;
-		if (CmdUtils.hasModifier(args,"-a", true)) {
-			all = true;
-			args = CmdUtils.modifiedArgs(args,"-a", true);
-		}
-		
-		boolean targetSet = false;
-		if (CmdUtils.hasModifier(args,"player:", false)) {
-			targetSet = true;
-			player = CmdUtils.getPlayer(args, "player:", cwc);
-			args = CmdUtils.modifiedArgs(args,"player:", false);
-		}
-		String locStr = "";
-		if (CmdUtils.hasModifier(args,"loc:", false)) {
-			locStr = CmdUtils.getString(args, "loc:");
-			args = CmdUtils.modifiedArgs(args,"loc:", false);
-		}
+		String locStr = CmdUtils.getOptionalArg(cmdArgs, "loc:");
+		World world = Utils.getWorld(CmdUtils.getOptionalArg(cmdArgs, "loc:"));
 		
 		
 		//Console
 		if (!(sender instanceof Player)) {
-			if (targetSet == false) {
+			if (player == null) {
 				sender.sendMessage(pf + ChatColor.RED + "Specify a player to play sounds for them.");
 				return true;
 			}
@@ -90,19 +71,26 @@ public class SoundCmd implements CommandClass {
 			}
 		}
 		
-		if (locStr != "") {
-			loc = LocationUtils.getLocation(locStr, player.getWorld());
+		if (world == null) {
+			world = player.getWorld();
+		}
+		if (locStr != null) {
+			loc = LocationUtils.getLocation(locStr, world);
 		}
 		if (loc == null) {
 			loc = player.getLocation();
 		}
 		
-		/* 1 arg (Sound) */
+		
+		//Args
 		if (args.length >= 1) {
 			sound = AliasUtils.findSound(args[0]);
+			if (sound == null) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid sound.");
+				return true;
+			}
 		}
 		
-		/* 2 args (volume) */
 		if (args.length >= 2) {
 			try {
 			 	volume = Float.parseFloat(args[1]);
@@ -112,7 +100,6 @@ public class SoundCmd implements CommandClass {
 			 }
 		}
 		
-		/* 3 args (Pitch) */
 		if (args.length >= 3) {
 			try {
 			 	pitch = Float.parseFloat(args[2]);
@@ -122,12 +109,8 @@ public class SoundCmd implements CommandClass {
 			 }
 		}
 		
-		if (sound == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid sound.");
-			return true;
-		}
 		
-		/* Action */
+		//Action
 		if (all) {
 			for (int i = 0; i < loc.getWorld().getPlayers().size(); i++) {
 				Player p = loc.getWorld().getPlayers().get(i);
@@ -141,7 +124,7 @@ public class SoundCmd implements CommandClass {
 		if (personal) {
 			player.playSound(loc, sound, volume, pitch);
 		} else {
-			player.getWorld().playSound(loc, sound, volume, pitch);
+			world.playSound(loc, sound, volume, pitch);
 		}
 		
 		if (!silent) {
@@ -152,7 +135,6 @@ public class SoundCmd implements CommandClass {
 			}
 			
 		}
-		
 		return true;
 	}
 

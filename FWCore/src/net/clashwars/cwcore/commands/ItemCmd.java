@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
-import net.clashwars.cwcore.compnents.CustomItem;
+import net.clashwars.cwcore.components.CustomItem;
 import net.clashwars.cwcore.util.AliasUtils;
 import net.clashwars.cwcore.util.CmdUtils;
 import net.clashwars.cwcore.util.Utils;

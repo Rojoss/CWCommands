@@ -33,7 +33,7 @@ public class RealnameCmd implements CommandClass {
 		
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
 		
-		if (CmdUtils.hasModifier(args,"-h", false)) {
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
@@ -49,13 +49,13 @@ public class RealnameCmd implements CommandClass {
 			player = (Player) sender;
 		}
 		
-		/* No args (run as sender)*/
+		
+		//Args
 		if (args.length < 1) {
 			sender.sendMessage(pf + "Your real name is: " + player.getName());
 			return true;
 		}
 		
-		/* 1 arg (Player) */
 		if (args.length >= 1) {
 			cwp = cwc.getPlayerManager().getPlayerFromNick(args[0]);
 			if (cwp == null) {
@@ -71,7 +71,8 @@ public class RealnameCmd implements CommandClass {
 			}
 		}
 		
-		/* Action */
+		
+		//Action
 		if (cwp == null && player != null)
 			sender.sendMessage(pf + "Real name of " + ChatColor.DARK_PURPLE + Utils.integrateColor(nick)
 			+ ChatColor.GOLD + " is: " + player.getName());

@@ -69,6 +69,31 @@ public class CmdUtils {
 	}
 	
 	
+	public static String[] removeFromStringArray(String[] args, String remove) {
+		int i;
+        int sloc = -1;
+        String temp;
+        for (i = 0; i < args.length; i++) {
+			if (args[i].toLowerCase().startsWith(remove)) {
+	            sloc = i;
+        	}
+        }
+        if (sloc != -1) {
+                for (i = sloc; i < args.length -1; i++) {
+                        temp = args[i];
+                    args[i] = args[i + 1];
+                    args[i + 1] = temp;
+                }
+        }
+       
+        String[] args2 = new String[args.length - 1];
+        for (i = 0; i < args2.length; i++) {
+                args2[i] = args[i];
+        }
+        return args2;
+	}
+	
+	
 	
 	//Check if args contain modifier
 	public static boolean hasModifier(String[] args, String mod) {

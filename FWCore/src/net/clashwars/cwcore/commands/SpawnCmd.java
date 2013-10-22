@@ -20,6 +20,7 @@ public class SpawnCmd implements CommandClass {
 	
 	public SpawnCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("s", "No messages");
 	}
 
 	@Override
@@ -29,17 +30,12 @@ public class SpawnCmd implements CommandClass {
 		
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
 		
-		if (CmdUtils.hasModifier(args,"-h", false)) {
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
 			return true;
 		}
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
+		
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		
 
 		//Console
@@ -51,6 +47,7 @@ public class SpawnCmd implements CommandClass {
 		}
 		
 		
+		//Args
 		if (args.length > 0) {
 			player = cwc.getServer().getPlayer(args[0]);
 		} else {
@@ -61,7 +58,8 @@ public class SpawnCmd implements CommandClass {
 			return true;
 		}
 		
-		/* action */
+
+		//Action
 		player.teleport(cwc.getServer().getWorld(player.getWorld().getName()).getSpawnLocation());
 		if (!silent) {
 			player.sendMessage(pf + "Teleporting to spawn...");

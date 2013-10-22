@@ -112,7 +112,7 @@ public class CmdEvents implements Listener {
 				CWPlayer cwp = cwc.getPlayerManager().getPlayer(player.getName());
 				String cmd = Utils.getPowerToolCommandByID(Utils.getPowerToolsList(cwp), event.getItem().getTypeId());
 				if (cmd != "") {
-					player.chat("/" + cmd.replaceAll("_", " "));
+					player.chat("/" + cmd.replaceAll("♒", " "));
 					event.setCancelled(true);
 				}
 			}

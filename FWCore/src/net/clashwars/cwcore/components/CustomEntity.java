@@ -1,10 +1,12 @@
-package net.clashwars.cwcore.compnents;
+package net.clashwars.cwcore.components;
 
 import java.util.List;
 
 import net.clashwars.cwcore.util.ItemUtils;
 import net.clashwars.cwcore.util.Utils;
 
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Creeper;
@@ -29,9 +31,6 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Colorable;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.Bukkit;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
 
 public class CustomEntity {
 	

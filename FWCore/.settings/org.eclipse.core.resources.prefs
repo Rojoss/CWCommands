@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+encoding//src/net/clashwars/cwcore/bukkit/events/CmdEvents.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/BroadcastCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/ClearinvCmd.java=UTF-8
 encoding//src/net/clashwars/cwcore/commands/CmdsCmd.java=UTF-8

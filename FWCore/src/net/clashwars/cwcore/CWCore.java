@@ -16,7 +16,7 @@ import net.clashwars.cwcore.bukkit.events.MainEvents;
 import net.clashwars.cwcore.bukkit.events.MessageEvents;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.commands.internal.CommandsEnum;
-import net.clashwars.cwcore.compnents.CustomEffect;
+import net.clashwars.cwcore.components.CustomEffect;
 import net.clashwars.cwcore.config.AliasesConfig;
 import net.clashwars.cwcore.config.Config;
 import net.clashwars.cwcore.config.PluginConfig;

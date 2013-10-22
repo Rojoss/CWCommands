@@ -16,7 +16,6 @@ public class SetspawnCmd implements CommandClass {
 	private CWCore cwc;
 	private HashMap<String, String> modifiers = new HashMap<String, String>();
 	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
 	
 	public SetspawnCmd(CWCore cwc) {
 		this.cwc = cwc;
@@ -26,10 +25,8 @@ public class SetspawnCmd implements CommandClass {
 	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
-		
-		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
 
-		if (CmdUtils.hasModifier(args,"-h", false)) {
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
@@ -43,7 +40,8 @@ public class SetspawnCmd implements CommandClass {
 			player = (Player) sender;
 		}
 		
-		/* action */
+		
+		//Action
 		cwc.getServer().getWorld(player.getWorld().getName()).setSpawnLocation(player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ());
 		player.sendMessage(pf + "Spawn set to: " + ChatColor.DARK_PURPLE + player.getLocation().getBlockX() + ChatColor.DARK_GRAY + ", " 
 		+ ChatColor.DARK_PURPLE + player.getLocation().getBlockY() + ChatColor.DARK_GRAY + ", " + ChatColor.DARK_PURPLE + player.getLocation().getBlockZ());

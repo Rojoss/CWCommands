@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
+import net.clashwars.cwcore.util.AliasUtils;
 import net.clashwars.cwcore.util.CmdUtils;
 
 import org.bukkit.ChatColor;
@@ -11,6 +12,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class RemovepotsCmd implements CommandClass {
 	
@@ -21,26 +23,22 @@ public class RemovepotsCmd implements CommandClass {
 	
 	public RemovepotsCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("s", "No messages");
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
+		PotionEffectType effect = null;
 		
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
 		
-		if (CmdUtils.hasModifier(args,"-h", false)) {
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
 			return true;
 		}
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		
 		
 		//Console
@@ -53,26 +51,42 @@ public class RemovepotsCmd implements CommandClass {
 			player = (Player) sender;
 		}
 		
-		/* 1 arg (Player) */
+		
+		//Args
 		if (args.length >= 1) {
 			player = cwc.getServer().getPlayer(args[0]);
+			if (player == null) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
+				return true;
+			}
 		}
 		
-		/* null checks */
-		if (player == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
-			return true;
+		if (args.length >= 2) {
+			effect = AliasUtils.findPotion(args[1]);
+			if (effect == null) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid potion effect type.");
+				return true;
+			}
 		}
 		
-		/* Action */
-		for (PotionEffect effect : player.getActivePotionEffects()) {
-			player.removePotionEffect(effect.getType());
-		}
-		if (!silent) {
-			player.sendMessage(pf + "All your potion effects have been removed!");
-			if (sender.getName() != player.getName())
-				sender.sendMessage(pf + "All potion effects from " + ChatColor.DARK_PURPLE + player.getDisplayName() 
-				+ ChatColor.GOLD + " have been removed!");
+		
+		//Action
+		if (effect != null) {
+			player.removePotionEffect(effect);
+			if (!silent) {
+				player.sendMessage(pf + "Potion effect " + ChatColor.DARK_PURPLE + args[1] + ChatColor.GOLD + " removed.");
+				if (sender.getName() != player.getName())
+					sender.sendMessage(pf + "Potion effect " + ChatColor.DARK_PURPLE + args[1] + ChatColor.GOLD + " removed from " + ChatColor.DARK_PURPLE + player.getDisplayName());
+			}
+		} else {
+			for (PotionEffect e : player.getActivePotionEffects()) {
+				player.removePotionEffect(e.getType());
+			}
+			if (!silent) {
+				player.sendMessage(pf + "All your potion effects have been removed!");
+				if (sender.getName() != player.getName())
+					sender.sendMessage(pf + "All potion effects from " + ChatColor.DARK_PURPLE + player.getDisplayName() + ChatColor.GOLD + " removed!");
+			}
 		}
 		return true;
 	}

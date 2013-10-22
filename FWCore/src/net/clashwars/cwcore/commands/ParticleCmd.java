@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
+import net.clashwars.cwcore.constants.Effects;
 import net.clashwars.cwcore.util.CmdUtils;
 import net.clashwars.cwcore.util.LocationUtils;
 import net.clashwars.cwcore.util.Utils;
@@ -42,27 +43,26 @@ public class ParticleCmd implements CommandClass {
 		
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
 		
-		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
-			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			return true;
-		}
-		
-		if (CmdUtils.hasModifier(args,"-l", true)) {
+		if (CmdUtils.hasModifier(cmdArgs,"-l", false)) {
 			String sep = ChatColor.DARK_GRAY + ", " + ChatColor.GOLD;
 			sender.sendMessage(ChatColor.DARK_GRAY + "===== " + ChatColor.DARK_RED + "Particle List" + ChatColor.DARK_GRAY + " =====");
 			sender.sendMessage(ChatColor.DARK_RED + "CustomEffect without args: " + ChatColor.GOLD 
-					+ "singnal" + sep + "flames"  + sep + "explosion" + sep + "lightning" + sep + "bigsmoke");
+					+ "signal" + sep + "flames"  + sep + "explosion" + sep + "lightning" + sep + "bigsmoke");
 			sender.sendMessage(ChatColor.GOLD + "cloud" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "<radius>");
 			sender.sendMessage(ChatColor.GOLD + "smoke" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "<direction(0<>8)>");
 			sender.sendMessage(ChatColor.GOLD + "splash" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "<potionTypeId>");
 			sender.sendMessage(ChatColor.GOLD + "blockbreak" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "<blockID>");
 			sender.sendMessage(ChatColor.GOLD + "particle" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "<particle> <horSpread> <verSpread> <speed> <count>");
-			sender.sendMessage(ChatColor.DARK_RED + "Particles: " + ChatColor.GOLD 
-					+ "hugeexplode" + sep + "largeexplode" + sep + "firework" + sep + "bubble" + "suspend" + sep + "depthsuspend" + sep + "aura" + sep
-					+ "crit" + sep + "magiccrit" + sep + "smoke" + sep + "mobspell" + sep + "mobspellambient" + sep + "spell" + sep + "instantSpell" + sep
-					+ "witch" + sep + "note" + sep + "portal" + sep + "enchant" + sep + "explode" + sep + "flames" + sep + "lava" + sep + "steps" + sep
-					+ "splash" + sep + "largesmoke" + sep + "cloud" + sep + "dust" + sep + "snowball" + sep + "dripwater" + sep + "driplava" + sep
-					+ "snowbreak" + sep + "slime" + sep + "heart" + sep + "angry" + sep + "happy");
+			String particles = "";
+			for (Effects particle : Effects.values()) {
+				particles += ChatColor.DARK_GRAY + particle.name() + ChatColor.GRAY + ", ";
+			}
+			sender.sendMessage(ChatColor.DARK_RED + "Particles: " + particles);
+			return true;
+		}
+		
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
+			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
 		
@@ -95,12 +95,17 @@ public class ParticleCmd implements CommandClass {
     		sender.sendMessage(pf + ChatColor.RED + "Amount can't be more then 100!");
     		return true;
     	}
+		if (amt <= 0) {
+			amt = 1;
+		}
 		if (world == null) {
 			world = player.getWorld();
 		}
 		
-		if (LocationUtils.getLocation(locStr, world) != null) {
+		if (locStr != null && LocationUtils.getLocation(locStr, world) != null) {
 			loc = LocationUtils.getLocation(locStr, world);
+		} else if (locStr == null) {
+			loc = player.getLocation();
 		}
 		if (offsetStr != null) {
 			loc.add(LocationUtils.getLocation(offsetStr, world));
@@ -108,7 +113,7 @@ public class ParticleCmd implements CommandClass {
 		
 		
 		/* Action */
-		if (args.length >= 1) {
+		if (args.length > 0) {
 			String str = args[0].toLowerCase();
 			for (int i = 0; i < amt; i++) {
 				switch (str) {

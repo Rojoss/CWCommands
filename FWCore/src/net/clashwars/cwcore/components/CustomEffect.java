@@ -1,4 +1,4 @@
-package net.clashwars.cwcore.compnents;
+package net.clashwars.cwcore.components;
 
 import java.lang.reflect.Field;
 import java.util.Random;

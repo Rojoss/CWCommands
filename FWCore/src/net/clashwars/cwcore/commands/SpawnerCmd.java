@@ -41,7 +41,7 @@ public class SpawnerCmd implements CommandClass {
 			silent = true;
 			args = CmdUtils.modifiedArgs(args,"-s", true);
 		}
-		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			sender.sendMessage(pf + "Modifiers: ");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");

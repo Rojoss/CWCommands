@@ -63,6 +63,14 @@ public class Utils {
 		}
 		return str;
 	}
+	public static String[] integrateColor(String[] str) {
+		for (int i = 0; i < str.length; i++) {
+			for (ChatColor c : ChatColor.values()) {
+				str[i] = str[i].replaceAll("&" + c.getChar() + "|&" + Character.toUpperCase(c.getChar()), c.toString());
+			}
+		}
+		return str;
+	}
 	
 	
 	
@@ -111,7 +119,7 @@ public class Utils {
 			String[] ptool = ptools[i].split(":", 2);
 			int ptID = Integer.parseInt(ptool[0]);
 			if (ptID == id) {
-				return implode(CmdUtils.modifiedArgs(ptools, ptool[0], false), "»");
+				return implode(CmdUtils.removeFromStringArray(ptools, ptool[0]), "»");
 			}
 		}
 		return implode(ptools, "»");
@@ -212,11 +220,12 @@ public class Utils {
 	
 	//Get a world from a string like <x>,<y>,<z>:<world>
 	public static World getWorld(String str) {
-		
-		String[] strings = str.split(":");
-		if (str.length() > 1) {
-			if (Bukkit.getServer().getWorld(strings[1]) != null) {
-				return Bukkit.getServer().getWorld(strings[1]);
+		if (str != null) {
+			String[] splt = str.split(":");
+			if (splt.length > 1) {
+				if (Bukkit.getServer().getWorld(splt[1]) != null) {
+					return Bukkit.getServer().getWorld(splt[1]);
+				}
 			}
 		}
 		return Bukkit.getServer().getWorlds().get(0);

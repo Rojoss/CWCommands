@@ -53,8 +53,8 @@ commands:
     aliases: [day,night]
   removepots:
     description: Remove potion effects
-    usage: /<command> [player]
-    aliases: [removepotions,rpots]
+    usage: /<command> [player] [potionEffectType]
+    aliases: [removepotions,rpots,removepot,rpot]
   invsee:
     description: See/Modify a player his inventory
     usage: /<command> <player>
