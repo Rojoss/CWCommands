@@ -39,9 +39,9 @@ public class LocationUtils {
 		if (splt.length > 0) {
 			locS = splt[0].split(",");
 		}
-		int x = Integer.parseInt(locS[0].trim());
-		int y = Integer.parseInt(locS[1].trim());
-		int z = Integer.parseInt(locS[2].trim());
+		double x = Double.parseDouble(locS[0].trim());
+		double y = Double.parseDouble(locS[1].trim());
+		double z = Double.parseDouble(locS[2].trim());
 
 		return new Location(world, x, y, z);
 	}
