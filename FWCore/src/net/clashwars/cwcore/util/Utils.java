@@ -21,14 +21,6 @@ import org.bukkit.entity.Player;
 
 public class Utils {
 	
-	/**
-	 * Implode a StringList to a single string and specify the character between strings and specify at what string index to start and end
-	 * @param arr (The string list to implode)
-	 * @param glue (The string to put between 2 strings)
-	 * @param start (The index of the string to start with)
-	 * @param end (The index of the string to end at)
-	 * @return String (String with all StringList strings separated by the given char)
-	 */
 	public static String implode(String[] arr, String glue, int start, int end) {
 		String ret = "";
 
@@ -230,4 +222,17 @@ public class Utils {
 		}
 		return Bukkit.getServer().getWorlds().get(0);
 	}
+	
+	//Check if a string has a world specififed.
+		public static boolean hasWorld(String str) {
+			if (str != null) {
+				String[] splt = str.split(":");
+				if (splt.length > 1) {
+					if (Bukkit.getServer().getWorld(splt[1]) != null) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
 }

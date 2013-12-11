@@ -8,6 +8,7 @@ import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.CmdUtils;
 import net.clashwars.cwcore.util.LocationUtils;
+import net.clashwars.cwcore.util.Utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,6 +27,9 @@ public class TeleportposCmd implements CommandClass {
 	
 	public TeleportposCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("s", "No messages");
+		modifiers.put("f", "Force tp doesn't check for safe locations");
+		modifiers.put("*", "Teleport to location at other servers.");
 	}
 
 	@Override
@@ -39,32 +43,19 @@ public class TeleportposCmd implements CommandClass {
 		String pworld = null;
 		Location loc = null;
 		
-		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-f" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Force tp doesn't check for safe locations");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-*" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Teleport to a location on other servers.");
 			return true;
 		}
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
-		boolean force = false;
-		if (CmdUtils.hasModifier(args,"-f", true)) {
-			force = true;
-			args = CmdUtils.modifiedArgs(args,"-f", true);
-		}
-		boolean bungee = false;
-		if (CmdUtils.hasModifier(args,"-*", true)) {
-			bungee = true;
-			args = CmdUtils.modifiedArgs(args,"-*", true);
-		}
 		
-		/* Console check */
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
+		boolean force = CmdUtils.hasModifier(cmdArgs, "f");
+		boolean bungee = CmdUtils.hasModifier(cmdArgs, "*");
+		
+		
+		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 3) {
 				sender.sendMessage(pf + ChatColor.RED + "You need to specify a player and a world to use this in the console!");
@@ -77,51 +68,46 @@ public class TeleportposCmd implements CommandClass {
 			pworld = player.getWorld().getName();
 		}
 		
-		/* 1 arg (Location) */
+		
+		//Args
 		if (args.length >= 1) {
 			locStr = args[0];
-		}
-		
-		/* 2 args (world) */
-		if (args.length >= 2) {
-			pworld = args[1];
-			world = cwc.getServer().getWorld(args[1]);
-		}
-		
-		/* 3 args (player) */
-		if (args.length >= 2) {
-			pplayer = args[2];
-			player = cwc.getServer().getPlayer(args[2]);
-		}
-		
-		/* 4 args (Server) */
-		if (args.length >= 3) {
-			if (bungee) {
-				server = args[3];
+			if (Utils.hasWorld(locStr)) {
+				world = Utils.getWorld(locStr);
 			} else {
-				sender.sendMessage(pf + ChatColor.RED + "Can't teleport to another server without -*");
+				if (player != null) {
+					world = player.getWorld();
+				} else {
+					sender.sendMessage(pf + ChatColor.RED + "Invalid world.");
+				}
 			}
-		}
-		
-		/* null checks */
-		if (!bungee) {
-			if (player == null && args.length >= 2) {
-				sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
-				return true;
-			}
-			if (world == null && args.length >= 1) {
-				sender.sendMessage(pf + ChatColor.RED + "Invalid world.");
-				return true;
-			}
-			
 			loc = LocationUtils.getLocation(locStr, world);
 			if (loc == null) {
 				sender.sendMessage(pf + ChatColor.RED + "Invalid location syntax: x,y,z");
 				return true;
 			}
+			pworld = world.toString();
 		}
 		
-		/* Action */
+		if (args.length >= 2) {
+			pplayer = args[1];
+			player = cwc.getServer().getPlayer(args[1]);
+			if (player == null && !bungee) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
+				return true;
+			}
+		}
+		
+		if (args.length >= 3) {
+			if (bungee) {
+				server = args[2];
+			} else {
+				sender.sendMessage(pf + ChatColor.RED + "Can't teleport to another server without -*");
+			}
+		}
+		
+		
+		//Action
 		if (bungee) {
 			try {
 				ByteArrayOutputStream b = new ByteArrayOutputStream();

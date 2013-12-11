@@ -24,6 +24,12 @@ public class TeleporthereCmd implements CommandClass {
 	
 	public TeleporthereCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("s", "No messages");
+		modifiers.put("f", "Force tp doesn't check for safe locations");
+		modifiers.put("a", "Teleport all players.");
+		modifiers.put("confirm", "Confirm to teleport all players");
+		modifiers.put("*", "Teleports players from other servers.");
+		
 	}
 
 	@Override
@@ -34,39 +40,21 @@ public class TeleporthereCmd implements CommandClass {
 		Player player2 = null;
 		String pplayer2 = null;
 		
-		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-f" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Force tp doesn't check for safe locations");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-a" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Teleport all players!");
-			sender.sendMessage(ChatColor.RED + "To teleport all players you also need to add" + ChatColor.DARK_RED + " -confirm");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-*" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Teleport players from other servers.");
 			return true;
 		}
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
-		boolean all = false;
-		if (CmdUtils.hasModifier(args,"-a", true)) {
-			all = true;
-			args = CmdUtils.modifiedArgs(args,"-a", true);
-		}
-		boolean force = false;
-		if (CmdUtils.hasModifier(args,"-f", true)) {
-			force = true;
-			args = CmdUtils.modifiedArgs(args,"-f", true);
-		}
-		boolean bungee = false;
-		if (CmdUtils.hasModifier(args,"-*", true)) {
-			bungee = true;
-			args = CmdUtils.modifiedArgs(args,"-*", true);
-		}
 		
-		/* Console check */
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
+		boolean force = CmdUtils.hasModifier(cmdArgs, "f");
+		boolean all = CmdUtils.hasModifier(cmdArgs, "a");
+		boolean confirmed = CmdUtils.hasModifier(cmdArgs, "confirm");
+		boolean bungee = CmdUtils.hasModifier(cmdArgs, "*");
+		
+		
+		//Console
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(pf + ChatColor.RED + "Only players can use this command.");
 			return true;
@@ -75,23 +63,23 @@ public class TeleporthereCmd implements CommandClass {
 			pplayer = sender.getName();
 		}
 		
-		/* 1 arg (player2) */
+
+		//Args
 		if (args.length >= 1) {
 			player2 = cwc.getServer().getPlayer(args[0]);
 			pplayer2 = args[0];
+			if (player2 == null && !all && !bungee) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
+				return true;
+			}
 		}
-
-		/* null checks */
-		if (player2 == null && !all && !bungee) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
-			return true;
-		}
+		
+		
+		//Action
 		if (all && bungee) {
 			sender.sendMessage(pf + ChatColor.RED + "Can't teleport all players from other servers.");
 			return true;
 		}
-		
-		/* Action */
 		if (bungee) {
 			try {
 				ByteArrayOutputStream b = new ByteArrayOutputStream();
@@ -109,7 +97,7 @@ public class TeleporthereCmd implements CommandClass {
 			}
 		} else {
 			if (all) {
-				if (CmdUtils.hasModifier(args,"-confirm", true)) {
+				if (confirmed == true) {
 					for (Player p : cwc.getServer().getOnlinePlayers()) {
 						if (p != player) {
 							if (force) {

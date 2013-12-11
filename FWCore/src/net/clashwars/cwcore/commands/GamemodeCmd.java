@@ -35,7 +35,7 @@ public class GamemodeCmd implements CommandClass {
 		
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
 		
-		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
@@ -86,7 +86,7 @@ public class GamemodeCmd implements CommandClass {
 				player.setAllowFlight(true);
 				player.setFlying(true);
 			} else {
-				LocationUtils.tpToTop(cwc, player);
+				player.teleport(LocationUtils.getSafeDestination(player.getLocation()));
 				player.setAllowFlight(false);
 				player.setFlying(false);
 			}

@@ -2,6 +2,7 @@ package net.clashwars.cwcore.commands;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.util.HashMap;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
@@ -18,32 +19,33 @@ import org.bukkit.entity.Player;
 public class WhoisCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public WhoisCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("*", "Check players on other servers.");
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		String pplayer = null;
 		CWPlayer cwp = null;
 		
-		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-*" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Check players on other servers.");
 			return true;
 		}
-		boolean bungee = false;
-		if (CmdUtils.hasModifier(args,"-*", true)) {
-			bungee = true;
-			args = CmdUtils.modifiedArgs(args,"-*", true);
-		}
 		
-		/* 1 arg (Player) */
+		boolean bungee = CmdUtils.hasModifier(cmdArgs, "*");
+		
+		
+		//Console
 		if (args.length >= 1) {
 			if (!bungee) {
 				if (cwc.getServer().getPlayer(args[0]) == cwc.getServer().getPlayer(sender.getName())) {
@@ -107,7 +109,6 @@ public class WhoisCmd implements CommandClass {
 			sender.sendMessage(ChatColor.DARK_PURPLE + "Flymode" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + (cwp.getFlying() ? yes:no));
 			sender.sendMessage(ChatColor.DARK_PURPLE + "Godmode" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + (cwp.getGod() ? yes:no));
 			sender.sendMessage(ChatColor.DARK_PURPLE + "Vanished" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + (cwp.getVanished() ? yes:no));
-			sender.sendMessage(ChatColor.DARK_PURPLE + "Frozen" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + (cwc.getFrozenPlayers().contains(player) ? yes:no));
 			sender.sendMessage(ChatColor.DARK_PURPLE + "Speed" + ChatColor.DARK_GRAY + ": " 
 					+ ChatColor.GOLD + "walk: " + ChatColor.YELLOW + player.getWalkSpeed() + ChatColor.GOLD + " fly: " + ChatColor.YELLOW + player.getFlySpeed());
 			sender.sendMessage(ChatColor.DARK_PURPLE + "Experience" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + expMan.getCurrentExp() + ChatColor.GRAY 

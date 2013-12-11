@@ -12,10 +12,6 @@ commands:
     description: Broadcast a message
     usage: /<command> <msg>
     aliases: [bc,bcmsg]
-  freeze:
-    description: Toggle freeze mode
-    usage: /<command> [player] [on|off]
-    aliases: [lock]
   god:
     description: Toggle god mode
     usage: /<command> [player] [on|off]
@@ -120,7 +116,7 @@ commands:
     aliases: [tphere]
   teleportpos:
     description: Teleport to a location or world
-    usage: /<command> <x,y,z> [world] [player]
+    usage: /<command> <x,y,z[:world]> [player]
     aliases: [tppos, tploc]
   sudo:
     description: Force a player to run a command

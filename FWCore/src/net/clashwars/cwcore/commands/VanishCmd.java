@@ -30,24 +30,20 @@ public class VanishCmd implements CommandClass {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		CWPlayer cwp = null;
-		Boolean on = null;
+		boolean on = false;
 		boolean vanish = false;
 		
-		/* Modifiers */
-		if (CmdUtils.hasModifier(args,"-h", false)) {
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
-			args = CmdUtils.modifiedArgs(args,"-h", true);
 			return true;
 		}
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
+
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		
-		/* Console check */
+		
+		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 1) {
 				sender.sendMessage(pf + ChatColor.RED + "You need to specify a player to use this on the console!!");
@@ -57,54 +53,48 @@ public class VanishCmd implements CommandClass {
 			player = (Player) sender;
 		}
 		
-		/* 1 arg (Player) */
 		if (args.length >= 1) {
 			player = cwc.getServer().getPlayer(args[0]);
+			if (player == null) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
+				return true;
+			}
 		}
+		cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
 		
-		/* 2 args (on/off) */
 		if (args.length >= 2) {
 			if (args[1].toLowerCase().startsWith("on")) {
 				on = true;
 			} else {
 				on = false;
 			}
+		} else {
+			if (cwp.getVanished() == true) {
+				on = false;
+			} else {
+				on = true;
+			}
 		}
 		
-		/* null checks */
-		if (player == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
-			return true;
-		}
-		cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
-		if (on == null) {
+		
+		
+		//Action
+		if (on) {
+			if (cwp.getVanished() == false) {
+				cwp.setVanished(true);
+				player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100000, 1));
+				vanish = true;
+			} else {
+				sender.sendMessage(pf + ChatColor.RED + "Player is already vanished");
+				return true;
+			}
+		} else {
 			if (cwp.getVanished() == true) {
 				cwp.setVanished(false);
 				player.removePotionEffect(PotionEffectType.INVISIBILITY);
 			} else {
-				cwp.setVanished(true);
-				player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100000, 1));
-				vanish = true;
-			}
-		} else {
-		/* Action */
-			if (on) {
-				if (cwp.getVanished() == false) {
-					cwp.setVanished(true);
-					player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100000, 1));
-					vanish = true;
-				} else {
-					sender.sendMessage(pf + ChatColor.RED + "Player is already vanished");
-					return true;
-				}
-			} else {
-				if (cwp.getVanished() == true) {
-					cwp.setVanished(false);
-					player.removePotionEffect(PotionEffectType.INVISIBILITY);
-				} else {
-					sender.sendMessage(pf + ChatColor.RED + "Player is already unvanished");
-					return true;
-				}
+				sender.sendMessage(pf + ChatColor.RED + "Player is already unvanished");
+				return true;
 			}
 		}
 		

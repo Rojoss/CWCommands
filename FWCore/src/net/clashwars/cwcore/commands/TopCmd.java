@@ -17,10 +17,10 @@ public class TopCmd implements CommandClass {
 	private CWCore cwc;
 	private HashMap<String, String> modifiers = new HashMap<String, String>();
 	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
 	
 	public TopCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("s", "No messages");
 	}
 
 	@Override
@@ -28,20 +28,15 @@ public class TopCmd implements CommandClass {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		
-		/* Modifiers */
-		if (CmdUtils.hasModifier(args,"-h", false)) {
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
 			return true;
 		}
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
 		
-		/* Console check */
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
+		
+
+		//Console
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(pf + ChatColor.RED + "Only players can use this command.");
 			return true;
@@ -49,7 +44,8 @@ public class TopCmd implements CommandClass {
 			player = (Player) sender;
 		}
 		
-		/* action */
+		
+		//Action
 		LocationUtils.tpToTop(cwc, player);
 		if (!silent)
 			player.sendMessage(pf + "Teleporting to top...");

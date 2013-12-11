@@ -20,7 +20,6 @@ public class CWPlayer {
     private boolean              god              	= false;
     private boolean              vanished           = false;
     private boolean              flying          	= false;
-    private boolean              frozen          	= false;
     private float                walkSpeed          = 0;
     private float                flySpeed           = 0;
     private int                  maxHealth         	= 0;
@@ -96,15 +95,6 @@ public class CWPlayer {
     public void setFlying(boolean flying) {
         this.flying = flying;
         cwc.getSQLConnection().update("users", "flying", flying, "id", id);
-    }
-    
-    public boolean getFrozen() {
-        return frozen;
-    }
-
-    public void setFrozen(boolean frozen) {
-        this.frozen = frozen;
-        cwc.getSQLConnection().update("users", "frozen", frozen, "id", id);
     }
     
     public float getWalkSpeed() {

@@ -4,7 +4,6 @@ import net.clashwars.cwcore.commands.*;
 
 public enum CommandsEnum {
 	BROADCAST(BroadcastCmd.class,"broadcast","bc","bcmsg"),
-	FREEZE(FreezeCmd.class,"freeze","lock"),
 	GAMEMODE(GamemodeCmd.class,"gamemode","gm"),
 	HEAL(HealCmd.class,"heal","hp","health"),
 	INVSEE(InvseeCmd.class,"invsee","invedit"),

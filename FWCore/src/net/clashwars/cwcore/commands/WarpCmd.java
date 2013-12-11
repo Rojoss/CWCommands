@@ -2,6 +2,7 @@ package net.clashwars.cwcore.commands;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.util.HashMap;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
@@ -20,44 +21,37 @@ import org.bukkit.entity.Player;
 public class WarpCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public WarpCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("s", "No messages");
+		modifiers.put("f", "Force tp doesn't check for safe locations");
+		modifiers.put("*", "Teleport to warps at other servers.");
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		String pplayer = null;
 		String name = "";
 		
-		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-f" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Force tp doesn't check for safe locations");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-*" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Teleport to warps on other servers.");
 			return true;
 		}
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
-		boolean force = false;
-		if (CmdUtils.hasModifier(args,"-f", true)) {
-			force = true;
-			args = CmdUtils.modifiedArgs(args,"-f", true);
-		}
-		boolean bungee = false;
-		if (CmdUtils.hasModifier(args,"-*", true)) {
-			bungee = true;
-			args = CmdUtils.modifiedArgs(args,"-*", true);
-		}
 		
-		/* Console check */
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
+		boolean force = CmdUtils.hasModifier(cmdArgs, "f");
+		boolean bungee = CmdUtils.hasModifier(cmdArgs, "*");
+		
+		
+		//Console
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(pf + ChatColor.RED + "Only players can use this command.");
 			return true;
@@ -66,28 +60,27 @@ public class WarpCmd implements CommandClass {
 			pplayer = sender.getName();
 		}
 		
-		/* 1 arg (Name) */
+		
+		//Args
 		if (args.length >= 1) {
 			name = args[0].toLowerCase();
+			if (name == "" || name == " " || name == null) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid name");
+				return true;
+			}
+			if (!cwc.getWarpsConfig().getWarpNames().contains(name)) {
+				sender.sendMessage(pf + ChatColor.RED + "Warp " + ChatColor.GRAY + name + ChatColor.RED + " not found.");
+				return true;
+			}
 		}
 		
-		/* 2 args (Player) */
 		if (args.length >= 2) {
 			player = cwc.getServer().getPlayer(args[1]);
 			pplayer = args[1];
 		}
 		
-		/* null checks */
-		if (name == "" || name == " " || name == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid name");
-			return true;
-		}
-		if (!cwc.getWarpsConfig().getWarpNames().contains(name)) {
-			sender.sendMessage(pf + ChatColor.RED + "Warp " + ChatColor.GRAY + name + ChatColor.RED + " not found.");
-			return true;
-		}
 		
-		/* Action */
+		//Action
 		if (bungee) {	
 			try {
 				ByteArrayOutputStream b = new ByteArrayOutputStream();

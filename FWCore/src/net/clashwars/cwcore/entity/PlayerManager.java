@@ -77,7 +77,7 @@ public class PlayerManager implements Manager {
 		int id = players.size();
 		cwp = new CWPlayer(cwc, id, player);
 		players.put(id, cwp);
-		cwc.getSQLConnection().set("users", id, player, 0, "", "", 0, 0, 0, 0, 0, 0, 0, "");
+		cwc.getSQLConnection().set("users", id, player, player, "", 0, 0, 0, 0, 0, 0, 0, "");
 
 		return cwp;
 	}

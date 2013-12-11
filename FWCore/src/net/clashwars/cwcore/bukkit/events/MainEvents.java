@@ -38,20 +38,12 @@ public class MainEvents implements Listener {
         	player.setMaxHealth(cwp.getMaxHealth());
         }
         
-        if (cwp.getGamemode() == 0 && player.getGameMode().getValue() != 0) {
+        if (cwp.getGamemode() == 0 && !player.getGameMode().equals(GameMode.SURVIVAL)) {
         	player.setGameMode(GameMode.SURVIVAL);
-        } else if (cwp.getGamemode() == 1 && player.getGameMode().getValue() != 1) {
+        } else if (cwp.getGamemode() == 1 && !player.getGameMode().equals(GameMode.CREATIVE)) {
         	player.setGameMode(GameMode.CREATIVE);
-        } else if (cwp.getGamemode() == 2 && player.getGameMode().getValue() != 2) {
+        } else if (cwp.getGamemode() == 2 && !player.getGameMode().equals(GameMode.ADVENTURE)) {
         	player.setGameMode(GameMode.ADVENTURE);
-        }
-        
-        if (cwp.getFlying() == true) {
-        	player.setAllowFlight(true);
-        	player.setFlying(true);
-        } else {
-        	player.setAllowFlight(false);
-        	player.setFlying(false);
         }
     }
 	

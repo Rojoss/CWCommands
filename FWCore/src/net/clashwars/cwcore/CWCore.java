@@ -28,6 +28,7 @@ import net.clashwars.cwcore.sql.SqlConnection;
 import net.clashwars.cwcore.sql.SqlInfo;
 import net.milkbowl.vault.permission.Permission;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
@@ -108,7 +109,7 @@ public class CWCore {
 		registerTasks();
 		registerChannels();
 		
-		
+		Bukkit.broadcastMessage("DEBUG: New version loaded...");
 		try {
 			loadCommandsList();
 		} catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException e) {
