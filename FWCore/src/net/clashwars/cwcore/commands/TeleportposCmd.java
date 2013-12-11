@@ -2,6 +2,7 @@ package net.clashwars.cwcore.commands;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.util.HashMap;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
@@ -19,13 +20,16 @@ import org.bukkit.entity.Player;
 public class TeleportposCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public TeleportposCmd(CWCore cwc) {
 		this.cwc = cwc;
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		String pplayer = null;

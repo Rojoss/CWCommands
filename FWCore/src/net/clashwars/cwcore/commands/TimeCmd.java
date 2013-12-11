@@ -1,5 +1,7 @@
 package net.clashwars.cwcore.commands;
 
+import java.util.HashMap;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.CmdUtils;
@@ -14,20 +16,26 @@ import org.bukkit.entity.Player;
 public class TimeCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public TimeCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("s", "No messages");
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		String time = null;
 		Boolean get = false;
 		World world = null;
 		Player player = null;
 		
-		/* Check if cmd is /day or /night and force time*/
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
+		// Check if cmd is /day or /night and force time
 		if (sender instanceof Player && args.length < 1) {
 			if (lbl.equalsIgnoreCase("day")) {
 				long ticks = TimeUtils.parse("day");
@@ -43,20 +51,15 @@ public class TimeCmd implements CommandClass {
 			}
 		}
 		
-		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
 			return true;
 		}
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
 		
-		/* Console check */
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
+		
+
+		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 2) {
 				sender.sendMessage(pf + ChatColor.RED + "You need to specify a world to use this on the console!");
@@ -67,31 +70,30 @@ public class TimeCmd implements CommandClass {
 			world = player.getWorld(); 
 		}
 		
-		/* 1 arg (Time) */
+
+		//Args
 		if (args.length >= 1) {
 			if (args[0].toLowerCase().equals("get")) {
 				get = true;
 			} else {
 				time = args[0];
 			}
+			if (time == null && get == false) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid time!");
+				return true;
+			}
 		}
 		
-		/* 2 args (world) */
 		if (args.length >= 2) {
 			world = (World) cwc.getPlugin().getServer().getWorld(args[1]);
+			if (world == null) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid world!");
+				return true;
+			}
 		}
 		
-		/* null checks */
-		if (world == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid world!");
-			return true;
-		}
-		if (time == null && get == false) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid time!");
-			return true;
-		}
 		
-		/* Action */
+		//Action
 		if (get) {
 			sender.sendMessage(pf + "Current time in '" + world.getName() + "' is: " 
 			+ ChatColor.DARK_PURPLE + TimeUtils.format24(world.getTime()) + ChatColor.GRAY + " - "

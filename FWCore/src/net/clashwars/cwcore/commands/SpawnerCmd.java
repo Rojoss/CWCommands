@@ -25,6 +25,7 @@ public class SpawnerCmd implements CommandClass {
 	
 	public SpawnerCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("s", "No messages");
 	}
 
 	@Override
@@ -36,17 +37,12 @@ public class SpawnerCmd implements CommandClass {
 		
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
 		
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
 		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
 			return true;
 		}
+		
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		
 		
 		//Console
@@ -57,23 +53,21 @@ public class SpawnerCmd implements CommandClass {
 			player = (Player) sender;
 		}
 		
-		/* 1 arg (Mob) */
+		//Args
 		if (args.length >= 1) {
 			entity = AliasUtils.findEntity(args[0]);
+			if (entity == null) {
+				sender.sendMessage(pf + ChatColor.RED + "Mob " + ChatColor.GRAY + args[0] + ChatColor.RED + " was not recognized!");
+			 	return true;
+			}
+			if (entity.isSpawnable() == false || entity.isAlive() == false) {
+				sender.sendMessage(pf + ChatColor.RED + "Entity " + ChatColor.GRAY + args[0] + ChatColor.RED + " can not be used for a spawner!");
+			 	return true;
+			}
 		}
 		
-		/* Get target block */
+		//Action
 		target = player.getTargetBlock(null, 30);
-		
-		/* null checks */
-		if (entity == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Mob " + ChatColor.GRAY + args[0] + ChatColor.RED + " was not recognized!");
-		 	return true;
-		}
-		if (entity.isSpawnable() == false || entity.isAlive() == false) {
-			sender.sendMessage(pf + ChatColor.RED + "Entity " + ChatColor.GRAY + args[0] + ChatColor.RED + " can not be used for a spawner!");
-		 	return true;
-		}
 		if (target == null) {
 			sender.sendMessage(pf + ChatColor.RED + "You need to look at a spawner to change it.");
 		 	return true;
@@ -84,7 +78,6 @@ public class SpawnerCmd implements CommandClass {
 		 	return true;
 		}
 		
-		/* Action */
 		CreatureSpawner spawner = (CreatureSpawner) state;
 		spawner.setSpawnedType(entity);
 		spawner.update(true);

@@ -1,5 +1,7 @@
 package net.clashwars.cwcore.commands;
 
+import java.util.HashMap;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.CmdUtils;
@@ -13,13 +15,16 @@ import org.bukkit.entity.Player;
 public class SudoCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public SudoCmd(CWCore cwc) {
 		this.cwc = cwc;
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		String command = "";
 		Player player = null;

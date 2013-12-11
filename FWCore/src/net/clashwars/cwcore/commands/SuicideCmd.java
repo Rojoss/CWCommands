@@ -1,5 +1,7 @@
 package net.clashwars.cwcore.commands;
 
+import java.util.HashMap;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.util.CmdUtils;
@@ -12,23 +14,24 @@ import org.bukkit.entity.Player;
 public class SuicideCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
 	
 	public SuicideCmd(CWCore cwc) {
 		this.cwc = cwc;
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		
-		/* Modifiers */
-		if (CmdUtils.hasModifier(args,"-h", false)) {
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
 		
-		/* Console check */
+		//Console
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(pf + ChatColor.RED + "Only players can use this command.");
 			return true;
@@ -36,7 +39,7 @@ public class SuicideCmd implements CommandClass {
 			player = (Player) sender;
 		}
 		
-		/* action */
+		//Action
 		player.setHealth(0);
 		return true;
 	}

@@ -1,5 +1,7 @@
 package net.clashwars.cwcore.commands;
 
+import java.util.HashMap;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.commands.internal.CommandClass;
 import net.clashwars.cwcore.entity.CWPlayer;
@@ -13,54 +15,43 @@ import org.bukkit.entity.Player;
 public class SpeedCmd implements CommandClass {
 	
 	private CWCore cwc;
+	private HashMap<String, String> modifiers = new HashMap<String, String>();
+	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
+	private String[] args;
 	
 	public SpeedCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("s", "No messages");
+		modifiers.put("r", "Reset speed to default 0.2=walk 0.1=fly.");
+		modifiers.put("w", "Set walk speed only.");
+		modifiers.put("f", "Set fly speed only.");
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] args) {
+	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		CWPlayer cwp = null;
 		int amt = -1;
 		float famt = .2F;
 		
-		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-s" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-r" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Reset speed");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-w" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set walk speed");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-w" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Set fly speed");
 			return true;
 		}
-		boolean walk = true;
-		boolean fly = true;
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-s", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-s", true);
-		}
-		boolean reset = false;
-		if (CmdUtils.hasModifier(args,"-r", true)) {
-			reset = true;
-			args = CmdUtils.modifiedArgs(args,"-r", true);
-		}
-
-		if (CmdUtils.hasModifier(args,"-w", true)) {
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
+		boolean reset = CmdUtils.hasModifier(cmdArgs, "r");
+		boolean walk = CmdUtils.hasModifier(cmdArgs, "w");
+		boolean fly = CmdUtils.hasModifier(cmdArgs, "f");
+		if (!walk && !fly) {
 			walk = true;
-			fly = false;
-			args = CmdUtils.modifiedArgs(args,"-w", true);
-		}
-		if (CmdUtils.hasModifier(args,"-f", true)) {
 			fly = true;
-			walk = false;
-			args = CmdUtils.modifiedArgs(args,"-f", true);
 		}
 		
-		/* Console check */
+		
+		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 2) {
 				sender.sendMessage(pf + ChatColor.RED + "You need to specify a player to use this on the console!");
@@ -70,7 +61,12 @@ public class SpeedCmd implements CommandClass {
 			player = (Player) sender;
 		}
 		
-		/* 1 arg (amount) */
+		
+		//Args
+		if (args.length < 1 && !reset) {
+			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
+			return true;
+		}
 		if (args.length >= 1) {
 			try {
 	            amt = Integer.parseInt(args[0]);
@@ -78,57 +74,59 @@ public class SpeedCmd implements CommandClass {
 	        	sender.sendMessage(pf + ChatColor.RED + "Invalid amount.");
 	            return true;
 	        }
+			if (amt < 0 || amt > 100) {
+				sender.sendMessage(pf + ChatColor.RED + "Amount must be between 0 and 100");
+				return true;
+			}
+			famt = (float) amt / 100;
 		}
 		
-		/* 2 args (Player) */
 		if (args.length >= 2) {
 			player = cwc.getServer().getPlayer(args[1]);
+			if (player == null) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
+				return true;
+			}
 		}
-
-		/* null checks */
-		if (player == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
-			return true;
-		}
-		if (amt < 0 || amt > 100) {
-			sender.sendMessage(pf + ChatColor.RED + "Amount must be between 0 and 100");
-			return true;
-		}
-		famt = (float) amt / 100;
 		
 		
-		/* Action */
+		//Action
 		cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
 		
-		String type = "";
-		String r = "set";
-		if (walk) {
-			if (reset) {
-				famt = 0.2F;
+		if (reset) {
+			player.setWalkSpeed(0.2F);
+			cwp.setWalkSpeed(0.2F);
+			player.setFlySpeed(0.1F);
+			cwp.setFlySpeed(0.1F);
+			if (!silent) { 
+				player.sendMessage(pf + "your speed has been reset.");
+				if (sender.getName() != player.getName())
+					sender.sendMessage(pf + "Speed from " + ChatColor.DARK_PURPLE + player.getName() 
+						+ ChatColor.GOLD + " has been reset.");
 			}
+			return true;
+		}
+		
+		String type = "";
+		if (walk) {
 			player.setWalkSpeed(famt);
 			cwp.setWalkSpeed(famt);
 			type = "Walk";
 		}
 		if (fly) {
-			if (reset) {
-				famt = 0.1F;
-			}
 			player.setFlySpeed(famt);
 			cwp.setFlySpeed(famt);
 			type = "Fly";
 		}
 		if (fly && walk)
 			type = "Walk and fly";
-		if (reset)
-			r = "reset";
 		
 		if (!silent) { 
-			player.sendMessage(pf + type + "speed has been " + r + " to: "
+			player.sendMessage(pf + type + " speed has been set to: "
 					+ ChatColor.DARK_PURPLE + amt);
 			if (sender.getName() != player.getName())
-				sender.sendMessage(pf + type + "speed from " + ChatColor.DARK_PURPLE + player.getName() 
-					+ ChatColor.GOLD + " has been " + r +  " to: "  + ChatColor.DARK_PURPLE + amt);
+				sender.sendMessage(pf + type + " speed from " + ChatColor.DARK_PURPLE + player.getName() 
+					+ ChatColor.GOLD + " has been set to: "  + ChatColor.DARK_PURPLE + amt);
 		}
 		return true;
 	}
