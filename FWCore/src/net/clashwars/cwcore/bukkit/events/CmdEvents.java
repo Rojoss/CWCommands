@@ -4,6 +4,7 @@ import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.entity.CWPlayer;
 import net.clashwars.cwcore.util.Utils;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -19,6 +20,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.kitteh.tag.PlayerReceiveNameTagEvent;
 
 
 public class CmdEvents implements Listener {
@@ -118,6 +120,14 @@ public class CmdEvents implements Listener {
 			}
 		}
 	}
+    
+    @EventHandler
+    public void onNameTag(PlayerReceiveNameTagEvent event) {
+	    CWPlayer cwp = cwc.getPlayerManager().getOrCreatePlayer(event.getNamedPlayer());
+    	if (cwp.getTag() != null && !cwp.getTag().isEmpty()) {
+    		event.setTag(Utils.integrateColor(cwp.getTag()));
+    	}
+    }
 	
 	  
 }

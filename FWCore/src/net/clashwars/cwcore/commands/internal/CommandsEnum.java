@@ -10,6 +10,7 @@ public enum CommandsEnum {
 	ITEM(ItemCmd.class,"item","i"),
 	GIVE(GiveCmd.class,"give"),
 	NICK(NickCmd.class,"nick","nickname"),
+	TAG(TagCmd.class,"tag","nametag"),
 	REALNAME(RealnameCmd.class,"realname","rname"),
 	REMOVEPOTS(RemovepotsCmd.class,"removepots","removepotions","rpots"),
 	TIME(TimeCmd.class,"time","day","night"),

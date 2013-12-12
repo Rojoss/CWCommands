@@ -4,6 +4,7 @@ import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.entity.CWPlayer;
 import net.clashwars.cwcore.util.Utils;
 
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,17 +17,38 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class MainEvents implements Listener {
 	private CWCore	cwc;
-	//private String pf = null;
 
 	public MainEvents(CWCore cwc) {
 		this.cwc = cwc;
-		//pf = cwc.getPrefix();
 	}
 	
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void join(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        
+        if (cwc.getPlayerManager().getPlayer(player) == null) {
+        	player.sendMessage(Utils.integrateColor("&8&l=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="));
+        	player.sendMessage(Utils.integrateColor("&8&l=-"));
+        	player.sendMessage(Utils.integrateColor("&8&l=- &6Welcome to &4&lClashWars ") + ChatColor.GOLD + player.getName() + "!");
+        	player.sendMessage(Utils.integrateColor("&8&l=-"));
+        	player.sendMessage(Utils.integrateColor("&8&l=- &6You can learn how the server works on our website."));
+        	player.sendMessage(Utils.integrateColor("&8&l=- &6It isn't hard though so you can also just try it out!"));
+        	player.sendMessage(Utils.integrateColor("&8&l=-"));
+        	player.sendMessage(Utils.integrateColor("&8&l=- &6The website: &9&lhttp://clashwars.com"));
+        	player.sendMessage(Utils.integrateColor("&8&l=-"));
+        	player.sendMessage(Utils.integrateColor("&8&l=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="));
+        } else {
+        	player.sendMessage(Utils.integrateColor("&8&l=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="));
+        	player.sendMessage(Utils.integrateColor("&8&l=-"));
+        	player.sendMessage(Utils.integrateColor("&8&l=- &6Welcome back ") + ChatColor.GOLD + player.getName() + "!");
+        	player.sendMessage(Utils.integrateColor("&8&l=-"));
+        	player.sendMessage(Utils.integrateColor("&8&l=- &6Make sure to check out our website for many useful things."));
+        	player.sendMessage(Utils.integrateColor("&8&l=- &6The website: &9&lhttp://clashwars.com"));
+        	player.sendMessage(Utils.integrateColor("&8&l=-"));
+        	player.sendMessage(Utils.integrateColor("&8&l=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="));
+        }
+        
         CWPlayer cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
         cwc.getSqlUpdateTask().getPlayers().add(cwp);
         
@@ -34,31 +56,19 @@ public class MainEvents implements Listener {
         	player.setDisplayName(Utils.integrateColor(cwp.getNick()));
         }
         
-        if (cwp.getMaxHealth() != 0 && cwp.getMaxHealth() != player.getMaxHealth()) {
-        	player.setMaxHealth(cwp.getMaxHealth());
-        }
-        
-        if (cwp.getGamemode() == 0 && !player.getGameMode().equals(GameMode.SURVIVAL)) {
-        	player.setGameMode(GameMode.SURVIVAL);
-        } else if (cwp.getGamemode() == 1 && !player.getGameMode().equals(GameMode.CREATIVE)) {
-        	player.setGameMode(GameMode.CREATIVE);
-        } else if (cwp.getGamemode() == 2 && !player.getGameMode().equals(GameMode.ADVENTURE)) {
-        	player.setGameMode(GameMode.ADVENTURE);
+        if (player.hasPermission("cwcore.sync")) {
+		    if (cwp.getMaxHealth() != 0 && cwp.getMaxHealth() != player.getMaxHealth()) {
+		    	player.setMaxHealth(cwp.getMaxHealth());
+		    }
+		    
+		    if (cwp.getGamemode() == 0 && !player.getGameMode().equals(GameMode.SURVIVAL)) {
+		    	player.setGameMode(GameMode.SURVIVAL);
+		    } else if (cwp.getGamemode() == 1 && !player.getGameMode().equals(GameMode.CREATIVE)) {
+		    	player.setGameMode(GameMode.CREATIVE);
+		    } else if (cwp.getGamemode() == 2 && !player.getGameMode().equals(GameMode.ADVENTURE)) {
+		    	player.setGameMode(GameMode.ADVENTURE);
+		    }
         }
     }
 	
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void quit(PlayerQuitEvent event) {
-        quit(event.getPlayer());
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void kick(PlayerKickEvent event) {
-        quit(event.getPlayer());
-    }
-    
-    private void quit(final Player p) {
-    	//Player player = p;
-    	
-    }
 }

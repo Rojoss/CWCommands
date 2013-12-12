@@ -347,8 +347,6 @@ public class MessageEvents implements PluginMessageListener {
 										+ (cwp.getGod() ? yes : no));
 								sendMessage(sender, ChatColor.DARK_PURPLE + "Vanished" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD
 										+ (cwp.getVanished() ? yes : no));
-								sendMessage(sender, ChatColor.DARK_PURPLE + "Frozen" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD
-										+ (cwp.getFrozen() ? yes : no));
 								sendMessage(sender, ChatColor.DARK_PURPLE + "Speed" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + "walk: "
 										+ ChatColor.YELLOW + p.getWalkSpeed() + ChatColor.GOLD + " fly: " + ChatColor.YELLOW + p.getFlySpeed());
 								sendMessage(sender, ChatColor.DARK_PURPLE + "Experience" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD

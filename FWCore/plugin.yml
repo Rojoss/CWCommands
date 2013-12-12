@@ -39,6 +39,10 @@ commands:
     description: Change nicknames
     usage: /<command> <nick> [player]
     aliases: [nickname]
+  tag:
+    description: Change nametag above head
+    usage: /<command> <tag> [player]
+    aliases: [nametag]
   realname:
     description: Check real name of a player
     usage: /<command> [player]

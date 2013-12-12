@@ -21,6 +21,9 @@ public class SudoCmd implements CommandClass {
 	
 	public SudoCmd(CWCore cwc) {
 		this.cwc = cwc;
+		modifiers.put("silent", "No messages");
+		modifiers.put("op", "Temporary OP player.");
+		optionalArgs.put("perm:<permission>", "Temporary grant a permission");
 	}
 
 	@Override
@@ -29,49 +32,37 @@ public class SudoCmd implements CommandClass {
 		String command = "";
 		Player player = null;
 		ConsoleCommandSender console = null;
-		boolean fromConsole = false;
-		String perm = "";
 		
-		/* Modifiers + No args */
-		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
+		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
+		
+		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(pf + "Optional args: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "perm:<permission>" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Temporary grant a permission");
-			sender.sendMessage(pf + "Modifiers: ");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-silent" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "No messages");
-			sender.sendMessage(ChatColor.DARK_PURPLE + "-op" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Temporary op player");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "CONSOLE" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Run command from console (Use this instead of Playername)");
 			return true;
 		}
-		boolean silent = false;
-		if (CmdUtils.hasModifier(args,"-silent", true)) {
-			silent = true;
-			args = CmdUtils.modifiedArgs(args,"-silent", true);
-		}
-		boolean giveOP = false;
-		if (CmdUtils.hasModifier(args,"-op", true)) {
-			giveOP = true;
-			args = CmdUtils.modifiedArgs(args,"-op", true);
-		}
-		boolean permSet = false;
-		if (CmdUtils.hasModifier(args,"perm:", false)) {
-			permSet = true;
-			String[] splt = args[CmdUtils.getArgIndex(args, "perm:", false)].split(":");
-			perm = splt[1];
-			args = CmdUtils.modifiedArgs(args,"perm:", false);
-		}
 		
-		/* 1 arg (Player) */
+		boolean silent = CmdUtils.hasModifier(cmdArgs, "silent");
+		boolean giveOP = CmdUtils.hasModifier(cmdArgs, "op");
+		String perm = CmdUtils.getOptionalArg(cmdArgs, "perm:");
+		
+		
+		//Args
 		if (args.length >= 1) {
 			if (args[0].equalsIgnoreCase("CONSOLE")) {
 				console = cwc.getServer().getConsoleSender();
-				fromConsole = true;
+				if (console == null) {
+					sender.sendMessage(pf + ChatColor.RED + "Error while trying to send from console.");
+					return true;
+				}
 			} else {
 				player = cwc.getServer().getPlayer(args[0]);
+				if (player == null) {
+					sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
+					return true;
+				}
 			}
 		}
 		
-		/* 2 args (Command) */
 		if (args.length >= 1) {
 			for (int i = 1; i < args.length; i++) {
 				if (i == 1) {
@@ -80,49 +71,40 @@ public class SudoCmd implements CommandClass {
 					command += " " + args[i];
 				}
 			}
+			if (command == "" || command == " ") {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid command: " + ChatColor.GRAY + command);
+				return true;
+			}
 		}
 		
-		/* null checks */
-		if (command == "" || command == " ") {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid command: " + ChatColor.GRAY + command);
-			return true;
-		}
-		if (fromConsole && console == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Error while trying to send from console.");
-			return true;
-		}
-		if (!fromConsole && player == null) {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
-			return true;
-		}
-		if (permSet && perm == "" || perm == " ") {
-			sender.sendMessage(pf + ChatColor.RED + "Invalid permission: " + ChatColor.GRAY + perm);
-			return true;
-		}
 		
-		/* Action */
-		if (fromConsole) {
+		//Action
+		if (CmdUtils.hasOptionalArg(cmdArgs, "perm:")) {
+			if (perm == null || perm == "" || perm == " ") {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid permission: " + ChatColor.GRAY + perm);
+				return true;
+			}
+		}
+		if (console != null) {
 			cwc.getServer().dispatchCommand(console, command);
 		} else {
 			boolean curOp = player.isOp();
 			if (giveOP)
 				player.setOp(true);
-			if (permSet)
+			if (perm != null)
 				cwc.getPermissions().playerAdd(player.getWorld(), player.getName(), perm);
 			
 			player.chat("/" + command);
-			sender.sendMessage(pf + "giving: " + ChatColor.DARK_PURPLE + perm + " , " 
-			+ (cwc.getPermissions().has(player.getWorld(), player.getName() ,perm) ? ChatColor.GREEN+"success":ChatColor.RED+"fail"));
 			
 			if (!silent)
 				player.sendMessage(pf + "You where forced to run the command: " + ChatColor.DARK_PURPLE + "/" + command);
 			if (giveOP)
 				player.setOp(curOp);
-			if (permSet)
+			if (perm != null)
 				cwc.getPermissions().playerRemove(player.getWorld(), player.getName(), perm);
 		}
 		if (!silent) {
-			sender.sendMessage(pf + "You forced " + ChatColor.DARK_PURPLE + (fromConsole ? "the console":player.getDisplayName())
+			sender.sendMessage(pf + "You forced " + ChatColor.DARK_PURPLE + (console != null ? "the console":player.getDisplayName())
 				+ ChatColor.GOLD + " to run: " + ChatColor.DARK_PURPLE + "/" + command);
 		}
 		return true;
