@@ -19,7 +19,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class ItemUtils {
-	
+
 	//Get a custom item from a string like this: <item>[:ID]:<enchant>[.lvl],<e>[.lvl],etc
 	public static CustomItem getItem(String str) {
 		String[] splt = str.split(":");
@@ -35,12 +35,11 @@ public class ItemUtils {
 		}
 		return ci;
 	}
-	
-	
+
 	//Get potion effects for a input string like <potion>[.<dur>.<lvl>][,<potion>[.<dur>.<lvl>]],etc
 	public static List<PotionEffect> getPotionEffects(String str) {
 		List<PotionEffect> effects = new ArrayList<PotionEffect>();
-		
+
 		if (str.contains(",")) {
 			String[] potionEffects = str.split(",");
 			if (potionEffects.length > 1) {
@@ -83,10 +82,10 @@ public class ItemUtils {
 		}
 		return effects;
 	}
-	
+
 	/*
 	public static void createFireworksExplosion(Location location, boolean flicker, boolean trail, Type type, int[] colors, int[] fadeColors, int flightDuration) {
-        //Get type
+	    //Get type
 		int typeID = 0;
 		if (type == Type.BALL) {
 			typeID = 0;
@@ -101,44 +100,57 @@ public class ItemUtils {
 		}
 		
 		// create item
-        net.minecraft.server.v1_7_R1.ItemStack item = new net.minecraft.server.v1_7_R1.ItemStack(Item.d(401), 1, 0);
-        
-        // get tag
-        NBTTagCompound tag = item.tag;
-        if (tag == null) {
-                tag = new NBTTagCompound();
-        }
-        
-        // create explosion tag
-        NBTTagCompound explTag = new NBTTagCompound("Explosion");
+	    net.minecraft.server.v1_7_R1.ItemStack item = new net.minecraft.server.v1_7_R1.ItemStack(Item.d(401), 1, 0);
+	    
+	    // get tag
+	    NBTTagCompound tag = item.tag;
+	    if (tag == null) {
+	            tag = new NBTTagCompound();
+	    }
+	    
+	    // create explosion tag
+	    NBTTagCompound explTag = new NBTTagCompound("Explosion");
 
-        explTag.setByte("Flicker", flicker ? (byte)1 : (byte)0);
-        explTag.setByte("Trail", trail ? (byte)1 : (byte)0);
-        explTag.setByte("Type", (byte)typeID);
-        explTag.setIntArray("Colors", colors);
-        explTag.setIntArray("FadeColors", fadeColors);
-        
-        // create fireworks tag
-        NBTTagCompound fwTag = tag.getCompound("Fireworks");
-        fwTag.setByte("Flight", (byte)flightDuration);
-        NBTTagList explList = new NBTTagList("Explosions");
-        explList.add(explTag);
-        fwTag.set("Explosions", explList);
-        tag.setCompound("Fireworks", fwTag);
-        
-        // set tag
-        item.tag = tag;
-        
-        // create fireworks entity
-        EntityFireworks fireworks = new EntityFireworks(((CraftWorld)location.getWorld()).getHandle(), location.getX(), location.getY(), location.getZ(), item);
-        ((CraftWorld)location.getWorld()).getHandle().addEntity(fireworks);
-        
-        // cause explosion
-        if (flightDuration == 0) {
-                ((CraftWorld)location.getWorld()).getHandle().broadcastEntityEffect(fireworks, (byte)17);
-                fireworks.die();
-        }
-    }
+	    explTag.setByte("Flicker", flicker ? (byte)1 : (byte)0);
+	    explTag.setByte("Trail", trail ? (byte)1 : (byte)0);
+	    explTag.setByte("Type", (byte)typeID);
+	    explTag.setIntArray("Colors", colors);
+	    explTag.setIntArray("FadeColors", fadeColors);
+	    
+	    // create fireworks tag
+	    NBTTagCompound fwTag = tag.getCompound("Fireworks");
+	    fwTag.setByte("Flight", (byte)flightDuration);
+	    NBTTagList explList = new NBTTagList("Explosions");
+	    explList.add(explTag);
+	    fwTag.set("Explosions", explList);
+	    tag.setCompound("Fireworks", fwTag);
+	    
+	    // set tag
+	    item.tag = tag;
+	    
+	    // create fireworks entity
+	    EntityFireworks fireworks = new EntityFireworks(((CraftWorld)location.getWorld()).getHandle(), location.getX(), location.getY(), location.getZ(), item);
+	    ((CraftWorld)location.getWorld()).getHandle().addEntity(fireworks);
+	    
+	    // cause explosion
+	    if (flightDuration == 0) {
+	            ((CraftWorld)location.getWorld()).getHandle().broadcastEntityEffect(fireworks, (byte)17);
+	            fireworks.die();
+	    }
+	}
 	*/
-}
 
+	public static void createFireworksExplosion(Location location, ItemStack stack) {
+		// create item
+		net.minecraft.server.v1_7_R1.ItemStack item = CraftItemStack.asNMSCopy(stack);
+
+		// create fireworks entity
+		EntityFireworks fireworks = new EntityFireworks(((CraftWorld) location.getWorld()).getHandle(), location.getX(), location.getY(),
+				location.getZ(), item);
+		((CraftWorld) location.getWorld()).getHandle().addEntity(fireworks);
+
+		// cause explosion
+		((CraftWorld) location.getWorld()).getHandle().broadcastEntityEffect(fireworks, (byte) 17);
+		fireworks.die();
+	}
+}

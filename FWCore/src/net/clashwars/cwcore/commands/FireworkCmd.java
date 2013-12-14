@@ -182,12 +182,12 @@ public class FireworkCmd implements CommandClass {
 		}
 		if (effectOnly) {
 			for (int i = 0; i < amt; i++) {
-				Firework fw = (Firework) player.getWorld().spawn(loc, Firework.class);
-				FireworkMeta fm = (FireworkMeta) fw.getFireworkMeta();
-				fm.setPower(power);
-				fm.addEffect(b.build());
-				fw.setFireworkMeta(fm);
-				fw.detonate();
+				ItemStack fwork = new ItemStack(Material.FIREWORK, amt);
+				FireworkMeta meta = (FireworkMeta) fwork.getItemMeta();
+				meta.setPower(power);
+				meta.addEffect(b.build());
+				fwork.setItemMeta(meta);
+				ItemUtils.createFireworksExplosion(loc, fwork);
 			}
 		}
 		
