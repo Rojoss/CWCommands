@@ -5,10 +5,11 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 import net.clashwars.cwcore.entity.CWPlayer;
-import net.minecraft.server.v1_6_R2.DedicatedServer;
-import net.minecraft.server.v1_6_R2.EntityPlayer;
-import net.minecraft.server.v1_6_R2.MinecraftServer;
-import net.minecraft.server.v1_6_R2.PlayerInteractManager;
+import net.minecraft.server.v1_7_R1.DedicatedServer;
+import net.minecraft.server.v1_7_R1.EntityPlayer;
+import net.minecraft.server.v1_7_R1.MinecraftServer;
+import net.minecraft.server.v1_7_R1.PlayerInteractManager;
+import net.minecraft.util.com.mojang.authlib.GameProfile;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -204,7 +205,9 @@ public class Utils {
 		oPlayer = Bukkit.getServer().getOfflinePlayer(player);
 		
 		MinecraftServer minecraftServer = DedicatedServer.getServer();
-		EntityPlayer entityPlayer = new EntityPlayer(DedicatedServer.getServer(), minecraftServer.getWorldServer(0), oPlayer.getName(), new PlayerInteractManager(minecraftServer.getWorldServer(0)));
+		
+		GameProfile gp = new GameProfile(/* I have no idea what id is*/ null, player);
+		EntityPlayer entityPlayer = new EntityPlayer(DedicatedServer.getServer(), minecraftServer.getWorldServer(0), /* GamProfile */gp, new PlayerInteractManager(minecraftServer.getWorldServer(0)));
 		entityPlayer.getBukkitEntity().loadData();
 		
 		return entityPlayer.getBukkitEntity();

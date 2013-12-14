@@ -9,14 +9,14 @@ import java.util.Set;
 import net.clashwars.cwcore.constants.Effects;
 import net.clashwars.cwcore.util.LocationUtils;
 import net.clashwars.cwcore.util.Utils;
-import net.minecraft.server.v1_6_R2.Packet63WorldParticles;
+import net.minecraft.server.v1_7_R1.PacketPlayOutWorldParticles;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -27,15 +27,15 @@ public class CustomEffect {
 
 	public CustomEffect() {
 		try {
-			field[0] = Packet63WorldParticles.class.getDeclaredField("a");
-			field[1] = Packet63WorldParticles.class.getDeclaredField("b");
-			field[2] = Packet63WorldParticles.class.getDeclaredField("c");
-			field[3] = Packet63WorldParticles.class.getDeclaredField("d");
-			field[4] = Packet63WorldParticles.class.getDeclaredField("e");
-			field[5] = Packet63WorldParticles.class.getDeclaredField("f");
-			field[6] = Packet63WorldParticles.class.getDeclaredField("g");
-			field[7] = Packet63WorldParticles.class.getDeclaredField("h");
-			field[8] = Packet63WorldParticles.class.getDeclaredField("i");
+			field[0] = PacketPlayOutWorldParticles.class.getDeclaredField("a");
+			field[1] = PacketPlayOutWorldParticles.class.getDeclaredField("b");
+			field[2] = PacketPlayOutWorldParticles.class.getDeclaredField("c");
+			field[3] = PacketPlayOutWorldParticles.class.getDeclaredField("d");
+			field[4] = PacketPlayOutWorldParticles.class.getDeclaredField("e");
+			field[5] = PacketPlayOutWorldParticles.class.getDeclaredField("f");
+			field[6] = PacketPlayOutWorldParticles.class.getDeclaredField("g");
+			field[7] = PacketPlayOutWorldParticles.class.getDeclaredField("h");
+			field[8] = PacketPlayOutWorldParticles.class.getDeclaredField("i");
 			for (int i = 0; i <= 8; i++) {
 				field[i].setAccessible(true);
 			}
@@ -213,7 +213,7 @@ public class CustomEffect {
 	}
 
 	public void playParticleEffect(Location location, String name, float spreadHoriz, float spreadVert, float speed, int count, Player... additions) {
-		Packet63WorldParticles packet = new Packet63WorldParticles();
+		PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles();
 		try {
 			field[0].set(packet, name);
 			field[1].setFloat(packet, (float) location.getX());

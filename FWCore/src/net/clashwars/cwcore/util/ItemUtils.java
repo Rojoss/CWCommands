@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.clashwars.cwcore.components.CustomItem;
-import net.minecraft.server.v1_6_R2.EntityFireworks;
-import net.minecraft.server.v1_6_R2.NBTTagCompound;
-import net.minecraft.server.v1_6_R2.NBTTagList;
+import net.minecraft.server.v1_7_R1.EntityFireworks;
+import net.minecraft.server.v1_7_R1.Item;
+import net.minecraft.server.v1_7_R1.NBTTagCompound;
+import net.minecraft.server.v1_7_R1.NBTTagList;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.FireworkEffect.Type;
-import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
+import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
@@ -83,7 +84,7 @@ public class ItemUtils {
 		return effects;
 	}
 	
-	
+	/*
 	public static void createFireworksExplosion(Location location, boolean flicker, boolean trail, Type type, int[] colors, int[] fadeColors, int flightDuration) {
         //Get type
 		int typeID = 0;
@@ -100,7 +101,7 @@ public class ItemUtils {
 		}
 		
 		// create item
-        net.minecraft.server.v1_6_R2.ItemStack item = new net.minecraft.server.v1_6_R2.ItemStack(401, 1, 0);
+        net.minecraft.server.v1_7_R1.ItemStack item = new net.minecraft.server.v1_7_R1.ItemStack(Item.d(401), 1, 0);
         
         // get tag
         NBTTagCompound tag = item.tag;
@@ -110,6 +111,7 @@ public class ItemUtils {
         
         // create explosion tag
         NBTTagCompound explTag = new NBTTagCompound("Explosion");
+
         explTag.setByte("Flicker", flicker ? (byte)1 : (byte)0);
         explTag.setByte("Trail", trail ? (byte)1 : (byte)0);
         explTag.setByte("Type", (byte)typeID);
@@ -117,7 +119,7 @@ public class ItemUtils {
         explTag.setIntArray("FadeColors", fadeColors);
         
         // create fireworks tag
-        NBTTagCompound fwTag = new NBTTagCompound("Fireworks");
+        NBTTagCompound fwTag = tag.getCompound("Fireworks");
         fwTag.setByte("Flight", (byte)flightDuration);
         NBTTagList explList = new NBTTagList("Explosions");
         explList.add(explTag);
@@ -137,5 +139,6 @@ public class ItemUtils {
                 fireworks.die();
         }
     }
-
+	*/
 }
+

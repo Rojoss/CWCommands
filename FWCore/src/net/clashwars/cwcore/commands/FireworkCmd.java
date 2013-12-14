@@ -87,11 +87,6 @@ public class FireworkCmd implements CommandClass {
 		} else {
 			player = (Player) sender;
 		}
-
-		Bukkit.broadcastMessage("length: " + args.length);
-		for (String arg : args) {
-			Bukkit.broadcastMessage(arg);
-		}
 		
 		//Args
 		if (args.length >= 1) {
@@ -185,12 +180,19 @@ public class FireworkCmd implements CommandClass {
 				fw.setFireworkMeta(fm);
 			}
 		}
-		if (effectOnly && !launch) {
-			power = 0;
+		if (effectOnly) {
 			for (int i = 0; i < amt; i++) {
-				ItemUtils.createFireworksExplosion(loc, flicker, trail, effectType, toIntegerArray(colors), toIntegerArray(fcolors), power);
+				Firework fw = (Firework) player.getWorld().spawn(loc, Firework.class);
+				FireworkMeta fm = (FireworkMeta) fw.getFireworkMeta();
+				fm.setPower(power);
+				fm.addEffect(b.build());
+				fw.setFireworkMeta(fm);
+				fw.detonate();
 			}
 		}
+		
+		
+		
 		if (!effectOnly && !launch) {
 			ItemStack fwork = new ItemStack(Material.FIREWORK, amt);
 			FireworkMeta meta = (FireworkMeta) fwork.getItemMeta();

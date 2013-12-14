@@ -43,7 +43,7 @@ public class GuiCmd implements CommandClass {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
+
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		if (CmdUtils.getOptionalArg(cmdArgs, "p:") != null) {
 			ePlayer = Utils.getFakeOfflinePlayer((CmdUtils.getOptionalArg(cmdArgs, "p:")));
