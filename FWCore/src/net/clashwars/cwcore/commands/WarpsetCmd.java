@@ -12,12 +12,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class WarpsetCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public WarpsetCmd(CWCore cwc) {
 		this.cwc = cwc;
 	}
@@ -27,14 +27,13 @@ public class WarpsetCmd implements CommandClass {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		String name = "";
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
 
 		//Console
 		if (!(sender instanceof Player)) {
@@ -43,8 +42,7 @@ public class WarpsetCmd implements CommandClass {
 		} else {
 			player = (Player) sender;
 		}
-		
-		
+
 		//Args
 		if (args.length >= 1) {
 			name = args[0].toLowerCase();
@@ -57,8 +55,7 @@ public class WarpsetCmd implements CommandClass {
 				return true;
 			}
 		}
-		
-		
+
 		//Action
 		cwc.getWarpsConfig().createWarp(name, player.getLocation());
 		player.sendMessage(pf + "Warp " + ChatColor.DARK_PURPLE + name + ChatColor.GOLD + " set!");

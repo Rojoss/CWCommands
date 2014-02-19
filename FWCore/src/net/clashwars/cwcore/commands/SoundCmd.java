@@ -18,12 +18,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SoundCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public SoundCmd(CWCore cwc) {
 		this.cwc = cwc;
 		optionalArgs.put("p:<player>", "Play effect at this player");
@@ -41,14 +41,14 @@ public class SoundCmd implements CommandClass {
 		Sound sound = null;
 		float volume = 1.0F;
 		float pitch = 1.0F;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
+
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		boolean personal = CmdUtils.hasModifier(cmdArgs, "p");
 		boolean all = CmdUtils.hasModifier(cmdArgs, "a");
@@ -57,8 +57,7 @@ public class SoundCmd implements CommandClass {
 		}
 		String locStr = CmdUtils.getOptionalArg(cmdArgs, "loc:");
 		World world = Utils.getWorld(CmdUtils.getOptionalArg(cmdArgs, "loc:"));
-		
-		
+
 		//Console
 		if (!(sender instanceof Player)) {
 			if (player == null) {
@@ -70,7 +69,7 @@ public class SoundCmd implements CommandClass {
 				player = (Player) sender;
 			}
 		}
-		
+
 		if (world == null) {
 			world = player.getWorld();
 		}
@@ -80,8 +79,7 @@ public class SoundCmd implements CommandClass {
 		if (loc == null) {
 			loc = player.getLocation();
 		}
-		
-		
+
 		//Args
 		if (args.length >= 1) {
 			sound = AliasUtils.findSound(args[0]);
@@ -90,26 +88,25 @@ public class SoundCmd implements CommandClass {
 				return true;
 			}
 		}
-		
+
 		if (args.length >= 2) {
 			try {
-			 	volume = Float.parseFloat(args[1]);
-			 } catch (NumberFormatException e) {
-			 	sender.sendMessage(pf + ChatColor.RED + "Invalid volume, Must be a number between 0.0 and 2.0.");
-			 	return true;
-			 }
+				volume = Float.parseFloat(args[1]);
+			} catch (NumberFormatException e) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid volume, Must be a number between 0.0 and 2.0.");
+				return true;
+			}
 		}
-		
+
 		if (args.length >= 3) {
 			try {
-			 	pitch = Float.parseFloat(args[2]);
-			 } catch (NumberFormatException e) {
-			 	sender.sendMessage(pf + ChatColor.RED + "Invalid pitch, Must be a number between 0.0 and 2.0.");
-			 	return true;
-			 }
+				pitch = Float.parseFloat(args[2]);
+			} catch (NumberFormatException e) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid pitch, Must be a number between 0.0 and 2.0.");
+				return true;
+			}
 		}
-		
-		
+
 		//Action
 		if (all) {
 			for (int i = 0; i < loc.getWorld().getPlayers().size(); i++) {
@@ -126,14 +123,14 @@ public class SoundCmd implements CommandClass {
 		} else {
 			world.playSound(loc, sound, volume, pitch);
 		}
-		
+
 		if (!silent) {
 			if (player.getName().equalsIgnoreCase(sender.getName())) {
 				player.sendMessage(pf + "Playing sound " + ChatColor.DARK_PURPLE + sound);
 			} else {
 				sender.sendMessage(pf + "Playing sound " + ChatColor.DARK_PURPLE + sound + " " + ChatColor.GOLD + " for " + player.getDisplayName());
 			}
-			
+
 		}
 		return true;
 	}

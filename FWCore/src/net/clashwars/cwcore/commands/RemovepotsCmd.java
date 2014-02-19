@@ -15,12 +15,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class RemovepotsCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public RemovepotsCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("s", "No messages");
@@ -31,16 +31,15 @@ public class RemovepotsCmd implements CommandClass {
 		String pf = cwc.getPrefix();
 		Player player = null;
 		PotionEffectType effect = null;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
-		
-		
+
 		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 1) {
@@ -50,8 +49,7 @@ public class RemovepotsCmd implements CommandClass {
 		} else {
 			player = (Player) sender;
 		}
-		
-		
+
 		//Args
 		if (args.length >= 1) {
 			player = cwc.getServer().getPlayer(args[0]);
@@ -60,7 +58,7 @@ public class RemovepotsCmd implements CommandClass {
 				return true;
 			}
 		}
-		
+
 		if (args.length >= 2) {
 			effect = AliasUtils.findPotion(args[1]);
 			if (effect == null) {
@@ -68,15 +66,15 @@ public class RemovepotsCmd implements CommandClass {
 				return true;
 			}
 		}
-		
-		
+
 		//Action
 		if (effect != null) {
 			player.removePotionEffect(effect);
 			if (!silent) {
 				player.sendMessage(pf + "Potion effect " + ChatColor.DARK_PURPLE + args[1] + ChatColor.GOLD + " removed.");
 				if (sender.getName() != player.getName())
-					sender.sendMessage(pf + "Potion effect " + ChatColor.DARK_PURPLE + args[1] + ChatColor.GOLD + " removed from " + ChatColor.DARK_PURPLE + player.getDisplayName());
+					sender.sendMessage(pf + "Potion effect " + ChatColor.DARK_PURPLE + args[1] + ChatColor.GOLD + " removed from "
+							+ ChatColor.DARK_PURPLE + player.getDisplayName());
 			}
 		} else {
 			for (PotionEffect e : player.getActivePotionEffects()) {
@@ -85,7 +83,8 @@ public class RemovepotsCmd implements CommandClass {
 			if (!silent) {
 				player.sendMessage(pf + "All your potion effects have been removed!");
 				if (sender.getName() != player.getName())
-					sender.sendMessage(pf + "All potion effects from " + ChatColor.DARK_PURPLE + player.getDisplayName() + ChatColor.GOLD + " removed!");
+					sender.sendMessage(pf + "All potion effects from " + ChatColor.DARK_PURPLE + player.getDisplayName() + ChatColor.GOLD
+							+ " removed!");
 			}
 		}
 		return true;

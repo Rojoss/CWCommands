@@ -13,12 +13,12 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class SudoCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public SudoCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("silent", "No messages");
@@ -32,20 +32,20 @@ public class SudoCmd implements CommandClass {
 		String command = "";
 		Player player = null;
 		ConsoleCommandSender console = null;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
-			sender.sendMessage(ChatColor.DARK_PURPLE + "CONSOLE" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + "Run command from console (Use this instead of Playername)");
+			sender.sendMessage(ChatColor.DARK_PURPLE + "CONSOLE" + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY
+					+ "Run command from console (Use this instead of Playername)");
 			return true;
 		}
-		
+
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "silent");
 		boolean giveOP = CmdUtils.hasModifier(cmdArgs, "op");
 		String perm = CmdUtils.getOptionalArg(cmdArgs, "perm:");
-		
-		
+
 		//Args
 		if (args.length >= 1) {
 			if (args[0].equalsIgnoreCase("CONSOLE")) {
@@ -62,7 +62,7 @@ public class SudoCmd implements CommandClass {
 				}
 			}
 		}
-		
+
 		if (args.length >= 1) {
 			for (int i = 1; i < args.length; i++) {
 				if (i == 1) {
@@ -76,8 +76,7 @@ public class SudoCmd implements CommandClass {
 				return true;
 			}
 		}
-		
-		
+
 		//Action
 		if (CmdUtils.hasOptionalArg(cmdArgs, "perm:")) {
 			if (perm == null || perm == "" || perm == " ") {
@@ -93,9 +92,9 @@ public class SudoCmd implements CommandClass {
 				player.setOp(true);
 			if (perm != null)
 				cwc.getPermissions().playerAdd(player.getWorld(), player.getName(), perm);
-			
+
 			player.chat("/" + command);
-			
+
 			if (!silent)
 				player.sendMessage(pf + "You where forced to run the command: " + ChatColor.DARK_PURPLE + "/" + command);
 			if (giveOP)
@@ -104,8 +103,8 @@ public class SudoCmd implements CommandClass {
 				cwc.getPermissions().playerRemove(player.getWorld(), player.getName(), perm);
 		}
 		if (!silent) {
-			sender.sendMessage(pf + "You forced " + ChatColor.DARK_PURPLE + (console != null ? "the console":player.getDisplayName())
-				+ ChatColor.GOLD + " to run: " + ChatColor.DARK_PURPLE + "/" + command);
+			sender.sendMessage(pf + "You forced " + ChatColor.DARK_PURPLE + (console != null ? "the console" : player.getDisplayName())
+					+ ChatColor.GOLD + " to run: " + ChatColor.DARK_PURPLE + "/" + command);
 		}
 		return true;
 	}

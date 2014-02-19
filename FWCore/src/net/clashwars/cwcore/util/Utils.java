@@ -19,9 +19,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-
 public class Utils {
-	
+
 	public static String implode(String[] arr, String glue, int start, int end) {
 		String ret = "";
 
@@ -46,9 +45,7 @@ public class Utils {
 	public static String implode(String[] arr) {
 		return implode(arr, " ");
 	}
-	
-	
-	
+
 	//Integrate colors in a string
 	public static String integrateColor(String str) {
 		for (ChatColor c : ChatColor.values()) {
@@ -56,6 +53,7 @@ public class Utils {
 		}
 		return str;
 	}
+
 	public static String[] integrateColor(String[] str) {
 		for (int i = 0; i < str.length; i++) {
 			for (ChatColor c : ChatColor.values()) {
@@ -64,33 +62,27 @@ public class Utils {
 		}
 		return str;
 	}
-	
-	
-	
+
 	//Remove color codes from a string.
 	public static String stripColorCodes(String str) {
 		return Pattern.compile("&([0-9a-fk-orA-FK-OR])").matcher(str).replaceAll("");
 	}
-	
-	
-	
+
 	//Check if string is a number.
 	public static boolean isNumber(String str) {
-        try {
-            Integer.parseInt(str);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-	
-	
-	
+		try {
+			Integer.parseInt(str);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
+
 	public static String[] getPowerToolsList(CWPlayer cwp) {
 		String[] ptools = cwp.getPowertool().split("»");
-    	return ptools;
+		return ptools;
 	}
-	
+
 	public static String getPowerToolCommandByID(String[] ptools, int id) {
 		for (int i = 0; i < ptools.length; i++) {
 			String[] ptool = ptools[i].split(":", 2);
@@ -106,7 +98,7 @@ public class Utils {
 		}
 		return "";
 	}
-	
+
 	public static String removePowerToolCommandByID(String[] ptools, int id) {
 		for (int i = 0; i < ptools.length; i++) {
 			String[] ptool = ptools[i].split(":", 2);
@@ -117,9 +109,7 @@ public class Utils {
 		}
 		return implode(ptools, "»");
 	}
-	
-	
-	
+
 	//Get a random Color
 	public static Color getRandomColor() {
 		Random rand = new Random();
@@ -130,30 +120,28 @@ public class Utils {
 		return Color.fromRGB(r, g, b);
 	}
 
-	
-	
 	//Get int from string
 	public static int getInt(String str) {
 		try {
-		 	return Integer.parseInt(str);
-		 } catch (NumberFormatException e) {
-		 }
+			return Integer.parseInt(str);
+		} catch (NumberFormatException e) {
+		}
 		return -1;
 	}
-	
+
 	//Get float from string
 	public static float getFloat(String str) {
 		try {
-		 	return Float.parseFloat(str);
-		 } catch (NumberFormatException e) {
-		 }
+			return Float.parseFloat(str);
+		} catch (NumberFormatException e) {
+		}
 		return -1;
 	}
-	
+
 	//Get colors or a color from string
 	public static ArrayList<Color> getColors(String str) {
 		ArrayList<Color> colors = new ArrayList<Color>();
-		
+
 		String[] clrs = str.split(",");
 		if (clrs.length > 0) {
 			for (String color : clrs) {
@@ -162,12 +150,13 @@ public class Utils {
 		} else {
 			colors.add(getColor(str));
 		}
-		
+
 		return colors;
 	}
+
 	public static Color getColor(String str) {
 		int color = -1;
-		
+
 		if (str.contains("#")) {
 			String[] clr = str.split("#");
 			if (clr[1].matches("[0-9A-Fa-f]+")) {
@@ -178,10 +167,10 @@ public class Utils {
 				color = Integer.parseInt(str, 16);
 			}
 		}
-		
+
 		return Color.fromRGB(color);
 	}
-	
+
 	//Get a firework type effect from string
 	public static Type getFireworkEffect(String str) {
 		Type effectType = null;
@@ -198,21 +187,22 @@ public class Utils {
 		}
 		return effectType;
 	}
-	
+
 	//Get a fake offline player which can be used as a regular player.
 	public static Player getFakeOfflinePlayer(String player) {
 		OfflinePlayer oPlayer = null;
 		oPlayer = Bukkit.getServer().getOfflinePlayer(player);
-		
+
 		MinecraftServer minecraftServer = DedicatedServer.getServer();
-		
-		GameProfile gp = new GameProfile(/* I have no idea what id is*/ null, player);
-		EntityPlayer entityPlayer = new EntityPlayer(DedicatedServer.getServer(), minecraftServer.getWorldServer(0), /* GamProfile */gp, new PlayerInteractManager(minecraftServer.getWorldServer(0)));
+
+		GameProfile gp = new GameProfile(/* I have no idea what id is*/null, player);
+		EntityPlayer entityPlayer = new EntityPlayer(DedicatedServer.getServer(), minecraftServer.getWorldServer(0), /* GamProfile */gp,
+				new PlayerInteractManager(minecraftServer.getWorldServer(0)));
 		entityPlayer.getBukkitEntity().loadData();
-		
+
 		return entityPlayer.getBukkitEntity();
 	}
-	
+
 	//Get a world from a string like <x>,<y>,<z>:<world>
 	public static World getWorld(String str) {
 		if (str != null) {
@@ -225,17 +215,17 @@ public class Utils {
 		}
 		return Bukkit.getServer().getWorlds().get(0);
 	}
-	
+
 	//Check if a string has a world specififed.
-		public static boolean hasWorld(String str) {
-			if (str != null) {
-				String[] splt = str.split(":");
-				if (splt.length > 1) {
-					if (Bukkit.getServer().getWorld(splt[1]) != null) {
-						return true;
-					}
+	public static boolean hasWorld(String str) {
+		if (str != null) {
+			String[] splt = str.split(":");
+			if (splt.length > 1) {
+				if (Bukkit.getServer().getWorld(splt[1]) != null) {
+					return true;
 				}
 			}
-			return false;
 		}
+		return false;
+	}
 }

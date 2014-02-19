@@ -19,12 +19,12 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 public class WarpCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public WarpCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("s", "No messages");
@@ -38,19 +38,18 @@ public class WarpCmd implements CommandClass {
 		Player player = null;
 		String pplayer = null;
 		String name = "";
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
+
 		if (CmdUtils.hasModifier(cmdArgs, "-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
+
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		boolean force = CmdUtils.hasModifier(cmdArgs, "f");
 		boolean bungee = CmdUtils.hasModifier(cmdArgs, "*");
-		
-		
+
 		//Console
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(pf + ChatColor.RED + "Only players can use this command.");
@@ -59,8 +58,7 @@ public class WarpCmd implements CommandClass {
 			player = (Player) sender;
 			pplayer = sender.getName();
 		}
-		
-		
+
 		//Args
 		if (args.length >= 1) {
 			name = args[0].toLowerCase();
@@ -73,15 +71,14 @@ public class WarpCmd implements CommandClass {
 				return true;
 			}
 		}
-		
+
 		if (args.length >= 2) {
 			player = cwc.getServer().getPlayer(args[1]);
 			pplayer = args[1];
 		}
-		
-		
+
 		//Action
-		if (bungee) {	
+		if (bungee) {
 			try {
 				ByteArrayOutputStream b = new ByteArrayOutputStream();
 				DataOutputStream out = new DataOutputStream(b);
@@ -96,7 +93,7 @@ public class WarpCmd implements CommandClass {
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
-			
+
 		} else {
 			ConfigurationSection warp = cwc.getWarpsConfig().getWarp(name);
 			World world = cwc.getServer().getWorld(warp.getString("Location.World"));
@@ -106,7 +103,7 @@ public class WarpCmd implements CommandClass {
 			long yaw = warp.getLong("Location.Yaw");
 			long pitch = warp.getLong("Location.Pitch");
 			Location location = new Location(world, x, y, z, yaw, pitch);
-			
+
 			if (force) {
 				player.teleport(location);
 			} else {
@@ -115,8 +112,8 @@ public class WarpCmd implements CommandClass {
 			if (!silent) {
 				player.sendMessage(pf + "Warping to " + ChatColor.DARK_PURPLE + name);
 				if (sender.getName() != player.getName())
-					sender.sendMessage(pf + "You have warped " + ChatColor.DARK_PURPLE + player.getDisplayName()
-						+ ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + name);
+					sender.sendMessage(pf + "You have warped " + ChatColor.DARK_PURPLE + player.getDisplayName() + ChatColor.GOLD + " to "
+							+ ChatColor.DARK_PURPLE + name);
 			}
 		}
 		return true;

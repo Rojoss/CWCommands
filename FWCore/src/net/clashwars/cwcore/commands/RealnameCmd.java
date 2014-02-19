@@ -14,12 +14,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class RealnameCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public RealnameCmd(CWCore cwc) {
 		this.cwc = cwc;
 	}
@@ -30,14 +30,13 @@ public class RealnameCmd implements CommandClass {
 		Player player = null;
 		CWPlayer cwp = null;
 		String nick = null;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
 
 		//Console
 		if (!(sender instanceof Player)) {
@@ -48,14 +47,13 @@ public class RealnameCmd implements CommandClass {
 		} else {
 			player = (Player) sender;
 		}
-		
-		
+
 		//Args
 		if (args.length < 1) {
 			sender.sendMessage(pf + "Your real name is: " + player.getName());
 			return true;
 		}
-		
+
 		if (args.length >= 1) {
 			cwp = cwc.getPlayerManager().getPlayerFromNick(args[0]);
 			if (cwp == null) {
@@ -70,16 +68,14 @@ public class RealnameCmd implements CommandClass {
 				nick = cwp.getNick();
 			}
 		}
-		
-		
+
 		//Action
 		if (cwp == null && player != null)
-			sender.sendMessage(pf + "Real name of " + ChatColor.DARK_PURPLE + Utils.integrateColor(nick)
-			+ ChatColor.GOLD + " is: " + player.getName());
+			sender.sendMessage(pf + "Real name of " + ChatColor.DARK_PURPLE + Utils.integrateColor(nick) + ChatColor.GOLD + " is: "
+					+ player.getName());
 		if (cwp != null)
-			sender.sendMessage(pf + "Real name of " + ChatColor.DARK_PURPLE + Utils.integrateColor(nick)
-			+ ChatColor.GOLD + " is: " + cwp.getName());
-		
+			sender.sendMessage(pf + "Real name of " + ChatColor.DARK_PURPLE + Utils.integrateColor(nick) + ChatColor.GOLD + " is: " + cwp.getName());
+
 		return true;
 	}
 

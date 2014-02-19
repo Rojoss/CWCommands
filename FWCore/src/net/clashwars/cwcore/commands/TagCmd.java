@@ -15,12 +15,12 @@ import org.bukkit.entity.Player;
 import org.kitteh.tag.TagAPI;
 
 public class TagCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public TagCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("s", "No messages");
@@ -33,17 +33,16 @@ public class TagCmd implements CommandClass {
 		Player player = null;
 		CWPlayer cwp = null;
 		String tag = "";
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
+
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		boolean reset = CmdUtils.hasModifier(cmdArgs, "r");
-		
 
 		//Console
 		if (!(sender instanceof Player)) {
@@ -59,12 +58,12 @@ public class TagCmd implements CommandClass {
 				return true;
 			}
 		}
-		
+
 		if (args.length < 1) {
 			player.sendMessage(pf + "Your tag is" + ChatColor.GRAY + ": " + ChatColor.WHITE + Utils.integrateColor(cwp.getNick()));
 			return true;
 		}
-		
+
 		if (args.length >= 1) {
 			tag = args[0];
 			if (tag == null || tag.isEmpty()) {
@@ -72,7 +71,7 @@ public class TagCmd implements CommandClass {
 				return true;
 			}
 		}
-		
+
 		if (args.length >= 2) {
 			player = cwc.getServer().getPlayer(args[1]);
 			if (player == null) {
@@ -81,9 +80,7 @@ public class TagCmd implements CommandClass {
 			}
 			cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
 		}
-		
-		
-		
+
 		//Action
 		if (reset) {
 			cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
@@ -91,11 +88,11 @@ public class TagCmd implements CommandClass {
 		}
 		cwp.setTag(tag);
 		TagAPI.refreshPlayer(player);
-		if (!silent) { 
+		if (!silent) {
 			player.sendMessage(pf + "Your tag has been changed to" + ChatColor.GRAY + ": " + ChatColor.WHITE + Utils.integrateColor(tag));
 			if (sender.getName() != player.getName())
-				sender.sendMessage(pf + "Tag from " + ChatColor.DARK_PURPLE + player.getName() 
-					+ ChatColor.GOLD + " changed to" + ChatColor.GRAY + ": " + ChatColor.WHITE + Utils.integrateColor(tag));
+				sender.sendMessage(pf + "Tag from " + ChatColor.DARK_PURPLE + player.getName() + ChatColor.GOLD + " changed to" + ChatColor.GRAY
+						+ ": " + ChatColor.WHITE + Utils.integrateColor(tag));
 		}
 		return true;
 	}
@@ -104,8 +101,7 @@ public class TagCmd implements CommandClass {
 	public String[] permissions() {
 		return new String[] { "cwcore.cmd.nick", "cwcore.cmd.*", "cwcore.*" };
 	}
-	
-	
+
 	private void resetNick(Player player, CWPlayer cwp, boolean silent, String pf) {
 		player.setDisplayName(player.getName());
 		cwp.setNick(player.getName());

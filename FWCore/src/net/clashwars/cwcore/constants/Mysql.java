@@ -4,8 +4,8 @@ import net.clashwars.cwcore.sql.SqlType;
 import net.clashwars.cwcore.sql.SqlValue;
 
 public class Mysql {
-	public static final SqlValue[]   USERS;
-	
+	public static final SqlValue[]	USERS;
+
 	static {
 		SqlValue[] userTable = new SqlValue[12];
 		userTable[0] = new SqlValue("id", SqlType.INTEGER, true);

@@ -12,11 +12,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SetspawnCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+
 	public SetspawnCmd(CWCore cwc) {
 		this.cwc = cwc;
 	}
@@ -26,12 +26,11 @@ public class SetspawnCmd implements CommandClass {
 		String pf = cwc.getPrefix();
 		Player player = null;
 
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
-		
+
 		//Console
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(pf + ChatColor.RED + "Only players can use this command.");
@@ -39,12 +38,13 @@ public class SetspawnCmd implements CommandClass {
 		} else {
 			player = (Player) sender;
 		}
-		
-		
+
 		//Action
-		cwc.getServer().getWorld(player.getWorld().getName()).setSpawnLocation(player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ());
-		player.sendMessage(pf + "Spawn set to: " + ChatColor.DARK_PURPLE + player.getLocation().getBlockX() + ChatColor.DARK_GRAY + ", " 
-		+ ChatColor.DARK_PURPLE + player.getLocation().getBlockY() + ChatColor.DARK_GRAY + ", " + ChatColor.DARK_PURPLE + player.getLocation().getBlockZ());
+		cwc.getServer().getWorld(player.getWorld().getName())
+				.setSpawnLocation(player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ());
+		player.sendMessage(pf + "Spawn set to: " + ChatColor.DARK_PURPLE + player.getLocation().getBlockX() + ChatColor.DARK_GRAY + ", "
+				+ ChatColor.DARK_PURPLE + player.getLocation().getBlockY() + ChatColor.DARK_GRAY + ", " + ChatColor.DARK_PURPLE
+				+ player.getLocation().getBlockZ());
 		return true;
 	}
 

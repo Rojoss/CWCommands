@@ -16,12 +16,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class TeleporthereCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public TeleporthereCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("s", "No messages");
@@ -29,7 +29,7 @@ public class TeleporthereCmd implements CommandClass {
 		modifiers.put("a", "Teleport all players.");
 		modifiers.put("confirm", "Confirm to teleport all players");
 		modifiers.put("*", "Teleports players from other servers.");
-		
+
 	}
 
 	@Override
@@ -39,21 +39,20 @@ public class TeleporthereCmd implements CommandClass {
 		String pplayer = null;
 		Player player2 = null;
 		String pplayer2 = null;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
+
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		boolean force = CmdUtils.hasModifier(cmdArgs, "f");
 		boolean all = CmdUtils.hasModifier(cmdArgs, "a");
 		boolean confirmed = CmdUtils.hasModifier(cmdArgs, "confirm");
 		boolean bungee = CmdUtils.hasModifier(cmdArgs, "*");
-		
-		
+
 		//Console
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(pf + ChatColor.RED + "Only players can use this command.");
@@ -62,7 +61,6 @@ public class TeleporthereCmd implements CommandClass {
 			player = (Player) sender;
 			pplayer = sender.getName();
 		}
-		
 
 		//Args
 		if (args.length >= 1) {
@@ -73,8 +71,7 @@ public class TeleporthereCmd implements CommandClass {
 				return true;
 			}
 		}
-		
-		
+
 		//Action
 		if (all && bungee) {
 			sender.sendMessage(pf + ChatColor.RED + "Can't teleport all players from other servers.");
@@ -112,7 +109,8 @@ public class TeleporthereCmd implements CommandClass {
 					}
 					player.sendMessage(pf + "All players have been teleported to you!");
 				} else {
-					player.sendMessage(pf + ChatColor.RED + "To teleport all players you need to add -confirm to confirm you want to teleport everyone!");
+					player.sendMessage(pf + ChatColor.RED
+							+ "To teleport all players you need to add -confirm to confirm you want to teleport everyone!");
 				}
 			} else {
 				if (force) {

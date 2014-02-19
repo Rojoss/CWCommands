@@ -15,12 +15,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class VanishCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public VanishCmd(CWCore cwc) {
 		this.cwc = cwc;
 	}
@@ -32,17 +32,16 @@ public class VanishCmd implements CommandClass {
 		CWPlayer cwp = null;
 		boolean on = false;
 		boolean vanish = false;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
 
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
-		
-		
+
 		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 1) {
@@ -52,7 +51,7 @@ public class VanishCmd implements CommandClass {
 		} else {
 			player = (Player) sender;
 		}
-		
+
 		if (args.length >= 1) {
 			player = cwc.getServer().getPlayer(args[0]);
 			if (player == null) {
@@ -61,7 +60,7 @@ public class VanishCmd implements CommandClass {
 			}
 		}
 		cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
-		
+
 		if (args.length >= 2) {
 			if (args[1].toLowerCase().startsWith("on")) {
 				on = true;
@@ -75,9 +74,7 @@ public class VanishCmd implements CommandClass {
 				on = true;
 			}
 		}
-		
-		
-		
+
 		//Action
 		if (on) {
 			if (cwp.getVanished() == false) {
@@ -97,7 +94,7 @@ public class VanishCmd implements CommandClass {
 				return true;
 			}
 		}
-		
+
 		for (Player plr : cwc.getServer().getOnlinePlayers()) {
 			if (vanish == true) {
 				if (!(plr.hasPermission("cwcore.cmd.vanish.see")))
@@ -106,7 +103,7 @@ public class VanishCmd implements CommandClass {
 				plr.showPlayer(player);
 			}
 		}
-		
+
 		if (cwp.getVanished() == true) {
 			if (!silent) {
 				player.sendMessage(pf + "Vanished!");

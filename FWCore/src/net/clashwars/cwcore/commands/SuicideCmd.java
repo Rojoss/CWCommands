@@ -12,11 +12,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SuicideCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+
 	public SuicideCmd(CWCore cwc) {
 		this.cwc = cwc;
 	}
@@ -25,12 +25,12 @@ public class SuicideCmd implements CommandClass {
 	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
+
 		//Console
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(pf + ChatColor.RED + "Only players can use this command.");
@@ -38,7 +38,7 @@ public class SuicideCmd implements CommandClass {
 		} else {
 			player = (Player) sender;
 		}
-		
+
 		//Action
 		player.setHealth(0);
 		return true;

@@ -16,12 +16,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class PowertoolCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public PowertoolCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("remove", "Remove powertool from held item");
@@ -35,17 +35,16 @@ public class PowertoolCmd implements CommandClass {
 		ItemStack item = null;
 		Player player = null;
 		CWPlayer cwp = null;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
 		boolean remove = CmdUtils.hasModifier(cmdArgs, "remove");
 		boolean force = CmdUtils.hasModifier(cmdArgs, "force");
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1 && !remove) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false) || args.length < 1 && !remove) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
-		
+
 		//Console
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(pf + ChatColor.RED + "Only players can use this command.");
@@ -54,8 +53,7 @@ public class PowertoolCmd implements CommandClass {
 			player = (Player) sender;
 			cwp = cwc.getPlayerManager().getPlayer(player.getName());
 		}
-		
-		
+
 		//Args
 		if (args.length >= 1) {
 			command = args[0];
@@ -63,8 +61,7 @@ public class PowertoolCmd implements CommandClass {
 				command += " " + args[i];
 			}
 		}
-		
-		
+
 		//Action
 		item = player.getItemInHand();
 		if (item.getData().getItemType() == Material.AIR) {
@@ -75,20 +72,20 @@ public class PowertoolCmd implements CommandClass {
 			player.sendMessage(pf + ChatColor.RED + "Can't set powetools to blocks.");
 			return true;
 		}
-		
+
 		if (Utils.getPowerToolCommandByID(Utils.getPowerToolsList(cwp), item.getTypeId()) != "") {
 			if (remove) {
 				cwp.setPowertool(Utils.removePowerToolCommandByID(Utils.getPowerToolsList(cwp), item.getTypeId()));
 				player.sendMessage(pf + "Powertool removed from " + item.getData().getItemType().name().toLowerCase().replace("_", " "));
 				return true;
 			}
-			
+
 			if (force) {
 				cwp.setPowertool(Utils.removePowerToolCommandByID(Utils.getPowerToolsList(cwp), item.getTypeId()));
 			} else {
 				player.sendMessage(pf + ChatColor.RED + "There is already a powertool set for this item.");
-                player.sendMessage(pf + ChatColor.RED + "Add -force to force set or remove with /pt -remove");
-                return true;
+				player.sendMessage(pf + ChatColor.RED + "Add -force to force set or remove with /pt -remove");
+				return true;
 			}
 		} else {
 			if (remove) {
@@ -96,7 +93,7 @@ public class PowertoolCmd implements CommandClass {
 				return true;
 			}
 		}
-		
+
 		if (command.isEmpty()) {
 			player.sendMessage(pf + ChatColor.RED + "Invalid command: " + ChatColor.GRAY + command);
 			return true;

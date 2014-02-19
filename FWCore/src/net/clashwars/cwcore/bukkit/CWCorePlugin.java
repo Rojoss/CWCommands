@@ -31,7 +31,7 @@ public class CWCorePlugin extends JavaPlugin {
 
 		return false;
 	}
-	
+
 	public CWCore getCWCore() {
 		return cwc;
 	}

@@ -225,8 +225,8 @@ public class MessageEvents implements PluginMessageListener {
 								if (!silent) {
 									p.sendMessage(pf + "Items in your " + (echest ? "enderchest" : "inventory") + " have been cleared!");
 									if (sender.equalsIgnoreCase(p.getName()))
-										sendMessage(sender, pf + "You have cleared items in " + ChatColor.DARK_PURPLE + p.getDisplayName() + ChatColor.GOLD
-												+ " his " + (echest ? "enderchest" : "inventory") + ".");
+										sendMessage(sender, pf + "You have cleared items in " + ChatColor.DARK_PURPLE + p.getDisplayName()
+												+ ChatColor.GOLD + " his " + (echest ? "enderchest" : "inventory") + ".");
 								}
 							}
 							break;
@@ -301,8 +301,8 @@ public class MessageEvents implements PluginMessageListener {
 										p.sendMessage(pf + "You received " + ChatColor.DARK_PURPLE + amt + " " + item + ChatColor.GOLD + " from "
 												+ ChatColor.DARK_PURPLE + sender);
 									} else {
-										sendMessage(sender, pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name) + ChatColor.GOLD
-												+ " to " + ChatColor.DARK_PURPLE + p.getDisplayName());
+										sendMessage(sender, pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name)
+												+ ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + p.getDisplayName());
 										p.sendMessage(pf + "You received " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name)
 												+ ChatColor.GOLD + " from " + ChatColor.DARK_PURPLE + sender);
 									}
@@ -327,31 +327,35 @@ public class MessageEvents implements PluginMessageListener {
 								String yes = ChatColor.GREEN + "true";
 								String no = ChatColor.DARK_RED + "false";
 
-								sendMessage(sender, ChatColor.DARK_GRAY + "========" + ChatColor.DARK_RED + "CW whois: " + ChatColor.GOLD + p.getName()
-										+ ChatColor.DARK_GRAY + "========");
-								sendMessage(sender, ChatColor.DARK_PURPLE + "Nickname" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + p.getDisplayName());
+								sendMessage(sender,
+										ChatColor.DARK_GRAY + "========" + ChatColor.DARK_RED + "CW whois: " + ChatColor.GOLD + p.getName()
+												+ ChatColor.DARK_GRAY + "========");
+								sendMessage(sender,
+										ChatColor.DARK_PURPLE + "Nickname" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + p.getDisplayName());
 								sendMessage(sender, ChatColor.DARK_PURPLE + "Tag" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + cwp.getTag());
 								sendMessage(sender, ChatColor.DARK_PURPLE + "Location" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD
 										+ p.getLocation().getBlockX() + ", " + p.getLocation().getBlockY() + ", " + p.getLocation().getBlockZ());
-								sendMessage(sender, ChatColor.DARK_PURPLE + "Server" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + cwc.getServer().getServerName()
-										+ ChatColor.GRAY + " - " + ChatColor.DARK_GRAY + cwc.getServer().getIp());
-								sendMessage(sender, ChatColor.DARK_PURPLE + "Health" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + p.getHealth() + "/"
-										+ p.getMaxHealth());
+								sendMessage(sender, ChatColor.DARK_PURPLE + "Server" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD
+										+ cwc.getServer().getServerName() + ChatColor.GRAY + " - " + ChatColor.DARK_GRAY + cwc.getServer().getIp());
+								sendMessage(sender, ChatColor.DARK_PURPLE + "Health" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + p.getHealth()
+										+ "/" + p.getMaxHealth());
 								sendMessage(sender, ChatColor.DARK_PURPLE + "Hunger" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + p.getFoodLevel()
 										+ "/20" + " saturation: " + ChatColor.YELLOW + p.getSaturation());
 								sendMessage(sender, ChatColor.DARK_PURPLE + "Gamemode" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD
 										+ p.getGameMode().toString().toLowerCase());
-								sendMessage(sender, ChatColor.DARK_PURPLE + "Flymode" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD
-										+ (cwp.getFlying() ? yes : no));
+								sendMessage(sender,
+										ChatColor.DARK_PURPLE + "Flymode" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD
+												+ (cwp.getFlying() ? yes : no));
 								sendMessage(sender, ChatColor.DARK_PURPLE + "Godmode" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD
 										+ (cwp.getGod() ? yes : no));
-								sendMessage(sender, ChatColor.DARK_PURPLE + "Vanished" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD
-										+ (cwp.getVanished() ? yes : no));
+								sendMessage(sender,
+										ChatColor.DARK_PURPLE + "Vanished" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD
+												+ (cwp.getVanished() ? yes : no));
 								sendMessage(sender, ChatColor.DARK_PURPLE + "Speed" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + "walk: "
 										+ ChatColor.YELLOW + p.getWalkSpeed() + ChatColor.GOLD + " fly: " + ChatColor.YELLOW + p.getFlySpeed());
-								sendMessage(sender, ChatColor.DARK_PURPLE + "Experience" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD
-										+ expMan.getCurrentExp() + ChatColor.GRAY + "Lvl:" + ChatColor.GOLD
-										+ expMan.getLevelForExp(expMan.getCurrentExp()));
+								sendMessage(sender,
+										ChatColor.DARK_PURPLE + "Experience" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + expMan.getCurrentExp()
+												+ ChatColor.GRAY + "Lvl:" + ChatColor.GOLD + expMan.getLevelForExp(expMan.getCurrentExp()));
 							}
 							break;
 						case "broadcast":
@@ -365,7 +369,7 @@ public class MessageEvents implements PluginMessageListener {
 						case "switchserver":
 							in.readUTF();
 							ptarget = in.readUTF();
-							
+
 							cwp = cwc.getPlayerManager().getPlayer(ptarget);
 							cwp.fetchData();
 							break;
@@ -380,22 +384,22 @@ public class MessageEvents implements PluginMessageListener {
 							float pitch = in.readFloat();
 							silent = in.readBoolean();
 							force = in.readBoolean();
-							
+
 							target = cwc.getServer().getPlayer(teleporter);
 							w = cwc.getServer().getWorld(world);
-							
+
 							if (target == null) {
 								break;
 							}
-							
+
 							if (w == null) {
 								break;
 							}
-							
+
 							Location loc = new Location(w, x, y, z, yaw, pitch);
-							
+
 							target.teleport(force ? loc : LocationUtils.getSafeDestination(loc));
-							
+
 							if (!silent) {
 								target.sendMessage(pf + "Warping to " + ChatColor.DARK_PURPLE + warpName);
 							}
@@ -416,7 +420,7 @@ public class MessageEvents implements PluginMessageListener {
 		out.writeUTF("PlayerMessage");
 		out.writeUTF(player);
 		out.writeUTF(message);
-		
+
 		Bukkit.getOnlinePlayers()[0].sendPluginMessage(cwc.getPlugin(), "CWBungee", b.toByteArray());
 	}
 }

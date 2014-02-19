@@ -17,12 +17,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class WhoisCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public WhoisCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("*", "Check players on other servers.");
@@ -34,17 +34,16 @@ public class WhoisCmd implements CommandClass {
 		Player player = null;
 		String pplayer = null;
 		CWPlayer cwp = null;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
+
 		boolean bungee = CmdUtils.hasModifier(cmdArgs, "*");
-		
-		
+
 		//Console
 		if (args.length >= 1) {
 			if (!bungee) {
@@ -55,8 +54,8 @@ public class WhoisCmd implements CommandClass {
 					if (sender.hasPermission("cwcore.cmd.whois.others")) {
 						player = cwc.getServer().getPlayer(args[0]);
 					} else {
-						sender.sendMessage(pf + ChatColor.RED + "insufficient permissions!" 
-								+ ChatColor.GRAY + " - " + ChatColor.DARK_GRAY + "'" + ChatColor.DARK_RED + "cwcore.cmd.whois.others" + ChatColor.DARK_GRAY + "'");
+						sender.sendMessage(pf + ChatColor.RED + "insufficient permissions!" + ChatColor.GRAY + " - " + ChatColor.DARK_GRAY + "'"
+								+ ChatColor.DARK_RED + "cwcore.cmd.whois.others" + ChatColor.DARK_GRAY + "'");
 						return true;
 					}
 				}
@@ -64,19 +63,19 @@ public class WhoisCmd implements CommandClass {
 				if (sender.hasPermission("cwcore.cmd.whois.others")) {
 					pplayer = args[0];
 				} else {
-					sender.sendMessage(pf + ChatColor.RED + "insufficient permissions!" 
-							+ ChatColor.GRAY + " - " + ChatColor.DARK_GRAY + "'" + ChatColor.DARK_RED + "cwcore.cmd.whois.others" + ChatColor.DARK_GRAY + "'");
+					sender.sendMessage(pf + ChatColor.RED + "insufficient permissions!" + ChatColor.GRAY + " - " + ChatColor.DARK_GRAY + "'"
+							+ ChatColor.DARK_RED + "cwcore.cmd.whois.others" + ChatColor.DARK_GRAY + "'");
 					return true;
 				}
 			}
 		}
-		
+
 		/* null checks */
 		if (player == null && !bungee) {
 			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
 			return true;
 		}
-		
+
 		/* Action */
 		if (bungee) {
 			try {
@@ -94,25 +93,29 @@ public class WhoisCmd implements CommandClass {
 		} else {
 			cwp = cwc.getPlayerManager().getPlayer(player.getName());
 			ExpUtils expMan = new ExpUtils(player);
-			
+
 			String yes = ChatColor.GREEN + "true";
 			String no = ChatColor.DARK_RED + "false";
-			
-			sender.sendMessage(ChatColor.DARK_GRAY + "========" + ChatColor.DARK_RED + "CW whois: " + ChatColor.GOLD + player.getName() + ChatColor.DARK_GRAY + "========");
+
+			sender.sendMessage(ChatColor.DARK_GRAY + "========" + ChatColor.DARK_RED + "CW whois: " + ChatColor.GOLD + player.getName()
+					+ ChatColor.DARK_GRAY + "========");
 			sender.sendMessage(ChatColor.DARK_PURPLE + "Nickname" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + player.getDisplayName());
 			sender.sendMessage(ChatColor.DARK_PURPLE + "Tag" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + cwp.getTag());
-			sender.sendMessage(ChatColor.DARK_PURPLE + "Location" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD 
-					+ player.getLocation().getBlockX() + ", " + player.getLocation().getBlockY() + ", " + player.getLocation().getBlockZ());
-			sender.sendMessage(ChatColor.DARK_PURPLE + "Health" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + player.getHealth() + "/" + player.getMaxHealth());
-			sender.sendMessage(ChatColor.DARK_PURPLE + "Hunger" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + player.getFoodLevel() + "/20" + " saturation: " + ChatColor.YELLOW + player.getSaturation());
-			sender.sendMessage(ChatColor.DARK_PURPLE + "Gamemode" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + player.getGameMode().toString().toLowerCase());
-			sender.sendMessage(ChatColor.DARK_PURPLE + "Flymode" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + (cwp.getFlying() ? yes:no));
-			sender.sendMessage(ChatColor.DARK_PURPLE + "Godmode" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + (cwp.getGod() ? yes:no));
-			sender.sendMessage(ChatColor.DARK_PURPLE + "Vanished" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + (cwp.getVanished() ? yes:no));
-			sender.sendMessage(ChatColor.DARK_PURPLE + "Speed" + ChatColor.DARK_GRAY + ": " 
-					+ ChatColor.GOLD + "walk: " + ChatColor.YELLOW + player.getWalkSpeed() + ChatColor.GOLD + " fly: " + ChatColor.YELLOW + player.getFlySpeed());
-			sender.sendMessage(ChatColor.DARK_PURPLE + "Experience" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + expMan.getCurrentExp() + ChatColor.GRAY 
-					+ "Lvl:" + ChatColor.GOLD + expMan.getLevelForExp(expMan.getCurrentExp()));
+			sender.sendMessage(ChatColor.DARK_PURPLE + "Location" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + player.getLocation().getBlockX()
+					+ ", " + player.getLocation().getBlockY() + ", " + player.getLocation().getBlockZ());
+			sender.sendMessage(ChatColor.DARK_PURPLE + "Health" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + player.getHealth() + "/"
+					+ player.getMaxHealth());
+			sender.sendMessage(ChatColor.DARK_PURPLE + "Hunger" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + player.getFoodLevel() + "/20"
+					+ " saturation: " + ChatColor.YELLOW + player.getSaturation());
+			sender.sendMessage(ChatColor.DARK_PURPLE + "Gamemode" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD
+					+ player.getGameMode().toString().toLowerCase());
+			sender.sendMessage(ChatColor.DARK_PURPLE + "Flymode" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + (cwp.getFlying() ? yes : no));
+			sender.sendMessage(ChatColor.DARK_PURPLE + "Godmode" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + (cwp.getGod() ? yes : no));
+			sender.sendMessage(ChatColor.DARK_PURPLE + "Vanished" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + (cwp.getVanished() ? yes : no));
+			sender.sendMessage(ChatColor.DARK_PURPLE + "Speed" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + "walk: " + ChatColor.YELLOW
+					+ player.getWalkSpeed() + ChatColor.GOLD + " fly: " + ChatColor.YELLOW + player.getFlySpeed());
+			sender.sendMessage(ChatColor.DARK_PURPLE + "Experience" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + expMan.getCurrentExp()
+					+ ChatColor.GRAY + "Lvl:" + ChatColor.GOLD + expMan.getLevelForExp(expMan.getCurrentExp()));
 		}
 		return true;
 	}

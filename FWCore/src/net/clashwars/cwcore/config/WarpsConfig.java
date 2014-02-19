@@ -9,12 +9,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class WarpsConfig extends Config {
-	private YamlConfiguration cfg;
+	private YamlConfiguration	cfg;
 	private final File			dir		= new File("plugins/CWCore/");
 	private final File			file	= new File(dir + "/warps.yml");
-	
-	
-	public WarpsConfig () {
+
+	public WarpsConfig() {
 	}
 
 	@Override
@@ -32,23 +31,22 @@ public class WarpsConfig extends Config {
 	public void load() {
 		try {
 			cfg.load(file);
-			
-			
-            cfg.save(file);
+
+			cfg.save(file);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
-    public void save() {
-	    try {
-	    	cfg.save(file);
-	    } catch (Exception e) {
-	    	e.printStackTrace();
-	    }
-    }
-	
+	public void save() {
+		try {
+			cfg.save(file);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void createWarp(String name, Location location) {
 		cfg.set("Warps." + name + ".Location.World", location.getWorld().getName());
 		cfg.set("Warps." + name + ".Location.X", location.getBlockX());
@@ -58,22 +56,22 @@ public class WarpsConfig extends Config {
 		cfg.set("Warps." + name + ".Location.Pitch", location.getPitch());
 		save();
 	}
-	
+
 	public void deleteWarp(String name) {
 		cfg.set("Warps." + name, null);
 		save();
 	}
-	
+
 	public List<String> getWarpNames() {
 		return new ArrayList<String>(cfg.getConfigurationSection("Warps").getKeys(false));
 	}
-	
+
 	public ConfigurationSection getWarps() {
 		return cfg.getConfigurationSection("Warps");
 	}
-	
+
 	public ConfigurationSection getWarp(String name) {
 		return cfg.getConfigurationSection("Warps." + name);
 	}
-	
+
 }

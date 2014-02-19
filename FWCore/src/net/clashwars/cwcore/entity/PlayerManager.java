@@ -24,9 +24,9 @@ public class PlayerManager implements Manager {
 		SqlConnection sql = cwc.getSQLConnection();
 
 		ArrayList<Map<String, Object>> users = sql.read("users");
-		
+
 		for (Map<String, Object> map : users) {
-			
+
 			int id = (Integer) map.get("id");
 			String name = (String) map.get("player");
 
@@ -48,12 +48,12 @@ public class PlayerManager implements Manager {
 		}
 		return null;
 	}
-	
+
 	public CWPlayer getPlayerFromNick(String nick) {
 		for (Map.Entry<Integer, CWPlayer> entry : players.entrySet()) {
 
 			CWPlayer cwp = entry.getValue();
-			
+
 			String str = Utils.stripColorCodes(cwp.getNick());
 
 			if (str.equalsIgnoreCase(nick) || cwp.getNick().equalsIgnoreCase(nick)) {

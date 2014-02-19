@@ -72,7 +72,7 @@ public class AliasUtils {
 		}
 		return null;
 	}
-	
+
 	public static Sound findSound(String str) {
 		for (Map.Entry<Sound, Set<String>> entry : AliasesConfig.searchSounds.entrySet()) {
 

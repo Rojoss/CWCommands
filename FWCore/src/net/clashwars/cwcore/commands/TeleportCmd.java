@@ -17,10 +17,10 @@ import org.bukkit.entity.Player;
 
 public class TeleportCmd implements CommandClass {
 
-	private CWCore	cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
 
 	public TeleportCmd(CWCore cwc) {
 		this.cwc = cwc;
@@ -38,7 +38,7 @@ public class TeleportCmd implements CommandClass {
 		String ptarget = null;
 
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
+
 		if (CmdUtils.hasModifier(cmdArgs, "-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
@@ -48,7 +48,6 @@ public class TeleportCmd implements CommandClass {
 		boolean force = CmdUtils.hasModifier(cmdArgs, "f");
 		boolean bungee = CmdUtils.hasModifier(cmdArgs, "*");
 
-		
 		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 2) {
@@ -60,7 +59,6 @@ public class TeleportCmd implements CommandClass {
 			pplayer = sender.getName();
 		}
 
-		
 		//Args
 		if (args.length >= 1) {
 			target = cwc.getServer().getPlayer(args[0]);
@@ -79,8 +77,7 @@ public class TeleportCmd implements CommandClass {
 				return true;
 			}
 		}
-		
-		
+
 		//Action
 		if (bungee) {
 			try {
@@ -99,16 +96,16 @@ public class TeleportCmd implements CommandClass {
 			}
 		} else {
 			if (force) {
-                player.teleport(target);
+				player.teleport(target);
 			} else {
-                player.teleport(LocationUtils.getSafeDestination(target.getLocation()));
+				player.teleport(LocationUtils.getSafeDestination(target.getLocation()));
 			}
-			
-			if (!silent) { 
-                player.sendMessage(pf + "You have been teleported to " + target.getDisplayName());
-                if (sender.getName() != player.getName())
-                        sender.sendMessage(pf + "You have teleported " + ChatColor.DARK_PURPLE + player.getDisplayName()
-                                + ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + target.getDisplayName());
+
+			if (!silent) {
+				player.sendMessage(pf + "You have been teleported to " + target.getDisplayName());
+				if (sender.getName() != player.getName())
+					sender.sendMessage(pf + "You have teleported " + ChatColor.DARK_PURPLE + player.getDisplayName() + ChatColor.GOLD + " to "
+							+ ChatColor.DARK_PURPLE + target.getDisplayName());
 			}
 		}
 		return true;

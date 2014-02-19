@@ -7,25 +7,26 @@ import org.bukkit.entity.Player;
 
 /**
  * @author desht
- *
- * Adapted from ExperienceUtils code originally in ScrollingMenuSign.
  * 
- * Credit to nisovin (http://forums.bukkit.org/threads/experienceutils-make-giving-taking-exp-a-bit-more-intuitive.54450/#post-1067480)
- * for an implementation that avoids the problems of getTotalExperience(), which doesn't work properly after a player has enchanted something.
+ *         Adapted from ExperienceUtils code originally in ScrollingMenuSign.
  * 
- * Credit to comphenix for further contributions:
- * See http://forums.bukkit.org/threads/experiencemanager-was-experienceutils-make-giving-taking-exp-a-bit-more-intuitive.54450/page-3#post-1273622
+ *         Credit to nisovin (http://forums.bukkit.org/threads/experienceutils-make-giving-taking-exp-a-bit-more-intuitive.54450/#post-1067480)
+ *         for an implementation that avoids the problems of getTotalExperience(), which doesn't work properly after a player has enchanted something.
+ * 
+ *         Credit to comphenix for further contributions:
+ *         See http://forums.bukkit.org/threads/experiencemanager-was-experienceutils-make-giving-taking-exp-a-bit-more-intuitive.54450/page-3#post-
+ *         1273622
  * 
  */
 public class ExpUtils {
 	// this is to stop the lookup tables growing without control
-	private static int hardMaxLevel = 100000;
+	private static int					hardMaxLevel	= 100000;
 
-	private static int xpRequiredForNextLevel[];
-	private static int xpTotalToReachLevel[];
+	private static int					xpRequiredForNextLevel[];
+	private static int					xpTotalToReachLevel[];
 
-	private final WeakReference<Player> player;
-	private final String playerName;
+	private final WeakReference<Player>	player;
+	private final String				playerName;
 
 	static {
 		// 25 is an arbitrary value for the initial table size - the actual
@@ -36,7 +37,8 @@ public class ExpUtils {
 	/**
 	 * Create a new ExpUtils for the given player.
 	 * 
-	 * @param player The player for this ExpUtils object
+	 * @param player
+	 *            The player for this ExpUtils object
 	 */
 	public ExpUtils(Player player) {
 		if (player == null)
@@ -61,7 +63,8 @@ public class ExpUtils {
 	 * 7 XP to get to level 1, 17 to level 2, 31 to level 3... At each level,
 	 * the increment to get to the next level increases alternately by 3 and 4
 	 * 
-	 * @param maxLevel The highest level handled by the lookup tables
+	 * @param maxLevel
+	 *            The highest level handled by the lookup tables
 	 */
 	private static void initLookupTables(int maxLevel) {
 		xpRequiredForNextLevel = new int[maxLevel];
@@ -108,7 +111,8 @@ public class ExpUtils {
 	 * Get the Player associated with this ExpUtils.
 	 * 
 	 * @return the Player object
-	 * @throws IllegalStateException if the player is no longer online
+	 * @throws IllegalStateException
+	 *             if the player is no longer online
 	 */
 	public Player getPlayer() {
 		Player p = player.get();
@@ -124,7 +128,8 @@ public class ExpUtils {
 	 * Works around some of the non-intuitive behavior of the basic Bukkit
 	 * player.giveExp() method.
 	 * 
-	 * @param amt Amount of XP, may be negative
+	 * @param amt
+	 *            Amount of XP, may be negative
 	 */
 	public void changeExp(int amt) {
 		changeExp((double) amt);
@@ -135,7 +140,8 @@ public class ExpUtils {
 	 * Works around some of the non-intuitive behavior of the basic Bukkit
 	 * player.giveExp() method.
 	 * 
-	 * @param amt Amount of XP, may be negative
+	 * @param amt
+	 *            Amount of XP, may be negative
 	 */
 	public void changeExp(double amt) {
 		setExp(getCurrentFractionalXP(), amt);
@@ -144,7 +150,8 @@ public class ExpUtils {
 	/**
 	 * Set the player's experience
 	 * 
-	 * @param amt Amount of XP, should not be negative
+	 * @param amt
+	 *            Amount of XP, should not be negative
 	 */
 	public void setExp(int amt) {
 		setExp(0, amt);
@@ -153,7 +160,8 @@ public class ExpUtils {
 	/**
 	 * Set the player's fractional experience.
 	 * 
-	 * @param amt Amount of XP, should not be negative
+	 * @param amt
+	 *            Amount of XP, should not be negative
 	 */
 	public void setExp(double amt) {
 		setExp(0, amt);
@@ -175,7 +183,7 @@ public class ExpUtils {
 		}
 		// Increment total experience - this should force the server to send an update packet
 		if (xp > base) {
-			player.setTotalExperience(player.getTotalExperience() + xp - (int)base);
+			player.setTotalExperience(player.getTotalExperience() + xp - (int) base);
 		}
 
 		double pct = (base - getXpForLevel(newLvl) + amt) / (double) (xpRequiredForNextLevel[newLvl]);
@@ -197,6 +205,7 @@ public class ExpUtils {
 
 	/**
 	 * Get the player's current fractional XP.
+	 * 
 	 * @return The player's total XP with fractions.
 	 */
 	private double getCurrentFractionalXP() {
@@ -210,7 +219,8 @@ public class ExpUtils {
 	/**
 	 * Checks if the player has the given amount of XP.
 	 * 
-	 * @param amt The amount to check for.
+	 * @param amt
+	 *            The amount to check for.
 	 * @return true if the player has enough XP, false otherwise
 	 */
 	public boolean hasExp(int amt) {
@@ -220,7 +230,8 @@ public class ExpUtils {
 	/**
 	 * Checks if the player has the given amount of fractional XP.
 	 * 
-	 * @param amt The amount to check for.
+	 * @param amt
+	 *            The amount to check for.
 	 * @return true if the player has enough XP, false otherwise
 	 */
 	public boolean hasExp(double amt) {
@@ -230,7 +241,8 @@ public class ExpUtils {
 	/**
 	 * Get the level that the given amount of XP falls within.
 	 * 
-	 * @param exp The amount to check for.
+	 * @param exp
+	 *            The amount to check for.
 	 * @return The level that a player with this amount total XP would be.
 	 */
 	public int getLevelForExp(int exp) {
@@ -240,8 +252,7 @@ public class ExpUtils {
 			// need to extend the lookup tables
 			int newMax = calculateLevelForExp(exp) * 2;
 			if (newMax > hardMaxLevel) {
-				throw new IllegalArgumentException("Level for exp " + exp + " > hard max level "
-						+ hardMaxLevel);
+				throw new IllegalArgumentException("Level for exp " + exp + " > hard max level " + hardMaxLevel);
 			}
 			initLookupTables(newMax);
 		}
@@ -251,7 +262,9 @@ public class ExpUtils {
 
 	/**
 	 * Retrieves the amount of experience the experience bar can hold at the given level.
-	 * @param level - level to check.
+	 * 
+	 * @param level
+	 *            - level to check.
 	 * @return The amount of experience at this level in the level bar.
 	 */
 	public int getXpNeededToLevelUp(int level) {
@@ -266,13 +279,13 @@ public class ExpUtils {
 	/**
 	 * Return the total XP needed to be the given level.
 	 * 
-	 * @param level The level to check for.
+	 * @param level
+	 *            The level to check for.
 	 * @return The amount of XP needed for the level.
 	 */
 	public int getXpForLevel(int level) {
 		if (level > hardMaxLevel) {
-			throw new IllegalArgumentException("Level " + level + " > hard max level "
-					+ hardMaxLevel);
+			throw new IllegalArgumentException("Level " + level + " > hard max level " + hardMaxLevel);
 		}
 
 		if (level >= xpTotalToReachLevel.length) {

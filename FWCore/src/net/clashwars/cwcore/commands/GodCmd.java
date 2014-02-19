@@ -13,12 +13,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class GodCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] cmdArgs;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				cmdArgs;
+
 	public GodCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("s", "No messages");
@@ -30,16 +30,15 @@ public class GodCmd implements CommandClass {
 		Player player = null;
 		CWPlayer cwp = null;
 		boolean on = false;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(args,"-h", false)) {
+
+		if (CmdUtils.hasModifier(args, "-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
 
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
-		
 
 		//Console
 		if (!(sender instanceof Player)) {
@@ -50,7 +49,6 @@ public class GodCmd implements CommandClass {
 		} else {
 			player = (Player) sender;
 		}
-		
 
 		//Args
 		if (args.length >= 1) {
@@ -61,7 +59,7 @@ public class GodCmd implements CommandClass {
 			}
 		}
 		cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
-		
+
 		if (args.length >= 2) {
 			if (args[1].toLowerCase().startsWith("on")) {
 				on = true;
@@ -75,8 +73,7 @@ public class GodCmd implements CommandClass {
 				cwp.setGod(true);
 			}
 		}
-		
-		
+
 		/* Action */
 		if (on) {
 			if (cwp.getGod() == false) {
@@ -93,7 +90,7 @@ public class GodCmd implements CommandClass {
 				return true;
 			}
 		}
-		
+
 		if (!silent) {
 			player.sendMessage(pf + "God mode enabled!");
 			if (sender.getName() != player.getName())

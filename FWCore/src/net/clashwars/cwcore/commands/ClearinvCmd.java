@@ -18,12 +18,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
 public class ClearinvCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public ClearinvCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("s", "No messages");
@@ -43,14 +43,14 @@ public class ClearinvCmd implements CommandClass {
 		String pitem = null;
 		MaterialData md = null;
 		int amt = -1;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", true)) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", true)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
+
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		boolean armor = CmdUtils.hasModifier(cmdArgs, "a");
 		boolean inventory = CmdUtils.hasModifier(cmdArgs, "i");
@@ -62,8 +62,7 @@ public class ClearinvCmd implements CommandClass {
 		if (armor || inventory || bar || hand || echest) {
 			all = false;
 		}
-		
-		
+
 		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 1) {
@@ -74,29 +73,27 @@ public class ClearinvCmd implements CommandClass {
 			pplayer = sender.getName();
 			player = (Player) sender;
 		}
-		
-		
+
 		//Args
 		if (args.length >= 1) {
 			player = cwc.getServer().getPlayer(args[0]);
 			pplayer = args[0];
 		}
-		
+
 		if (args.length >= 2) {
 			md = AliasUtils.getFullData(args[1]);
 			pitem = args[1];
 		}
-		
+
 		if (args.length >= 3) {
 			try {
-			 	amt = Integer.parseInt(args[2]);
-			 } catch (NumberFormatException e) {
-			 	sender.sendMessage(pf + ChatColor.RED + "Invalid amount, Must be a number.");
-			 	return true;
-			 }
+				amt = Integer.parseInt(args[2]);
+			} catch (NumberFormatException e) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid amount, Must be a number.");
+				return true;
+			}
 		}
-		
-		
+
 		//Action
 		if (player == null && !bungee) {
 			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
@@ -104,9 +101,9 @@ public class ClearinvCmd implements CommandClass {
 		}
 		if (md == null && args.length >= 2) {
 			sender.sendMessage(pf + ChatColor.RED + "Item " + ChatColor.GRAY + args[1] + ChatColor.RED + " was not recognized!");
-		 	return true;
+			return true;
 		}
-		
+
 		if (bungee) {
 			try {
 				ByteArrayOutputStream b = new ByteArrayOutputStream();
@@ -141,16 +138,17 @@ public class ClearinvCmd implements CommandClass {
 				if (bar)
 					InvUtils.clearInventorySlots(player, false, 0, 9, md, amt);
 				if (hand)
-					InvUtils.clearInventorySlots(player, false, player.getInventory().getHeldItemSlot(), player.getInventory().getHeldItemSlot() + 1, md, amt);
+					InvUtils.clearInventorySlots(player, false, player.getInventory().getHeldItemSlot(), player.getInventory().getHeldItemSlot() + 1,
+							md, amt);
 				if (echest)
 					InvUtils.clearInventorySlots(player, true, 0, -1, md, amt);
 			}
-			
+
 			if (!silent) {
 				player.sendMessage(pf + "Items in your " + (echest ? "enderchest" : "inventory") + " have been cleared!");
 				if (sender.getName() != player.getName())
-					sender.sendMessage(pf + "You have cleared items in " + ChatColor.DARK_PURPLE + player.getDisplayName() 
-					+ ChatColor.GOLD + " his " + (echest ? "enderchest" : "inventory") + ".");
+					sender.sendMessage(pf + "You have cleared items in " + ChatColor.DARK_PURPLE + player.getDisplayName() + ChatColor.GOLD + " his "
+							+ (echest ? "enderchest" : "inventory") + ".");
 			}
 		}
 		return true;

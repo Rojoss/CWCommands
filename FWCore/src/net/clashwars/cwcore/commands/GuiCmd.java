@@ -18,12 +18,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class GuiCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public GuiCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("s", "No messages");
@@ -36,10 +36,10 @@ public class GuiCmd implements CommandClass {
 		Player player = null;
 		Player ePlayer = null;
 		String gui = null;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
@@ -48,8 +48,7 @@ public class GuiCmd implements CommandClass {
 		if (CmdUtils.getOptionalArg(cmdArgs, "p:") != null) {
 			ePlayer = Utils.getFakeOfflinePlayer((CmdUtils.getOptionalArg(cmdArgs, "p:")));
 		}
-		
-		
+
 		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 2) {
@@ -59,8 +58,7 @@ public class GuiCmd implements CommandClass {
 		} else {
 			player = (Player) sender;
 		}
-		
-		
+
 		//Args
 		if (args.length >= 1) {
 			if (args[0].startsWith("c") || args[0].startsWith("w")) {
@@ -75,7 +73,7 @@ public class GuiCmd implements CommandClass {
 				return true;
 			}
 		}
-		
+
 		if (args.length >= 2) {
 			player = cwc.getServer().getPlayer(args[1]);
 			if (player == null) {
@@ -83,8 +81,7 @@ public class GuiCmd implements CommandClass {
 				return true;
 			}
 		}
-		
-		
+
 		/* Action */
 		if (gui == "workbench") {
 			player.openWorkbench(null, true);
@@ -99,7 +96,7 @@ public class GuiCmd implements CommandClass {
 				}
 				if (ePlayer.isOnline()) {
 					player.openInventory(ePlayer.getEnderChest());
-			        cwc.getViewList().put(player.getName(), ePlayer);
+					cwc.getViewList().put(player.getName(), ePlayer);
 				} else if (ePlayer.hasPlayedBefore()) {
 					ItemStack[] items = ePlayer.getEnderChest().getContents();
 					Inventory inventory = Bukkit.createInventory(player, InventoryType.ENDER_CHEST);
@@ -108,24 +105,23 @@ public class GuiCmd implements CommandClass {
 					cwc.getViewList().put(player.getName(), ePlayer);
 				}
 				if (!silent) {
-					player.sendMessage(pf + ChatColor.DARK_PURPLE + gui + ChatColor.GOLD + " from "
-							+ ChatColor.DARK_PURPLE + ePlayer.getDisplayName() + ChatColor.GOLD + " opened.");
+					player.sendMessage(pf + ChatColor.DARK_PURPLE + gui + ChatColor.GOLD + " from " + ChatColor.DARK_PURPLE
+							+ ePlayer.getDisplayName() + ChatColor.GOLD + " opened.");
 					if (sender.getName() != player.getName())
-						sender.sendMessage(pf + "Opening the " + ChatColor.DARK_PURPLE + gui 
-						+ ChatColor.GOLD + " from " + ChatColor.DARK_PURPLE + ePlayer.getDisplayName()
-						+ ChatColor.GOLD + " for " + ChatColor.DARK_PURPLE + player.getDisplayName());
+						sender.sendMessage(pf + "Opening the " + ChatColor.DARK_PURPLE + gui + ChatColor.GOLD + " from " + ChatColor.DARK_PURPLE
+								+ ePlayer.getDisplayName() + ChatColor.GOLD + " for " + ChatColor.DARK_PURPLE + player.getDisplayName());
 				}
 				return true;
 			} else {
 				player.openInventory(player.getEnderChest());
 			}
 		}
-		
+
 		if (!silent) {
 			player.sendMessage(pf + ChatColor.DARK_PURPLE + gui + ChatColor.GOLD + " opened.");
 			if (sender.getName() != player.getName())
-				sender.sendMessage(pf + "Opening a " + ChatColor.DARK_PURPLE + gui 
-				+ ChatColor.GOLD + " for " + ChatColor.DARK_PURPLE + player.getDisplayName());
+				sender.sendMessage(pf + "Opening a " + ChatColor.DARK_PURPLE + gui + ChatColor.GOLD + " for " + ChatColor.DARK_PURPLE
+						+ player.getDisplayName());
 		}
 		return true;
 	}

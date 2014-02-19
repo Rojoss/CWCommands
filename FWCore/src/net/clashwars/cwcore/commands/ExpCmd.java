@@ -13,12 +13,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ExpCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public ExpCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("s", "No messages");
@@ -31,17 +31,16 @@ public class ExpCmd implements CommandClass {
 		String type = null;
 		int amt = -1;
 		Boolean levels = false;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 2) {
+
+		if (CmdUtils.hasModifier(args, "-h", false) || args.length < 2) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
 
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
-		
-		
+
 		//Args
 		if (args.length >= 1) {
 			if (args[0].startsWith("ge") || args[0].startsWith("sh")) {
@@ -58,7 +57,7 @@ public class ExpCmd implements CommandClass {
 				return true;
 			}
 		}
-		
+
 		if (args.length >= 2) {
 			player = cwc.getServer().getPlayer(args[1]);
 			if (player == null) {
@@ -66,35 +65,36 @@ public class ExpCmd implements CommandClass {
 				return true;
 			}
 		}
-		
+
 		if (args.length >= 3 && type != "get") {
 			String sAmt = args[2];
 			if (sAmt.toLowerCase().endsWith("l")) {
-	            levels = true;
-	            sAmt = sAmt.substring(0, sAmt.length() - 1);
+				levels = true;
+				sAmt = sAmt.substring(0, sAmt.length() - 1);
 			}
-	    	try {
-	            amt = Integer.parseInt(sAmt);
-	    	} catch (NumberFormatException e) {
-	            sender.sendMessage(pf + ChatColor.RED + "Invalid amount.");
-	            return true;
-	    	}
+			try {
+				amt = Integer.parseInt(sAmt);
+			} catch (NumberFormatException e) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid amount.");
+				return true;
+			}
 		}
-		
-		
+
 		//Action
 		ExpUtils expMan = new ExpUtils(player);
-		
+
 		if (type == "get") {
-			sender.sendMessage(pf + ChatColor.DARK_PURPLE + player.getDisplayName() + ChatColor.GOLD + " has " + ChatColor.DARK_PURPLE + expMan.getCurrentExp() 
-					+ ChatColor.GOLD + " xp. His level is " + ChatColor.DARK_PURPLE + expMan.getLevelForExp(expMan.getCurrentExp()));
-			sender.sendMessage(pf + "There is " + ChatColor.DARK_PURPLE + expMan.getXpForLevel(expMan.getLevelForExp(expMan.getCurrentExp()) + 1) 
+			sender.sendMessage(pf + ChatColor.DARK_PURPLE + player.getDisplayName() + ChatColor.GOLD + " has " + ChatColor.DARK_PURPLE
+					+ expMan.getCurrentExp() + ChatColor.GOLD + " xp. His level is " + ChatColor.DARK_PURPLE
+					+ expMan.getLevelForExp(expMan.getCurrentExp()));
+			sender.sendMessage(pf + "There is " + ChatColor.DARK_PURPLE + expMan.getXpForLevel(expMan.getLevelForExp(expMan.getCurrentExp()) + 1)
 					+ ChatColor.GOLD + " xp needed for level " + ChatColor.DARK_PURPLE + (expMan.getLevelForExp(expMan.getCurrentExp()) + 1)
-					+ ChatColor.DARK_GRAY + " (" + ChatColor.DARK_PURPLE + (expMan.getXpForLevel(expMan.getLevelForExp(expMan.getCurrentExp()) + 1) - expMan.getCurrentExp()) 
-					+ ChatColor.GOLD + " more" + ChatColor.DARK_GRAY + ")");
+					+ ChatColor.DARK_GRAY + " (" + ChatColor.DARK_PURPLE
+					+ (expMan.getXpForLevel(expMan.getLevelForExp(expMan.getCurrentExp()) + 1) - expMan.getCurrentExp()) + ChatColor.GOLD + " more"
+					+ ChatColor.DARK_GRAY + ")");
 			return true;
 		}
-		
+
 		if (amt < 0) {
 			sender.sendMessage(pf + ChatColor.RED + "Invalid amount.");
 			return true;
@@ -106,8 +106,8 @@ public class ExpCmd implements CommandClass {
 				expMan.changeExp(amt);
 			}
 			if (!silent) {
-				sender.sendMessage(pf + "You have given " + ChatColor.DARK_PURPLE + amt + ChatColor.GOLD + (levels ? " levels.":" xp.") + ChatColor.GOLD + " to "
-						 + ChatColor.DARK_PURPLE + player.getDisplayName());
+				sender.sendMessage(pf + "You have given " + ChatColor.DARK_PURPLE + amt + ChatColor.GOLD + (levels ? " levels." : " xp.")
+						+ ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + player.getDisplayName());
 			}
 			return true;
 		} else if (type == "take") {
@@ -121,8 +121,8 @@ public class ExpCmd implements CommandClass {
 				expMan.changeExp(amt);
 			}
 			if (!silent) {
-				sender.sendMessage(pf + "You have taken " + ChatColor.DARK_PURPLE + amt + ChatColor.GOLD + (levels ? " levels.":" xp.") + ChatColor.GOLD + " from "
-						 + ChatColor.DARK_PURPLE + player.getDisplayName());
+				sender.sendMessage(pf + "You have taken " + ChatColor.DARK_PURPLE + amt + ChatColor.GOLD + (levels ? " levels." : " xp.")
+						+ ChatColor.GOLD + " from " + ChatColor.DARK_PURPLE + player.getDisplayName());
 			}
 			return true;
 		} else if (type == "set") {
@@ -137,7 +137,7 @@ public class ExpCmd implements CommandClass {
 			}
 			if (!silent) {
 				sender.sendMessage(pf + "Experience from " + ChatColor.DARK_PURPLE + player.getDisplayName() + ChatColor.GOLD + " has been set to "
-						+ ChatColor.DARK_PURPLE + amt + ChatColor.GOLD + (levels ? " levels.":" xp."));
+						+ ChatColor.DARK_PURPLE + amt + ChatColor.GOLD + (levels ? " levels." : " xp."));
 			}
 			return true;
 		}

@@ -3,29 +3,26 @@ package net.clashwars.cwcore.util;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-
 /**
  * This utility class is used for converting between the ingame time in ticks to ingame time as a friendly string. Note
  * that the time is INGAME.
- *
+ * 
  * http://www.minecraftwiki.net/wiki/Day/night_cycle
- *
+ * 
  * @author Olof Larsson
  */
-public final class TimeUtils
-{
-	public static final Map<String, Integer> nameToTicks = new LinkedHashMap<String, Integer>();
-	public static final Set<String> resetAliases = new HashSet<String>();
-	public static final int ticksAtMidnight = 18000;
-	public static final int ticksPerDay = 24000;
-	public static final int ticksPerHour = 1000;
-	public static final double ticksPerMinute = 1000d / 60d;
-	public static final double ticksPerSecond = 1000d / 60d / 60d;
-	private static final SimpleDateFormat SDFTwentyFour = new SimpleDateFormat("HH:mm");
-	private static final SimpleDateFormat SDFTwelve = new SimpleDateFormat("h:mmaa");
+public final class TimeUtils {
+	public static final Map<String, Integer>	nameToTicks		= new LinkedHashMap<String, Integer>();
+	public static final Set<String>				resetAliases	= new HashSet<String>();
+	public static final int						ticksAtMidnight	= 18000;
+	public static final int						ticksPerDay		= 24000;
+	public static final int						ticksPerHour	= 1000;
+	public static final double					ticksPerMinute	= 1000d / 60d;
+	public static final double					ticksPerSecond	= 1000d / 60d / 60d;
+	private static final SimpleDateFormat		SDFTwentyFour	= new SimpleDateFormat("HH:mm");
+	private static final SimpleDateFormat		SDFTwelve		= new SimpleDateFormat("h:mmaa");
 
-	static
-	{
+	static {
 		SDFTwentyFour.setTimeZone(TimeZone.getTimeZone("GMT"));
 		SDFTwelve.setTimeZone(TimeZone.getTimeZone("GMT"));
 
@@ -60,55 +57,40 @@ public final class TimeUtils
 	// ============================================
 	// PARSE. From describing String to int
 	// --------------------------------------------
-	public static long parse(String desc)
-	{
+	public static long parse(String desc) {
 		// Only look at alphanumeric and lowercase and : for 24:00
 		desc = desc.replaceAll("[^A-Za-z0-9:]", "");
 
 		// Detect ticks format
-		try
-		{
+		try {
 			return parseTicks(desc);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 		}
 
 		// Detect 24-hour format
-		try
-		{
+		try {
 			return parse24(desc);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 		}
 
 		// Detect 12-hour format
-		try
-		{
+		try {
 			return parse12(desc);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 		}
 
 		// Detect aliases
-		try
-		{
+		try {
 			return parseAlias(desc);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 		}
 
 		// Well we failed to understand...
 		return 0;
 	}
 
-	public static long parseTicks(String desc) throws NumberFormatException
-	{
-		if (!desc.matches("^[0-9]+ti?c?k?s?$"))
-		{
+	public static long parseTicks(String desc) throws NumberFormatException {
+		if (!desc.matches("^[0-9]+ti?c?k?s?$")) {
 			throw new NumberFormatException();
 		}
 
@@ -117,17 +99,14 @@ public final class TimeUtils
 		return Long.parseLong(desc) % 24000;
 	}
 
-	public static long parse24(String desc) throws NumberFormatException
-	{
-		if (!desc.matches("^[0-9]{2}[^0-9]?[0-9]{2}$"))
-		{
+	public static long parse24(String desc) throws NumberFormatException {
+		if (!desc.matches("^[0-9]{2}[^0-9]?[0-9]{2}$")) {
 			throw new NumberFormatException();
 		}
 
 		desc = desc.replaceAll("[^0-9]", "");
 
-		if (desc.length() != 4)
-		{
+		if (desc.length() != 4) {
 			throw new NumberFormatException();
 		}
 
@@ -137,61 +116,46 @@ public final class TimeUtils
 		return hoursMinutesToTicks(hours, minutes);
 	}
 
-	public static long parse12(String desc) throws NumberFormatException
-	{
-		if (!desc.matches("^[0-9]{1,2}([^0-9]?[0-9]{2})?(pm|am)$"))
-		{
+	public static long parse12(String desc) throws NumberFormatException {
+		if (!desc.matches("^[0-9]{1,2}([^0-9]?[0-9]{2})?(pm|am)$")) {
 			throw new NumberFormatException();
 		}
 
 		int hours = 0;
 		int minutes = 0;
-		
+
 		String parsetime = desc.replaceAll("[^0-9]", "");
 
-		if (parsetime.length() > 4)
-		{
+		if (parsetime.length() > 4) {
 			throw new NumberFormatException();
 		}
 
-		if (parsetime.length() == 4)
-		{
+		if (parsetime.length() == 4) {
 			hours += Integer.parseInt(parsetime.substring(0, 2));
 			minutes += Integer.parseInt(parsetime.substring(2, 4));
-		}
-		else if (parsetime.length() == 3)
-		{
+		} else if (parsetime.length() == 3) {
 			hours += Integer.parseInt(parsetime.substring(0, 1));
 			minutes += Integer.parseInt(parsetime.substring(1, 3));
-		}
-		else if (parsetime.length() == 2)
-		{
+		} else if (parsetime.length() == 2) {
 			hours += Integer.parseInt(parsetime.substring(0, 2));
-		}
-		else if (parsetime.length() == 1)
-		{
+		} else if (parsetime.length() == 1) {
 			hours += Integer.parseInt(parsetime.substring(0, 1));
-		}
-		else
-		{
+		} else {
 			throw new NumberFormatException();
 		}
 
-		if (desc.endsWith("pm") && hours != 12)
-		{
+		if (desc.endsWith("pm") && hours != 12) {
 			hours += 12;
 		}
 
-		if (desc.endsWith("am") && hours == 12)
-		{
+		if (desc.endsWith("am") && hours == 12) {
 			hours -= 12;
 		}
 
 		return hoursMinutesToTicks(hours, minutes);
 	}
 
-	public static long hoursMinutesToTicks(final int hours, final int minutes)
-	{
+	public static long hoursMinutesToTicks(final int hours, final int minutes) {
 		long ret = ticksAtMidnight;
 		ret += (hours) * ticksPerHour;
 
@@ -201,19 +165,16 @@ public final class TimeUtils
 		return ret;
 	}
 
-	public static long parseAlias(final String desc)
-	{
+	public static long parseAlias(final String desc) {
 		final Integer ret = nameToTicks.get(desc);
-		if (ret == null)
-		{
+		if (ret == null) {
 			return 0;
 		}
 
 		return ret;
 	}
 
-	public static boolean meansReset(final String desc)
-	{
+	public static boolean meansReset(final String desc) {
 		return resetAliases.contains(desc);
 	}
 
@@ -221,35 +182,28 @@ public final class TimeUtils
 	// FORMAT. From int to describing String
 	// --------------------------------------------
 
-	public static String formatTicks(final long ticks)
-	{
+	public static String formatTicks(final long ticks) {
 		return (ticks % ticksPerDay) + "ticks";
 	}
 
-	public static String format24(final long ticks)
-	{
-		synchronized (SDFTwentyFour)
-		{
+	public static String format24(final long ticks) {
+		synchronized (SDFTwentyFour) {
 			return formatDateFormat(ticks, SDFTwentyFour);
 		}
 	}
 
-	public static String format12(final long ticks)
-	{
-		synchronized (SDFTwelve)
-		{
+	public static String format12(final long ticks) {
+		synchronized (SDFTwelve) {
 			return formatDateFormat(ticks, SDFTwelve);
 		}
 	}
 
-	public static String formatDateFormat(final long ticks, final SimpleDateFormat format)
-	{
+	public static String formatDateFormat(final long ticks, final SimpleDateFormat format) {
 		final Date date = ticksToDate(ticks);
 		return format.format(date);
 	}
 
-	public static Date ticksToDate(long ticks)
-	{
+	public static Date ticksToDate(long ticks) {
 		// Assume the server time starts at 0. It would start on a day.
 		// But we will simulate that the server started with 0 at midnight.
 		ticks = ticks - ticksAtMidnight + ticksPerDay;
@@ -263,11 +217,11 @@ public final class TimeUtils
 		ticks -= hours * ticksPerHour;
 
 		// How many minutes on the last day?
-		final long minutes = (long)Math.floor(ticks / ticksPerMinute);
+		final long minutes = (long) Math.floor(ticks / ticksPerMinute);
 		final double dticks = ticks - minutes * ticksPerMinute;
 
 		// How many seconds on the last day?
-		final long seconds = (long)Math.floor(dticks / ticksPerSecond);
+		final long seconds = (long) Math.floor(dticks / ticksPerSecond);
 
 		// Now we create an english GMT calendar (We wan't no daylight savings)
 		final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
@@ -275,10 +229,10 @@ public final class TimeUtils
 
 		// And we set the time to 0! And append the time that passed!
 		cal.set(0, Calendar.JANUARY, 1, 0, 0, 0);
-		cal.add(Calendar.DAY_OF_YEAR, (int)days);
-		cal.add(Calendar.HOUR_OF_DAY, (int)hours);
-		cal.add(Calendar.MINUTE, (int)minutes);
-		cal.add(Calendar.SECOND, (int)seconds + 1); // To solve rounding errors.
+		cal.add(Calendar.DAY_OF_YEAR, (int) days);
+		cal.add(Calendar.HOUR_OF_DAY, (int) hours);
+		cal.add(Calendar.MINUTE, (int) minutes);
+		cal.add(Calendar.SECOND, (int) seconds + 1); // To solve rounding errors.
 
 		return cal.getTime();
 	}

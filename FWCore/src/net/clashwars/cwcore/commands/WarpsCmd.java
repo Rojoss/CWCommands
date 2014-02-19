@@ -14,11 +14,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 public class WarpsCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+
 	public WarpsCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("*", "List warps from all servers.");
@@ -26,15 +26,14 @@ public class WarpsCmd implements CommandClass {
 
 	@Override
 	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
+
 		boolean bungee = CmdUtils.hasModifier(cmdArgs, "*");
-		
-		
+
 		//Action
 		if (bungee) {
 			try {

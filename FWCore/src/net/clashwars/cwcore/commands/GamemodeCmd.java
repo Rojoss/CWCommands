@@ -15,12 +15,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class GamemodeCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public GamemodeCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("s", "No messages");
@@ -32,17 +32,16 @@ public class GamemodeCmd implements CommandClass {
 		GameMode mode = null;
 		Player player = null;
 		CWPlayer cwp = null;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
 
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
-		
-		
+
 		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 2) {
@@ -52,7 +51,7 @@ public class GamemodeCmd implements CommandClass {
 		} else {
 			player = (Player) sender;
 		}
-		
+
 		//Args
 		if (args.length >= 1) {
 			if (args[0].equalsIgnoreCase("0") || args[0].toLowerCase().startsWith("s")) {
@@ -67,7 +66,7 @@ public class GamemodeCmd implements CommandClass {
 				return true;
 			}
 		}
-		
+
 		if (args.length >= 2) {
 			player = cwc.getServer().getPlayer(args[1]);
 			if (player == null) {
@@ -76,8 +75,7 @@ public class GamemodeCmd implements CommandClass {
 			}
 		}
 		cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
-		
-		
+
 		//Action
 		player.setGameMode(mode);
 		cwp.setGamemode(mode.getValue());
@@ -94,12 +92,12 @@ public class GamemodeCmd implements CommandClass {
 			player.setAllowFlight(true);
 			player.setFlying(true);
 		}
-		
+
 		if (!silent) {
 			player.sendMessage(pf + "Your gamemode is set to " + ChatColor.DARK_PURPLE + mode.name().toLowerCase());
 			if (sender.getName() != player.getName())
-				sender.sendMessage(pf + "You have set " + ChatColor.DARK_PURPLE + player.getDisplayName() 
-				+ ChatColor.GOLD + " his gamemode to " + ChatColor.DARK_PURPLE + mode.name().toLowerCase());
+				sender.sendMessage(pf + "You have set " + ChatColor.DARK_PURPLE + player.getDisplayName() + ChatColor.GOLD + " his gamemode to "
+						+ ChatColor.DARK_PURPLE + mode.name().toLowerCase());
 		}
 		return true;
 	}

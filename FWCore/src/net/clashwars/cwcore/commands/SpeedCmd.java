@@ -13,12 +13,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SpeedCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public SpeedCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("s", "No messages");
@@ -34,10 +34,10 @@ public class SpeedCmd implements CommandClass {
 		CWPlayer cwp = null;
 		int amt = -1;
 		float famt = .2F;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
@@ -49,8 +49,7 @@ public class SpeedCmd implements CommandClass {
 			walk = true;
 			fly = true;
 		}
-		
-		
+
 		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 2) {
@@ -60,8 +59,7 @@ public class SpeedCmd implements CommandClass {
 		} else {
 			player = (Player) sender;
 		}
-		
-		
+
 		//Args
 		if (args.length < 1 && !reset) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
@@ -69,18 +67,18 @@ public class SpeedCmd implements CommandClass {
 		}
 		if (args.length >= 1) {
 			try {
-	            amt = Integer.parseInt(args[0]);
-	        } catch (NumberFormatException e) {
-	        	sender.sendMessage(pf + ChatColor.RED + "Invalid amount.");
-	            return true;
-	        }
+				amt = Integer.parseInt(args[0]);
+			} catch (NumberFormatException e) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid amount.");
+				return true;
+			}
 			if (amt < 0 || amt > 100) {
 				sender.sendMessage(pf + ChatColor.RED + "Amount must be between 0 and 100");
 				return true;
 			}
 			famt = (float) amt / 100;
 		}
-		
+
 		if (args.length >= 2) {
 			player = cwc.getServer().getPlayer(args[1]);
 			if (player == null) {
@@ -88,25 +86,23 @@ public class SpeedCmd implements CommandClass {
 				return true;
 			}
 		}
-		
-		
+
 		//Action
 		cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
-		
+
 		if (reset) {
 			player.setWalkSpeed(0.2F);
 			cwp.setWalkSpeed(0.2F);
 			player.setFlySpeed(0.1F);
 			cwp.setFlySpeed(0.1F);
-			if (!silent) { 
+			if (!silent) {
 				player.sendMessage(pf + "your speed has been reset.");
 				if (sender.getName() != player.getName())
-					sender.sendMessage(pf + "Speed from " + ChatColor.DARK_PURPLE + player.getName() 
-						+ ChatColor.GOLD + " has been reset.");
+					sender.sendMessage(pf + "Speed from " + ChatColor.DARK_PURPLE + player.getName() + ChatColor.GOLD + " has been reset.");
 			}
 			return true;
 		}
-		
+
 		String type = "";
 		if (walk) {
 			player.setWalkSpeed(famt);
@@ -120,13 +116,12 @@ public class SpeedCmd implements CommandClass {
 		}
 		if (fly && walk)
 			type = "Walk and fly";
-		
-		if (!silent) { 
-			player.sendMessage(pf + type + " speed has been set to: "
-					+ ChatColor.DARK_PURPLE + amt);
+
+		if (!silent) {
+			player.sendMessage(pf + type + " speed has been set to: " + ChatColor.DARK_PURPLE + amt);
 			if (sender.getName() != player.getName())
-				sender.sendMessage(pf + type + " speed from " + ChatColor.DARK_PURPLE + player.getName() 
-					+ ChatColor.GOLD + " has been set to: "  + ChatColor.DARK_PURPLE + amt);
+				sender.sendMessage(pf + type + " speed from " + ChatColor.DARK_PURPLE + player.getName() + ChatColor.GOLD + " has been set to: "
+						+ ChatColor.DARK_PURPLE + amt);
 		}
 		return true;
 	}

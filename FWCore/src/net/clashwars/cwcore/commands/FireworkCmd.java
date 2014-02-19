@@ -26,10 +26,10 @@ import org.bukkit.inventory.meta.FireworkMeta;
 
 public class FireworkCmd implements CommandClass {
 
-	private CWCore	cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
 
 	public FireworkCmd(CWCore cwc) {
 		this.cwc = cwc;
@@ -57,13 +57,13 @@ public class FireworkCmd implements CommandClass {
 		ArrayList<Color> fcolors = new ArrayList<Color>();
 
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
+
 		if (CmdUtils.hasModifier(args, "-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			sender.sendMessage(pf + ChatColor.GOLD + "It will randomize everything you don't specify! :D");
 			return true;
 		}
-		
+
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		boolean trail = CmdUtils.hasModifier(cmdArgs, "fa");
 		boolean flicker = CmdUtils.hasModifier(cmdArgs, "fl");
@@ -77,7 +77,7 @@ public class FireworkCmd implements CommandClass {
 			colors = Utils.getColors(CmdUtils.getOptionalArg(cmdArgs, "c:"));
 		if (CmdUtils.getOptionalArg(cmdArgs, "fc:") != null)
 			fcolors = Utils.getColors(CmdUtils.getOptionalArg(cmdArgs, "fc:"));
-		
+
 		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 2) {
@@ -87,7 +87,7 @@ public class FireworkCmd implements CommandClass {
 		} else {
 			player = (Player) sender;
 		}
-		
+
 		//Args
 		if (args.length >= 1) {
 			try {
@@ -106,7 +106,6 @@ public class FireworkCmd implements CommandClass {
 			}
 		}
 
-		
 		//Randomize
 		if (power < 0) {
 			power = (int) (Math.random() * 4);
@@ -155,7 +154,6 @@ public class FireworkCmd implements CommandClass {
 				}
 			}
 		}
-		
 
 		/* Action */
 		if (targeted) {
@@ -190,9 +188,7 @@ public class FireworkCmd implements CommandClass {
 				ItemUtils.createFireworksExplosion(loc, fwork);
 			}
 		}
-		
-		
-		
+
 		if (!effectOnly && !launch) {
 			ItemStack fwork = new ItemStack(Material.FIREWORK, amt);
 			FireworkMeta meta = (FireworkMeta) fwork.getItemMeta();
@@ -231,11 +227,11 @@ public class FireworkCmd implements CommandClass {
 
 	private int[] toIntegerArray(List<Color> cols) {
 		int[] ret = new int[cols.size()];
-		
-		for (int i=0;i<cols.size();i++) {
+
+		for (int i = 0; i < cols.size(); i++) {
 			ret[i] = cols.get(i).asRGB();
 		}
-		
+
 		return ret;
 	}
 }

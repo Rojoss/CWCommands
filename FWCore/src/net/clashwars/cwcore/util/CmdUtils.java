@@ -9,10 +9,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 public class CmdUtils {
-	
+
 	//Send command help.
-	public static void commandHelp(CommandSender sender, String lbl, HashMap<String,String> optionalArgs, HashMap<String, String> modifiers) {
-		sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/"  + lbl + ChatColor.DARK_GRAY + "  =====");
+	public static void commandHelp(CommandSender sender, String lbl, HashMap<String, String> optionalArgs, HashMap<String, String> modifiers) {
+		sender.sendMessage(ChatColor.DARK_GRAY + "=====  " + ChatColor.DARK_RED + "CW Command help for: " + ChatColor.GOLD + "/" + lbl
+				+ ChatColor.DARK_GRAY + "  =====");
 		sender.sendMessage(CWCore.pf + "Usage: " + ChatColor.DARK_PURPLE + CmdUtils.syntaxFromName(lbl).replace("<command>", lbl));
 		sender.sendMessage(CWCore.pf + "Desc: " + ChatColor.GRAY + CmdUtils.descFromName(lbl));
 		sender.sendMessage(CWCore.pf + "Aliases: " + ChatColor.GRAY + CmdUtils.aliasesFromName(lbl));
@@ -29,13 +30,11 @@ public class CmdUtils {
 			}
 		}
 	}
-	
-	
-	
+
 	//Remove all modifiers and optionalArgs from args
 	public static String[] getCmdArgs(String[] args, HashMap<String, String> optionalArgs, HashMap<String, String> modifiers) {
 		String cmd = "";
-		
+
 		label: for (String arg : args) {
 			for (String optArg : optionalArgs.keySet()) {
 				String[] splt1 = arg.split(":");
@@ -46,12 +45,12 @@ public class CmdUtils {
 					}
 				}
 			}
-			
+
 			for (String modifier : modifiers.keySet()) {
 				if (arg.equalsIgnoreCase("-" + modifier)) {
 					continue label;
 				}
-				
+
 			}
 			if (cmd != "") {
 				cmd += " " + arg;
@@ -59,7 +58,7 @@ public class CmdUtils {
 				cmd += arg;
 			}
 		}
-		
+
 		if (cmd.isEmpty()) {
 			return new String[0];
 		} else {
@@ -67,39 +66,36 @@ public class CmdUtils {
 			return cmdArgs;
 		}
 	}
-	
-	
+
 	public static String[] removeFromStringArray(String[] args, String remove) {
 		int i;
-        int sloc = -1;
-        String temp;
-        for (i = 0; i < args.length; i++) {
+		int sloc = -1;
+		String temp;
+		for (i = 0; i < args.length; i++) {
 			if (args[i].toLowerCase().startsWith(remove)) {
-	            sloc = i;
-        	}
-        }
-        if (sloc != -1) {
-                for (i = sloc; i < args.length -1; i++) {
-                        temp = args[i];
-                    args[i] = args[i + 1];
-                    args[i + 1] = temp;
-                }
-        }
-       
-        String[] args2 = new String[args.length - 1];
-        for (i = 0; i < args2.length; i++) {
-                args2[i] = args[i];
-        }
-        return args2;
+				sloc = i;
+			}
+		}
+		if (sloc != -1) {
+			for (i = sloc; i < args.length - 1; i++) {
+				temp = args[i];
+				args[i] = args[i + 1];
+				args[i + 1] = temp;
+			}
+		}
+
+		String[] args2 = new String[args.length - 1];
+		for (i = 0; i < args2.length; i++) {
+			args2[i] = args[i];
+		}
+		return args2;
 	}
-	
-	
-	
+
 	//Check if args contain modifier
 	public static boolean hasModifier(String[] args, String mod) {
 		return hasModifier(args, mod, true);
 	}
-	
+
 	public static boolean hasModifier(String[] args, String mod, boolean exact) {
 		for (String arg : args) {
 			if (!mod.contains("-")) {
@@ -115,9 +111,7 @@ public class CmdUtils {
 		}
 		return false;
 	}
-	
-	
-	
+
 	//Check if args contain optional arg
 	public static boolean hasOptionalArg(String[] args, String optArg) {
 		for (String arg : args) {
@@ -126,9 +120,7 @@ public class CmdUtils {
 		}
 		return false;
 	}
-	
-	
-	
+
 	//Get data from optional arg
 	public static String getOptionalArg(String[] args, String optArg) {
 		for (String arg : args) {
@@ -141,12 +133,10 @@ public class CmdUtils {
 		}
 		return null;
 	}
-	
-	
-	
+
 	//Get commands information
-	public static String descFromName(String str) {	
-		for (Command cmd : CWCore.cmdList){
+	public static String descFromName(String str) {
+		for (Command cmd : CWCore.cmdList) {
 			if (cmd.getName().equalsIgnoreCase(str)) {
 				return cmd.getDescription();
 			} else {
@@ -159,9 +149,9 @@ public class CmdUtils {
 		}
 		return "";
 	}
-	
-	public static String syntaxFromName(String str) {	
-		for (Command cmd : CWCore.cmdList){
+
+	public static String syntaxFromName(String str) {
+		for (Command cmd : CWCore.cmdList) {
 			if (cmd.getName().equalsIgnoreCase(str)) {
 				return cmd.getUsage();
 			} else {
@@ -174,9 +164,9 @@ public class CmdUtils {
 		}
 		return "";
 	}
-	
-	public static String aliasesFromName(String str) {	
-		for (Command cmd : CWCore.cmdList){
+
+	public static String aliasesFromName(String str) {
+		for (Command cmd : CWCore.cmdList) {
 			if (cmd.getName().equalsIgnoreCase(str)) {
 				return cmd.getAliases().toString();
 			} else {

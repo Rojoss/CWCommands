@@ -15,12 +15,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
 public class MoreCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public MoreCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("s", "No messages");
@@ -33,17 +33,16 @@ public class MoreCmd implements CommandClass {
 		int amt = 0;
 		ItemStack item = null;
 		MaterialData md = null;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
 
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
-		
-		
+
 		//Console
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(pf + ChatColor.RED + "Only players can use this command.");
@@ -51,15 +50,14 @@ public class MoreCmd implements CommandClass {
 		} else {
 			player = (Player) sender;
 		}
-		
-		
+
 		if (player.getItemInHand().getData().getItemType() != Material.AIR) {
 			md = player.getItemInHand().getData();
 		} else {
 			sender.sendMessage(pf + ChatColor.RED + "Can't give more air!");
 			return true;
 		}
-		
+
 		//Args
 		if (args.length < 1) {
 			amt = (player.getItemInHand().getMaxStackSize() - player.getItemInHand().getAmount());
@@ -67,26 +65,24 @@ public class MoreCmd implements CommandClass {
 				amt = player.getItemInHand().getMaxStackSize();
 			}
 		}
-		
+
 		if (args.length >= 1) {
 			try {
-			 	amt = Integer.parseInt(args[0]);
-			 } catch (NumberFormatException e) {
-			 	sender.sendMessage(pf + ChatColor.RED + "Invalid amount.");
-			 	return true;
-			 }
+				amt = Integer.parseInt(args[0]);
+			} catch (NumberFormatException e) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid amount.");
+				return true;
+			}
 		}
-		
-		
+
 		//Action
 		item = md.toItemStack(amt);
 		player.getInventory().addItem(item);
 		String type = item.getType().name().toLowerCase().replace("_", "");
 		if (!silent) {
-			player.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + ChatColor.GOLD + " more " 
-			+ ChatColor.DARK_PURPLE + type);
+			player.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + ChatColor.GOLD + " more " + ChatColor.DARK_PURPLE + type);
 		}
-		
+
 		return true;
 	}
 

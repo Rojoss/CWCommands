@@ -21,12 +21,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class SpawnmobCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public SpawnmobCmd(CWCore cwc) {
 		this.cwc = cwc;
 		optionalArgs.put("p:<player>", "Spawn the mob at this player");
@@ -66,14 +66,14 @@ public class SpawnmobCmd implements CommandClass {
 		String[] mobs = null;
 		Location loc = null;
 		int amt = 1;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(args,"-h", false) || args.length < 1) {
+
+		if (CmdUtils.hasModifier(args, "-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
+
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		boolean forceDisplay = CmdUtils.hasModifier(cmdArgs, "d");
 		boolean baby = CmdUtils.hasModifier(cmdArgs, "b");
@@ -103,7 +103,7 @@ public class SpawnmobCmd implements CommandClass {
 		String boot = CmdUtils.getOptionalArg(cmdArgs, "boot:");
 		String armor = CmdUtils.getOptionalArg(cmdArgs, "armor:");
 		String effects = CmdUtils.getOptionalArg(cmdArgs, "pe:");
-		
+
 		//Console
 		if (!(sender instanceof Player)) {
 			if (player == null) {
@@ -115,27 +115,25 @@ public class SpawnmobCmd implements CommandClass {
 				player = (Player) sender;
 			}
 		}
-		
 
 		//Args
 		if (args.length >= 1) {
 			mobs = args[0].split(",");
 		}
-		
+
 		if (args.length >= 2) {
 			try {
-			 	amt = Integer.parseInt(args[1]);
+				amt = Integer.parseInt(args[1]);
 			} catch (NumberFormatException e) {
 				sender.sendMessage(pf + ChatColor.RED + "Invalid amount, Must be a number.");
 				return true;
 			}
 			if (amt > 100) {
 				sender.sendMessage(pf + ChatColor.RED + "You can't spawn more then 100 mobs!");
-			 	return true;
+				return true;
 			}
 		}
-		
-		
+
 		//Action
 		if (locStr != null) {
 			loc = LocationUtils.getLocation(locStr, player.getWorld());
@@ -143,17 +141,15 @@ public class SpawnmobCmd implements CommandClass {
 		if (loc == null) {
 			loc = player.getTargetBlock(null, 100).getLocation();
 		}
-		loc.setY(loc.getY()+1);
-		
-		
+		loc.setY(loc.getY() + 1);
+
 		Vector velocity = null;
 		if (vel != null) {
 			if (LocationUtils.getVector(vel) != null) {
 				velocity = LocationUtils.getVector(vel);
 			}
 		}
-		
-		
+
 		Location targetLoc = null;
 		if (target != null) {
 			if (cwc.getServer().getPlayer(target) != null) {
@@ -163,15 +159,14 @@ public class SpawnmobCmd implements CommandClass {
 				targetLoc = LocationUtils.getLocation(target, player.getWorld());
 			}
 		}
-		
-		
+
 		int spawned = 0;
 		CustomEntity ce = null;
 		EntityType mobType = null;
 		Entity spawnedMob = null;
 		Entity mob1 = null;
 		boolean switchType = false;
-		
+
 		while (spawned < amt) {
 			for (int i = 0; i < mobs.length; i++) {
 				mobType = AliasUtils.findEntity(mobs[i]);
@@ -188,34 +183,56 @@ public class SpawnmobCmd implements CommandClass {
 					}
 					switchType = true;
 				}
-				Entity mob = loc.getWorld().spawnEntity(loc,mobType);
+				Entity mob = loc.getWorld().spawnEntity(loc, mobType);
 				ce = new CustomEntity(mob);
-				
-				if (switchType != false) ce.switchType();
-				if (name != null) ce.setName(name);
-				if (health > 0) ce.setHP(health);
-				if (size > 0) ce.setSize(size);
-				if (color != null) ce.setColor(color);
-				if (job != null) ce.setJob(job);
-				if (power > 0) ce.setPower(power);
-				if (style != null) ce.setStyle(style);
-				if (type != null) ce.setType(type);
-				if (hand != null) ce.setHand(hand);
-				if (helm != null) ce.setHelmet(helm);
-				if (chest != null) ce.setChest(chest);
-				if (leg != null) ce.setLeg(leg);
-				if (boot != null) ce.setBoot(boot);
-				if (armor != null) ce.setHorseArmor(armor);
-				if (effects != null) ce.setEffects(effects);
-				
-				if (forceDisplay == true) ce.setDisplay();
-				if (baby == true) ce.setBaby();
-				if (tamed == true) ce.setTamed(player);
-				if (angry == true) ce.setAngry();
-				if (powered == true) ce.setPowered();
-				if (mount == true) ce.setMounted();
+
+				if (switchType != false)
+					ce.switchType();
+				if (name != null)
+					ce.setName(name);
+				if (health > 0)
+					ce.setHP(health);
+				if (size > 0)
+					ce.setSize(size);
+				if (color != null)
+					ce.setColor(color);
+				if (job != null)
+					ce.setJob(job);
+				if (power > 0)
+					ce.setPower(power);
+				if (style != null)
+					ce.setStyle(style);
+				if (type != null)
+					ce.setType(type);
+				if (hand != null)
+					ce.setHand(hand);
+				if (helm != null)
+					ce.setHelmet(helm);
+				if (chest != null)
+					ce.setChest(chest);
+				if (leg != null)
+					ce.setLeg(leg);
+				if (boot != null)
+					ce.setBoot(boot);
+				if (armor != null)
+					ce.setHorseArmor(armor);
+				if (effects != null)
+					ce.setEffects(effects);
+
+				if (forceDisplay == true)
+					ce.setDisplay();
+				if (baby == true)
+					ce.setBaby();
+				if (tamed == true)
+					ce.setTamed(player);
+				if (angry == true)
+					ce.setAngry();
+				if (powered == true)
+					ce.setPowered();
+				if (mount == true)
+					ce.setMounted();
 				ce.fixSkeleton();
-				
+
 				if (i == 0) {
 					spawnedMob = mob;
 					mob1 = mob;
@@ -226,16 +243,17 @@ public class SpawnmobCmd implements CommandClass {
 			}
 			spawned++;
 		}
-		
-		
-		if (ride == true) spawnedMob.setPassenger(player);
-		if (velocity != null) mob1.setVelocity(velocity);
+
+		if (ride == true)
+			spawnedMob.setPassenger(player);
+		if (velocity != null)
+			mob1.setVelocity(velocity);
 		if (targetLoc != null) {
 			if (mob1 instanceof Creature) {
 				//TODO: Move the mob to target somehow..
 			}
 		}
-		
+
 		if (!silent) {
 			player.sendMessage(pf + "Spawned " + ChatColor.DARK_GRAY + amt + ChatColor.DARK_PURPLE + " " + args[0] + "s");
 		}

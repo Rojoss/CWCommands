@@ -21,22 +21,23 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class CustomItem extends ItemStack {
-	
-	ItemStack i = null;
-	ItemMeta im = null;
-	PotionMeta pmeta = null;
-	LeatherArmorMeta lmeta = null;
-	EnchantmentStorageMeta emeta = null;
-	SkullMeta smeta = null;
+
+	ItemStack				i		= null;
+	ItemMeta				im		= null;
+	PotionMeta				pmeta	= null;
+	LeatherArmorMeta		lmeta	= null;
+	EnchantmentStorageMeta	emeta	= null;
+	SkullMeta				smeta	= null;
 
 	public CustomItem(ItemStack item) {
 		i = item;
 		im = i.getItemMeta();
-		
+
 		if (i.getType() == Material.POTION) {
 			pmeta = (PotionMeta) i.getItemMeta();
 		}
-		if (i.getType() == Material.LEATHER_HELMET || i.getType() == Material.LEATHER_CHESTPLATE || i.getType() == Material.LEATHER_LEGGINGS || i.getType() == Material.LEATHER_BOOTS) {
+		if (i.getType() == Material.LEATHER_HELMET || i.getType() == Material.LEATHER_CHESTPLATE || i.getType() == Material.LEATHER_LEGGINGS
+				|| i.getType() == Material.LEATHER_BOOTS) {
 			lmeta = (LeatherArmorMeta) i.getItemMeta();
 		}
 		if (i.getType() == Material.SKULL_ITEM) {
@@ -47,8 +48,7 @@ public class CustomItem extends ItemStack {
 			emeta = (EnchantmentStorageMeta) i.getItemMeta();
 		}
 	}
-	
-	
+
 	public ItemStack getItem() {
 		if (im != null) {
 			i.setItemMeta(im);
@@ -67,8 +67,7 @@ public class CustomItem extends ItemStack {
 		}
 		return i;
 	}
-	
-	
+
 	public void setName(String name) {
 		im.setDisplayName(Utils.integrateColor(name));
 		if (pmeta != null)
@@ -80,8 +79,7 @@ public class CustomItem extends ItemStack {
 		if (emeta != null)
 			emeta.setDisplayName(Utils.integrateColor(name));
 	}
-	
-	
+
 	public void setLore(String lore) {
 		List<String> l = new ArrayList<String>();
 		if (lore.contains("|")) {
@@ -102,23 +100,21 @@ public class CustomItem extends ItemStack {
 		if (emeta != null)
 			emeta.setLore(l);
 	}
-	
-	
+
 	public void setDurability(String dur) {
 		short durability = 1;
 		try {
-		 	durability = Short.parseShort(dur);
+			durability = Short.parseShort(dur);
 		} catch (NumberFormatException e) {
 		}
 		i.setDurability((short) (i.getData().getItemType().getMaxDurability() - durability));
 	}
-	
-	
+
 	//Set enchants for a input string like <enchant>[.<lvl>][,<enchant>[.<lvl>]],etc
 	//And set enchantments for enchanted books if the item is a book.
 	public void setEnchants(String str) {
 		HashMap<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
-		
+
 		if (str.contains(",")) {
 			String[] enchants = str.split(",");
 			if (enchants.length > 1) {
@@ -156,50 +152,47 @@ public class CustomItem extends ItemStack {
 			}
 		}
 	}
-	
-	
+
 	public void setHead(String player) {
 		if (i.getType() == Material.SKULL_ITEM) {
 			i.setDurability((short) 3);
 			smeta.setOwner(player);
 		}
 	}
-	
-	
+
 	public void setLeatherColor(String color) {
-		if (i.getType() == Material.LEATHER_HELMET || i.getType() == Material.LEATHER_CHESTPLATE || i.getType() == Material.LEATHER_LEGGINGS || i.getType() == Material.LEATHER_BOOTS) {
+		if (i.getType() == Material.LEATHER_HELMET || i.getType() == Material.LEATHER_CHESTPLATE || i.getType() == Material.LEATHER_LEGGINGS
+				|| i.getType() == Material.LEATHER_BOOTS) {
 			int c = 0;
-			
+
 			if (color.contains("#")) {
-                String[] str = color.split("#");
-                if (str[1].matches("[0-9A-Fa-f]+")) {
-                	c = Integer.parseInt(str[1], 16);
-                }
+				String[] str = color.split("#");
+				if (str[1].matches("[0-9A-Fa-f]+")) {
+					c = Integer.parseInt(str[1], 16);
+				}
 			} else {
 				if (color.matches("[0-9A-Fa-f]+")) {
-                    c = Integer.parseInt(color, 16);
+					c = Integer.parseInt(color, 16);
 				}
 			}
-			
+
 			lmeta.setColor(Color.fromRGB(c));
 		}
 	}
-	
-	
+
 	//Set potion effects for a input string like <potion>[.<dur>.<lvl>][,<potion>[.<dur>.<lvl>]],etc
-		public void setPotionEffects(String str) {
-			List<PotionEffect> effects = ItemUtils.getPotionEffects(str);
-			
-			if (effects != null && !effects.contains(null)) {
-				i.setType(Material.POTION);
-				if (i.getDurability() == 0) {
-					i.setDurability((short) 64);
-				}
-				for (PotionEffect effect : effects) {
-					pmeta.addCustomEffect(effect, true);
-				}
+	public void setPotionEffects(String str) {
+		List<PotionEffect> effects = ItemUtils.getPotionEffects(str);
+
+		if (effects != null && !effects.contains(null)) {
+			i.setType(Material.POTION);
+			if (i.getDurability() == 0) {
+				i.setDurability((short) 64);
+			}
+			for (PotionEffect effect : effects) {
+				pmeta.addCustomEffect(effect, true);
 			}
 		}
-	
-	
+	}
+
 }

@@ -73,7 +73,7 @@ public class CoreEvents implements Listener {
 		if (!cwc.getAutoRespawn()) {
 			return;
 		}
-		
+
 		final Player player = event.getEntity();
 		Bukkit.getScheduler().runTask(cwc.getPlugin(), new Runnable() {
 			@Override
@@ -88,7 +88,7 @@ public class CoreEvents implements Listener {
 					ex.printStackTrace();
 				}
 			}
-			
+
 		});
 	}
 }

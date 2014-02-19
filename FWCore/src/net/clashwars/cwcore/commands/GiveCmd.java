@@ -21,12 +21,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
 public class GiveCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public GiveCmd(CWCore cwc) {
 		this.cwc = cwc;
 		optionalArgs.put("name:<name>", "Set display name of item");
@@ -54,14 +54,14 @@ public class GiveCmd implements CommandClass {
 		CustomItem ci = null;
 		MaterialData md = null;
 		int amt = 64;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 2) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false) || args.length < 2) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
+
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		boolean drop = CmdUtils.hasModifier(cmdArgs, "d");
 		boolean unstack = CmdUtils.hasModifier(cmdArgs, "u");
@@ -75,7 +75,6 @@ public class GiveCmd implements CommandClass {
 		String effect = CmdUtils.getOptionalArg(cmdArgs, "pe:");
 		String head = CmdUtils.getOptionalArg(cmdArgs, "head:");
 		String color = CmdUtils.getOptionalArg(cmdArgs, "color:");
-		
 
 		//Args
 		if (args.length >= 1) {
@@ -83,43 +82,49 @@ public class GiveCmd implements CommandClass {
 			pplayer = args[0];
 			if (player == null && !bungee) {
 				sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
-			 	return true;
+				return true;
 			}
 		}
-		
+
 		if (args.length >= 2) {
 			pitem = args[1];
 			md = AliasUtils.getFullData(args[1]);
 			if (md == null) {
 				sender.sendMessage(pf + ChatColor.RED + "Item " + ChatColor.GRAY + args[1] + ChatColor.RED + " was not recognized!");
-			 	return true;
+				return true;
 			}
 		}
-		
+
 		if (args.length >= 3) {
 			try {
-			 	amt = Integer.parseInt(args[2]);
-			 } catch (NumberFormatException e) {
-			 	sender.sendMessage(pf + ChatColor.RED + "Invalid amount, Must be a number.");
-			 	return true;
-			 }
+				amt = Integer.parseInt(args[2]);
+			} catch (NumberFormatException e) {
+				sender.sendMessage(pf + ChatColor.RED + "Invalid amount, Must be a number.");
+				return true;
+			}
 		}
-		
-		
+
 		//Action
 		item = new ItemStack(md.getItemType(), amt, md.getData());
-		
+
 		ci = new CustomItem(item);
-		
-		if (name != null) ci.setName(name);
-		if (lore != null) ci.setLore(lore);
-		if (dur != null) ci.setDurability(dur);
-		if (enchant != null) ci.setEnchants(enchant);
-		if (effect != null) ci.setPotionEffects(effect);
-		if (head != null) ci.setHead(head);
-		if (color != null) ci.setLeatherColor(color);
+
+		if (name != null)
+			ci.setName(name);
+		if (lore != null)
+			ci.setLore(lore);
+		if (dur != null)
+			ci.setDurability(dur);
+		if (enchant != null)
+			ci.setEnchants(enchant);
+		if (effect != null)
+			ci.setPotionEffects(effect);
+		if (head != null)
+			ci.setHead(head);
+		if (color != null)
+			ci.setLeatherColor(color);
 		item = ci.getItem();
-		
+
 		if (bungee) {
 			try {
 				ByteArrayOutputStream b = new ByteArrayOutputStream();
@@ -164,20 +169,20 @@ public class GiveCmd implements CommandClass {
 			} else {
 				player.getInventory().addItem(item);
 			}
-			
+
 			if (!silent) {
 				name = item.getItemMeta().getDisplayName();
 				String str1 = hat == true ? " hat" : "";
 				if (name == null) {
-					sender.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + args[1] + str1
-					+ ChatColor.GOLD + " to " + ChatColor.DARK_PURPLE + player.getDisplayName());
-					player.sendMessage(pf + "You received " + ChatColor.DARK_PURPLE + amt + " " + args[1]  + str1
-							+ ChatColor.GOLD + " from " + ChatColor.DARK_PURPLE + sender.getName());
+					sender.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + args[1] + str1 + ChatColor.GOLD + " to "
+							+ ChatColor.DARK_PURPLE + player.getDisplayName());
+					player.sendMessage(pf + "You received " + ChatColor.DARK_PURPLE + amt + " " + args[1] + str1 + ChatColor.GOLD + " from "
+							+ ChatColor.DARK_PURPLE + sender.getName());
 				} else {
-					sender.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name) + str1
-					+ ChatColor.GOLD + str1 + " to " + ChatColor.DARK_PURPLE + player.getDisplayName());
-					player.sendMessage(pf + "You received " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name) + str1
-					+ ChatColor.GOLD + " from " + ChatColor.DARK_PURPLE + sender.getName());
+					sender.sendMessage(pf + "Given " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name) + str1 + ChatColor.GOLD + str1
+							+ " to " + ChatColor.DARK_PURPLE + player.getDisplayName());
+					player.sendMessage(pf + "You received " + ChatColor.DARK_PURPLE + amt + " " + Utils.integrateColor(name) + str1 + ChatColor.GOLD
+							+ " from " + ChatColor.DARK_PURPLE + sender.getName());
 				}
 			}
 		}

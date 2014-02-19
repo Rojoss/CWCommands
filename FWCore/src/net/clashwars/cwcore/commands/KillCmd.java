@@ -16,12 +16,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class KillCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public KillCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("s", "No messages");
@@ -35,25 +35,24 @@ public class KillCmd implements CommandClass {
 		Player player = null;
 		String pplayer = null;
 		CWPlayer cwp = null;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
+
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		boolean force = CmdUtils.hasModifier(cmdArgs, "f");
 		boolean bungee = CmdUtils.hasModifier(cmdArgs, "*");
-		
-		
+
 		//Args
 		if (args.length >= 1) {
 			player = cwc.getServer().getPlayer(args[0]);
 			pplayer = args[0];
-			
-			if (!bungee) { 
+
+			if (!bungee) {
 				if (player == null) {
 					sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
 					return true;
@@ -61,8 +60,7 @@ public class KillCmd implements CommandClass {
 			}
 		}
 		cwp = cwc.getPlayerManager().getPlayer(player);
-		
-		
+
 		/* Action */
 		if (!force) {
 			if (cwp.getGamemode() == 1 || cwp.getGod() == true) {

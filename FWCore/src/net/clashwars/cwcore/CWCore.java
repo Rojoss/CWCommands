@@ -44,26 +44,26 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.scheduler.BukkitScheduler;
 
 public class CWCore {
-	private CWCorePlugin					cwc;
-	private final Logger					log				= Logger.getLogger("Minecraft");
-	
-	private PlayerManager					pm;
-	private SqlConnection					sql;
-	private SqlInfo							sqlInfo;
-	private Config							cfg;
-	private AliasesConfig					aliasesCfg;
-	private WarpsConfig						warpsCfg;
-	private Permission             	 		perm;
-	private CustomEffect				   	 		effects;
+	private CWCorePlugin			cwc;
+	private final Logger			log			= Logger.getLogger("Minecraft");
 
-	private boolean							autoRespawn;
-	public static String					pf 				= ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "CW" + ChatColor.DARK_GRAY + "] " + ChatColor.GOLD;
+	private PlayerManager			pm;
+	private SqlConnection			sql;
+	private SqlInfo					sqlInfo;
+	private Config					cfg;
+	private AliasesConfig			aliasesCfg;
+	private WarpsConfig				warpsCfg;
+	private Permission				perm;
+	private CustomEffect			effects;
 
-	private HashMap<String, Player> 		viewList		= new HashMap<String, Player>();
-	public static List<Command> 			cmdList 		= new ArrayList<Command>();
-	public static List<Plugin> 				plugins 		= null;
-	
-	private SqlUpdateRunnable				sqlr;
+	private boolean					autoRespawn;
+	public static String			pf			= ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "CW" + ChatColor.DARK_GRAY + "] " + ChatColor.GOLD;
+
+	private HashMap<String, Player>	viewList	= new HashMap<String, Player>();
+	public static List<Command>		cmdList		= new ArrayList<Command>();
+	public static List<Plugin>		plugins		= null;
+
+	private SqlUpdateRunnable		sqlr;
 
 	public CWCore(CWCorePlugin cwc) {
 		this.cwc = cwc;
@@ -101,14 +101,14 @@ public class CWCore {
 		pm.populate();
 
 		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        perm = rsp.getProvider();
+		perm = rsp.getProvider();
 
-        effects = new CustomEffect();
+		effects = new CustomEffect();
 
 		registerEvents();
 		registerTasks();
 		registerChannels();
-		
+
 		Bukkit.broadcastMessage("DEBUG: New version loaded...");
 		try {
 			loadCommandsList();
@@ -119,27 +119,27 @@ public class CWCore {
 	}
 
 	public boolean parseCommand(CommandSender sender, Command cmd, String lbl, String[] args) throws InstantiationException, IllegalAccessException,
-	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		
+			IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+
 		Class<? extends CommandClass> clazz = CommandsEnum.fromString(cmd.getName());
 		if (clazz != null) {
 			CommandClass cc = clazz.getConstructor(CWCore.class).newInstance(this);
 			String[] perms = cc.permissions();
-			
+
 			mb: if (perms != null && perms.length > 0 && !sender.isOp()) {
 				String permDisplay = perms[0];
-				
+
 				for (String perm : perms) {
 					if (sender.hasPermission(perm)) {
 						break mb;
 					}
 				}
-				
-				sender.sendMessage(pf + ChatColor.RED + "insufficient permissions!" 
-				+ ChatColor.GRAY + " - " + ChatColor.DARK_GRAY + "'" + ChatColor.DARK_RED + permDisplay + ChatColor.DARK_GRAY + "'");
+
+				sender.sendMessage(pf + ChatColor.RED + "insufficient permissions!" + ChatColor.GRAY + " - " + ChatColor.DARK_GRAY + "'"
+						+ ChatColor.DARK_RED + permDisplay + ChatColor.DARK_GRAY + "'");
 				return true;
 			}
-			
+
 			return cc.execute(sender, cmd, lbl, args);
 		}
 		return false;
@@ -157,14 +157,14 @@ public class CWCore {
 
 		sch.runTaskTimerAsynchronously(getPlugin(), (sqlr = new SqlUpdateRunnable()), 0, 600);
 	}
-	
+
 	private void registerChannels() {
 		Messenger msg = getPlugin().getServer().getMessenger();
-		
+
 		msg.registerIncomingPluginChannel(getPlugin(), "CWCore", new MessageEvents(this));
 		msg.registerOutgoingPluginChannel(getPlugin(), "CWBungee");
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void loadCommandsList() throws NoSuchFieldException, SecurityException, IllegalAccessException, IllegalArgumentException {
 		SimplePluginManager spm = (SimplePluginManager) getServer().getPluginManager();
@@ -172,24 +172,24 @@ public class CWCore {
 		Map<String, Command> knownCommands = null;
 		if (spm != null) {
 			Field cMF = spm.getClass().getDeclaredField("commandMap");
-            cMF.setAccessible(true);
-            cMap = (SimpleCommandMap) cMF.get(spm);
-            Field knownCommandsField = cMap.getClass().getDeclaredField("knownCommands");
+			cMF.setAccessible(true);
+			cMap = (SimpleCommandMap) cMF.get(spm);
+			Field knownCommandsField = cMap.getClass().getDeclaredField("knownCommands");
 
-            knownCommandsField.setAccessible(true);
+			knownCommandsField.setAccessible(true);
 
-            knownCommands = (Map<String, Command>) knownCommandsField.get(cMap);
+			knownCommands = (Map<String, Command>) knownCommandsField.get(cMap);
 		}
 		if (cMap != null) {
-		    for (Iterator<Map.Entry<String, Command>> it = knownCommands.entrySet().iterator(); it.hasNext();) {
-		        Map.Entry<String, Command> entry = it.next();
-		        if (entry.getValue() instanceof PluginCommand) {
-		            PluginCommand c = (PluginCommand) entry.getValue();
-		            cmdList.add(c);
-		        }
-		    }
+			for (Iterator<Map.Entry<String, Command>> it = knownCommands.entrySet().iterator(); it.hasNext();) {
+				Map.Entry<String, Command> entry = it.next();
+				if (entry.getValue() instanceof PluginCommand) {
+					PluginCommand c = (PluginCommand) entry.getValue();
+					cmdList.add(c);
+				}
+			}
 		}
-		
+
 	}
 
 	/* GETTERS & SETTERS*/
@@ -233,15 +233,15 @@ public class CWCore {
 	public Config getConfig() {
 		return cfg;
 	}
-	
+
 	public AliasesConfig getAliasesConfig() {
 		return aliasesCfg;
 	}
-	
+
 	public WarpsConfig getWarpsConfig() {
 		return warpsCfg;
 	}
-	
+
 	public HashMap<String, Player> getViewList() {
 		return viewList;
 	}
@@ -250,35 +250,35 @@ public class CWCore {
 	public PlayerManager getPlayerManager() {
 		return pm;
 	}
-	
+
 	/* Other */
-	
+
 	public String getPrefix() {
 		return pf;
 	}
-	
+
 	public List<Plugin> getPlugins() {
 		return plugins;
 	}
-	
+
 	public List<Command> getCmdList() {
 		return cmdList;
 	}
-	
+
 	public Permission getPermissions() {
-        return perm;
-    }
-	
+		return perm;
+	}
+
 	public boolean getAutoRespawn() {
 		return autoRespawn;
 	}
-	
+
 	public void setAutoRespawn(boolean autoRespawn) {
 		this.autoRespawn = autoRespawn;
 	}
-	
+
 	public CustomEffect getEffects() {
 		return effects;
 	}
-	
+
 }

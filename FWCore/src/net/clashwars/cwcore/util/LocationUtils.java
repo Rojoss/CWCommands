@@ -17,22 +17,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class LocationUtils {
-	
-	public static final Set<Integer> HOLLOW_MATERIALS = new HashSet<Integer>();
-	private static final HashSet<Byte> TRANSPARENT_MATERIALS = new HashSet<Byte>();
-	public final static int RADIUS = 3;
-	public final static Vector3D[] VOLUME;
-	
-	
+
+	public static final Set<Integer>	HOLLOW_MATERIALS		= new HashSet<Integer>();
+	private static final HashSet<Byte>	TRANSPARENT_MATERIALS	= new HashSet<Byte>();
+	public final static int				RADIUS					= 3;
+	public final static Vector3D[]		VOLUME;
+
 	public static void tpToTop(CWCore cwc, Player player) {
-		double topY = cwc.getServer().getWorld(player.getWorld().getName()).getHighestBlockYAt(player.getLocation().getBlockX(), player.getLocation().getBlockZ());
+		double topY = cwc.getServer().getWorld(player.getWorld().getName())
+				.getHighestBlockYAt(player.getLocation().getBlockX(), player.getLocation().getBlockZ());
 		Location loc = new Location(player.getWorld(), player.getLocation().getX(), topY, player.getLocation().getZ());
 		loc.setYaw(player.getLocation().getYaw());
 		loc.setPitch(player.getLocation().getPitch());
 		player.teleport(loc);
 	}
-	
-	
+
 	public static Location getLocation(String str, World world) {
 		String[] splt = str.split(":");
 		String[] locS = str.split(",");
@@ -45,7 +44,7 @@ public class LocationUtils {
 
 		return new Location(world, x, y, z);
 	}
-	
+
 	public static Vector getVector(String str) {
 		String[] locS = str.split(",");
 
@@ -55,7 +54,7 @@ public class LocationUtils {
 
 		return new Vector(x, y, z);
 	}
-	
+
 	/* From Essentials */
 	public static class Vector3D {
 		public Vector3D(int x, int y, int z) {
@@ -63,11 +62,12 @@ public class LocationUtils {
 			this.y = y;
 			this.z = z;
 		}
-		public int x;
-		public int y;
-		public int z;
+
+		public int	x;
+		public int	y;
+		public int	z;
 	}
-	
+
 	static {
 		List<Vector3D> pos = new ArrayList<Vector3D>();
 		for (int x = -RADIUS; x <= RADIUS; x++) {
@@ -77,8 +77,7 @@ public class LocationUtils {
 				}
 			}
 		}
-		Collections.sort(
-				pos, new Comparator<Vector3D>() {
+		Collections.sort(pos, new Comparator<Vector3D>() {
 			@Override
 			public int compare(Vector3D a, Vector3D b) {
 				return (a.x * a.x + a.y * a.y + a.z * a.z) - (b.x * b.x + b.y * b.y + b.z * b.z);
@@ -86,7 +85,7 @@ public class LocationUtils {
 		});
 		VOLUME = pos.toArray(new Vector3D[0]);
 	}
-	
+
 	static boolean isBlockAboveAir(final World world, final int x, final int y, final int z) {
 		return HOLLOW_MATERIALS.contains(world.getBlockAt(x, y - 1, z).getType().getId());
 	}
@@ -109,7 +108,8 @@ public class LocationUtils {
 		if (below.getType() == Material.BED_BLOCK) {
 			return true;
 		}
-		if ((!HOLLOW_MATERIALS.contains(world.getBlockAt(x, y, z).getType().getId())) || (!HOLLOW_MATERIALS.contains(world.getBlockAt(x, y + 1, z).getType().getId()))) {
+		if ((!HOLLOW_MATERIALS.contains(world.getBlockAt(x, y, z).getType().getId()))
+				|| (!HOLLOW_MATERIALS.contains(world.getBlockAt(x, y + 1, z).getType().getId()))) {
 			return true;
 		}
 		return false;
@@ -121,7 +121,7 @@ public class LocationUtils {
 		}
 		final World world = loc.getWorld();
 		int x = loc.getBlockX();
-		int y = (int)Math.round(loc.getY());
+		int y = (int) Math.round(loc.getY());
 		int z = loc.getBlockZ();
 		final int origX = x;
 		final int origY = y;
@@ -162,15 +162,14 @@ public class LocationUtils {
 			if (y <= 1) {
 				x += 1;
 				y = world.getHighestBlockYAt(x, z);
-				if (x - 48 > loc.getBlockX())
-				{
+				if (x - 48 > loc.getBlockX()) {
 					return loc;
 				}
 			}
 		}
 		return new Location(world, x + 0.5, y, z + 0.5, loc.getYaw(), loc.getPitch());
 	}
-	
+
 	static {
 		HOLLOW_MATERIALS.add(Material.AIR.getId());
 		HOLLOW_MATERIALS.add(Material.SAPLING.getId());
@@ -211,47 +210,26 @@ public class LocationUtils {
 		for (Integer integer : HOLLOW_MATERIALS) {
 			TRANSPARENT_MATERIALS.add(integer.byteValue());
 		}
-		TRANSPARENT_MATERIALS.add((byte)Material.WATER.getId());
-		TRANSPARENT_MATERIALS.add((byte)Material.STATIONARY_WATER.getId());
+		TRANSPARENT_MATERIALS.add((byte) Material.WATER.getId());
+		TRANSPARENT_MATERIALS.add((byte) Material.STATIONARY_WATER.getId());
 	}
+
 	/* End from Essentials */
 
 	public static boolean isPathable(Block block) {
-        return isPathable(block.getType());
+		return isPathable(block.getType());
 	}
-	
+
 	public static boolean isPathable(Material material) {
-        return
-                        material == Material.AIR ||
-                        material == Material.SAPLING ||
-                        material == Material.WATER ||
-                        material == Material.STATIONARY_WATER ||
-                        material == Material.POWERED_RAIL ||
-                        material == Material.DETECTOR_RAIL ||
-                        material == Material.LONG_GRASS ||
-                        material == Material.DEAD_BUSH ||
-                        material == Material.YELLOW_FLOWER ||
-                        material == Material.RED_ROSE ||
-                        material == Material.BROWN_MUSHROOM ||
-                        material == Material.RED_MUSHROOM ||
-                        material == Material.TORCH ||
-                        material == Material.FIRE ||
-                        material == Material.REDSTONE_WIRE ||
-                        material == Material.CROPS ||
-                        material == Material.SIGN_POST ||
-                        material == Material.LADDER ||
-                        material == Material.RAILS ||
-                        material == Material.WALL_SIGN ||
-                        material == Material.LEVER ||
-                        material == Material.STONE_PLATE ||
-                        material == Material.WOOD_PLATE ||
-                        material == Material.REDSTONE_TORCH_OFF ||
-                        material == Material.REDSTONE_TORCH_ON ||
-                        material == Material.STONE_BUTTON ||
-                        material == Material.SNOW ||
-                        material == Material.SUGAR_CANE_BLOCK ||
-                        material == Material.VINE ||
-                        material == Material.WATER_LILY ||
-                        material == Material.NETHER_STALK;
+		return material == Material.AIR || material == Material.SAPLING || material == Material.WATER || material == Material.STATIONARY_WATER
+				|| material == Material.POWERED_RAIL || material == Material.DETECTOR_RAIL || material == Material.LONG_GRASS
+				|| material == Material.DEAD_BUSH || material == Material.YELLOW_FLOWER || material == Material.RED_ROSE
+				|| material == Material.BROWN_MUSHROOM || material == Material.RED_MUSHROOM || material == Material.TORCH
+				|| material == Material.FIRE || material == Material.REDSTONE_WIRE || material == Material.CROPS || material == Material.SIGN_POST
+				|| material == Material.LADDER || material == Material.RAILS || material == Material.WALL_SIGN || material == Material.LEVER
+				|| material == Material.STONE_PLATE || material == Material.WOOD_PLATE || material == Material.REDSTONE_TORCH_OFF
+				|| material == Material.REDSTONE_TORCH_ON || material == Material.STONE_BUTTON || material == Material.SNOW
+				|| material == Material.SUGAR_CANE_BLOCK || material == Material.VINE || material == Material.WATER_LILY
+				|| material == Material.NETHER_STALK;
 	}
 }

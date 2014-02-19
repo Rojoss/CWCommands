@@ -13,12 +13,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class FlyCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public FlyCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("s", "No messages");
@@ -30,17 +30,16 @@ public class FlyCmd implements CommandClass {
 		Player player = null;
 		CWPlayer cwp = null;
 		boolean on = false;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(args,"-h", false)) {
+
+		if (CmdUtils.hasModifier(args, "-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
 
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
-		
-		
+
 		//Console
 		if (!(sender instanceof Player)) {
 			if (args.length < 1) {
@@ -50,8 +49,7 @@ public class FlyCmd implements CommandClass {
 		} else {
 			player = (Player) sender;
 		}
-		
-		
+
 		//Args
 		if (args.length >= 1) {
 			player = cwc.getServer().getPlayer(args[0]);
@@ -61,7 +59,7 @@ public class FlyCmd implements CommandClass {
 			}
 		}
 		cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
-		
+
 		if (args.length >= 2) {
 			if (args[1].toLowerCase().startsWith("on")) {
 				on = true;
@@ -75,8 +73,7 @@ public class FlyCmd implements CommandClass {
 				on = true;
 			}
 		}
-		
-		
+
 		//Action
 		if (on) {
 			if (cwp.getFlying() == false) {
@@ -97,7 +94,7 @@ public class FlyCmd implements CommandClass {
 				return true;
 			}
 		}
-		
+
 		if (!silent) {
 			if (on) {
 				player.sendMessage(pf + "Fly mode enabled!");

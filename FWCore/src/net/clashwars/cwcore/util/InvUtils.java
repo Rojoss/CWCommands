@@ -6,30 +6,35 @@ import org.bukkit.material.MaterialData;
 
 public class InvUtils {
 
-	
 	/**
 	 * Clear items from a player his inventory
 	 * Example: clearInventorySlots(player,0,9) will clear the hotbar.
-	 * @param player The player to clear the items from
-	 * @param firstSlot (The slot index where to start clearing from)
-	 * @param lastSlot (The slot index where to start clearing from)
-	 * @param md (The material data to remove if null it won't check for any material.
-	 * @param amt (The amount of the material to remove if -1 it will remove all of the given material)
+	 * 
+	 * @param player
+	 *            The player to clear the items from
+	 * @param firstSlot
+	 *            (The slot index where to start clearing from)
+	 * @param lastSlot
+	 *            (The slot index where to start clearing from)
+	 * @param md
+	 *            (The material data to remove if null it won't check for any material.
+	 * @param amt
+	 *            (The amount of the material to remove if -1 it will remove all of the given material)
 	 * @return void
 	 */
 	public static void clearInventorySlots(Player player, boolean echest, int firstSlot, int lastSlot, MaterialData md, int amt) {
 		Inventory inventory = null;
-		
+
 		if (echest)
 			inventory = player.getEnderChest();
 		else
 			inventory = player.getInventory();
-		
+
 		int left = amt;
-		
+
 		if (lastSlot == -1)
 			lastSlot = inventory.getSize();
-		
+
 		if (md == null) {
 			for (int i = firstSlot; i < lastSlot; i++) {
 				inventory.clear(i);

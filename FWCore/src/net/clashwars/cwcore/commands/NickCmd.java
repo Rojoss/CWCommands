@@ -14,12 +14,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class NickCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public NickCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("s", "No messages");
@@ -32,17 +32,16 @@ public class NickCmd implements CommandClass {
 		Player player = null;
 		CWPlayer cwp = null;
 		String nick = "";
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
+
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
 		boolean reset = CmdUtils.hasModifier(cmdArgs, "r");
-		
 
 		//Console
 		if (!(sender instanceof Player)) {
@@ -58,12 +57,12 @@ public class NickCmd implements CommandClass {
 				return true;
 			}
 		}
-		
+
 		if (args.length < 1) {
 			player.sendMessage(pf + "Your nickname is" + ChatColor.GRAY + ": " + ChatColor.WHITE + Utils.integrateColor(cwp.getNick()));
 			return true;
 		}
-		
+
 		if (args.length >= 1) {
 			nick = args[0];
 			if (nick == null || nick.isEmpty()) {
@@ -77,7 +76,7 @@ public class NickCmd implements CommandClass {
 				}
 			}
 		}
-		
+
 		if (args.length >= 2) {
 			player = cwc.getServer().getPlayer(args[1]);
 			if (player == null) {
@@ -86,21 +85,20 @@ public class NickCmd implements CommandClass {
 			}
 			cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
 		}
-		
-		
+
 		//Action
 		if (reset) {
 			cwp = cwc.getPlayerManager().getOrCreatePlayer(player);
 			return true;
 		}
-			
+
 		player.setDisplayName(Utils.integrateColor(nick));
 		cwp.setNick(nick);
-		if (!silent) { 
+		if (!silent) {
 			player.sendMessage(pf + "Your nickname has been changed to" + ChatColor.GRAY + ": " + ChatColor.WHITE + Utils.integrateColor(nick));
 			if (sender.getName() != player.getName())
-				sender.sendMessage(pf + "Nickname of " + ChatColor.DARK_PURPLE + player.getName() 
-					+ ChatColor.GOLD + " changed to" + ChatColor.GRAY + ": " + ChatColor.WHITE + Utils.integrateColor(nick));
+				sender.sendMessage(pf + "Nickname of " + ChatColor.DARK_PURPLE + player.getName() + ChatColor.GOLD + " changed to" + ChatColor.GRAY
+						+ ": " + ChatColor.WHITE + Utils.integrateColor(nick));
 		}
 		return true;
 	}
@@ -109,8 +107,7 @@ public class NickCmd implements CommandClass {
 	public String[] permissions() {
 		return new String[] { "cwcore.cmd.nick", "cwcore.cmd.*", "cwcore.*" };
 	}
-	
-	
+
 	private void resetNick(Player player, CWPlayer cwp, boolean silent, String pf) {
 		player.setDisplayName(player.getName());
 		cwp.setNick(player.getName());

@@ -11,12 +11,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 public class WarpdelCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public WarpdelCmd(CWCore cwc) {
 		this.cwc = cwc;
 	}
@@ -25,15 +25,14 @@ public class WarpdelCmd implements CommandClass {
 	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		String name = "";
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
-		
+
 		//Args
 		if (args.length >= 1) {
 			name = args[0].toLowerCase();
@@ -46,8 +45,7 @@ public class WarpdelCmd implements CommandClass {
 				return true;
 			}
 		}
-		
-		
+
 		//Action
 		cwc.getWarpsConfig().deleteWarp(name);
 		sender.sendMessage(pf + "Warp " + ChatColor.DARK_PURPLE + name + ChatColor.GOLD + " deleted!");

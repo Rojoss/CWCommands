@@ -14,12 +14,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class TimeCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public TimeCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("s", "No messages");
@@ -32,32 +32,31 @@ public class TimeCmd implements CommandClass {
 		Boolean get = false;
 		World world = null;
 		Player player = null;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
+
 		// Check if cmd is /day or /night and force time
 		if (sender instanceof Player && args.length < 1) {
 			if (lbl.equalsIgnoreCase("day")) {
 				long ticks = TimeUtils.parse("day");
 				((Player) sender).getWorld().setTime(ticks);
-				sender.sendMessage(pf + "Time set to: "+ ChatColor.DARK_PURPLE + "day");
+				sender.sendMessage(pf + "Time set to: " + ChatColor.DARK_PURPLE + "day");
 				return true;
 			}
 			if (lbl.equalsIgnoreCase("night")) {
 				long ticks = TimeUtils.parse("night");
 				((Player) sender).getWorld().setTime(ticks);
-				sender.sendMessage(pf + "Time set to: "+ ChatColor.DARK_PURPLE + "night");
+				sender.sendMessage(pf + "Time set to: " + ChatColor.DARK_PURPLE + "night");
 				return true;
 			}
 		}
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false) || args.length < 1) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false) || args.length < 1) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
+
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
-		
 
 		//Console
 		if (!(sender instanceof Player)) {
@@ -67,9 +66,8 @@ public class TimeCmd implements CommandClass {
 			}
 		} else {
 			player = (Player) sender;
-			world = player.getWorld(); 
+			world = player.getWorld();
 		}
-		
 
 		//Args
 		if (args.length >= 1) {
@@ -83,7 +81,7 @@ public class TimeCmd implements CommandClass {
 				return true;
 			}
 		}
-		
+
 		if (args.length >= 2) {
 			world = (World) cwc.getPlugin().getServer().getWorld(args[1]);
 			if (world == null) {
@@ -91,22 +89,19 @@ public class TimeCmd implements CommandClass {
 				return true;
 			}
 		}
-		
-		
+
 		//Action
 		if (get) {
-			sender.sendMessage(pf + "Current time in '" + world.getName() + "' is: " 
-			+ ChatColor.DARK_PURPLE + TimeUtils.format24(world.getTime()) + ChatColor.GRAY + " - "
-			+ ChatColor.DARK_PURPLE + TimeUtils.format12(world.getTime()) + ChatColor.GRAY + " - "
-			+ ChatColor.DARK_PURPLE + TimeUtils.formatTicks(world.getTime()));
+			sender.sendMessage(pf + "Current time in '" + world.getName() + "' is: " + ChatColor.DARK_PURPLE + TimeUtils.format24(world.getTime())
+					+ ChatColor.GRAY + " - " + ChatColor.DARK_PURPLE + TimeUtils.format12(world.getTime()) + ChatColor.GRAY + " - "
+					+ ChatColor.DARK_PURPLE + TimeUtils.formatTicks(world.getTime()));
 		} else {
 			long ticks = TimeUtils.parse(time);
 			world.setTime(ticks);
 			if (!silent) {
-				sender.sendMessage(pf + "Time set to: "
-				+ ChatColor.DARK_PURPLE + TimeUtils.format24(world.getTime()) + ChatColor.GRAY + " - "
-				+ ChatColor.DARK_PURPLE + TimeUtils.format12(world.getTime()) + ChatColor.GRAY + " - "
-				+ ChatColor.DARK_PURPLE + TimeUtils.formatTicks(world.getTime()));
+				sender.sendMessage(pf + "Time set to: " + ChatColor.DARK_PURPLE + TimeUtils.format24(world.getTime()) + ChatColor.GRAY + " - "
+						+ ChatColor.DARK_PURPLE + TimeUtils.format12(world.getTime()) + ChatColor.GRAY + " - " + ChatColor.DARK_PURPLE
+						+ TimeUtils.formatTicks(world.getTime()));
 			}
 		}
 		return true;

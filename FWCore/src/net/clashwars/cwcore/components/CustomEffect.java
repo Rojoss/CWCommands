@@ -227,7 +227,7 @@ public class CustomEffect {
 
 			int rSq = 15 * 15;
 			Set<Player> exc = new HashSet<Player>(Arrays.asList(additions));
-			
+
 			for (Player player : location.getWorld().getPlayers()) {
 				if (player.getLocation().distanceSquared(location) <= rSq || exc.contains(player)) {
 					((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);

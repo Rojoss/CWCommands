@@ -12,12 +12,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SpawnCmd implements CommandClass {
-	
-	private CWCore cwc;
-	private HashMap<String, String> modifiers = new HashMap<String, String>();
-	private HashMap<String, String> optionalArgs = new HashMap<String, String>();
-	private String[] args;
-	
+
+	private CWCore					cwc;
+	private HashMap<String, String>	modifiers		= new HashMap<String, String>();
+	private HashMap<String, String>	optionalArgs	= new HashMap<String, String>();
+	private String[]				args;
+
 	public SpawnCmd(CWCore cwc) {
 		this.cwc = cwc;
 		modifiers.put("s", "No messages");
@@ -27,16 +27,15 @@ public class SpawnCmd implements CommandClass {
 	public boolean execute(CommandSender sender, Command cmd, String lbl, String[] cmdArgs) {
 		String pf = cwc.getPrefix();
 		Player player = null;
-		
+
 		args = CmdUtils.getCmdArgs(cmdArgs, optionalArgs, modifiers);
-		
-		if (CmdUtils.hasModifier(cmdArgs,"-h", false)) {
+
+		if (CmdUtils.hasModifier(cmdArgs, "-h", false)) {
 			CmdUtils.commandHelp(sender, lbl, optionalArgs, modifiers);
 			return true;
 		}
-		
+
 		boolean silent = CmdUtils.hasModifier(cmdArgs, "s");
-		
 
 		//Console
 		if (!(sender instanceof Player)) {
@@ -45,8 +44,7 @@ public class SpawnCmd implements CommandClass {
 				return true;
 			}
 		}
-		
-		
+
 		//Args
 		if (args.length > 0) {
 			player = cwc.getServer().getPlayer(args[0]);
@@ -57,7 +55,6 @@ public class SpawnCmd implements CommandClass {
 			sender.sendMessage(pf + ChatColor.RED + "Invalid player.");
 			return true;
 		}
-		
 
 		//Action
 		player.teleport(cwc.getServer().getWorld(player.getWorld().getName()).getSpawnLocation());

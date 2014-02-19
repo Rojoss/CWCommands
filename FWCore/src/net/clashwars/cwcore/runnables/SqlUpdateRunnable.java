@@ -7,19 +7,19 @@ import java.util.Set;
 import net.clashwars.cwcore.entity.CWPlayer;
 
 public class SqlUpdateRunnable implements Runnable {
-    private Set<CWPlayer> players = new HashSet<CWPlayer>();
+	private Set<CWPlayer>	players	= new HashSet<CWPlayer>();
 
-    public synchronized Set<CWPlayer> getPlayers() {
-        return players;
-    }
+	public synchronized Set<CWPlayer> getPlayers() {
+		return players;
+	}
 
-    @Override
-    public synchronized void run() {
-        LinkedList<CWPlayer> queue = new LinkedList<CWPlayer>(players);
-        CWPlayer player = null;
+	@Override
+	public synchronized void run() {
+		LinkedList<CWPlayer> queue = new LinkedList<CWPlayer>(players);
+		CWPlayer player = null;
 
-        while ((player = queue.poll()) != null) {
-            player.fetchData();
-        }
-    }
+		while ((player = queue.poll()) != null) {
+			player.fetchData();
+		}
+	}
 }
