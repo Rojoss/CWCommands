@@ -81,7 +81,6 @@ public class CWCore {
 	}
 
 	public void onEnable() {
-		log("Enabling...");
 		cfg = new PluginConfig(this);
 		cfg.init();
 		cfg.load();
@@ -109,7 +108,6 @@ public class CWCore {
 		registerTasks();
 		registerChannels();
 
-		Bukkit.broadcastMessage("DEBUG: New version loaded...");
 		try {
 			loadCommandsList();
 		} catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException e) {

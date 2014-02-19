@@ -31,7 +31,7 @@ public class MainEvents implements Listener {
 			player.sendMessage(Utils.integrateColor("&8&l=- &6Welcome to &4&lClashWars ") + ChatColor.GOLD + player.getName() + "!");
 			player.sendMessage(Utils.integrateColor("&8&l=-"));
 			player.sendMessage(Utils.integrateColor("&8&l=- &6You can learn how the server works on our website."));
-			player.sendMessage(Utils.integrateColor("&8&l=- &6It isn't hard though so you can also just try it out!"));
+			player.sendMessage(Utils.integrateColor("&8&l=- &6It isn't hard though so you can also just play!"));
 			player.sendMessage(Utils.integrateColor("&8&l=-"));
 			player.sendMessage(Utils.integrateColor("&8&l=- &6The website: &9&lhttp://clashwars.com"));
 			player.sendMessage(Utils.integrateColor("&8&l=-"));
@@ -41,7 +41,7 @@ public class MainEvents implements Listener {
 			player.sendMessage(Utils.integrateColor("&8&l=-"));
 			player.sendMessage(Utils.integrateColor("&8&l=- &6Welcome back ") + ChatColor.GOLD + player.getName() + "!");
 			player.sendMessage(Utils.integrateColor("&8&l=-"));
-			player.sendMessage(Utils.integrateColor("&8&l=- &6Make sure to check out our website for many useful things."));
+			player.sendMessage(Utils.integrateColor("&8&l=- &6Make sure to check out our website."));
 			player.sendMessage(Utils.integrateColor("&8&l=- &6The website: &9&lhttp://clashwars.com"));
 			player.sendMessage(Utils.integrateColor("&8&l=-"));
 			player.sendMessage(Utils.integrateColor("&8&l=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="));
