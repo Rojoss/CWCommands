@@ -5,10 +5,10 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 import net.clashwars.cwcore.entity.CWPlayer;
-import net.minecraft.server.v1_7_R1.DedicatedServer;
-import net.minecraft.server.v1_7_R1.EntityPlayer;
-import net.minecraft.server.v1_7_R1.MinecraftServer;
-import net.minecraft.server.v1_7_R1.PlayerInteractManager;
+import net.minecraft.server.v1_7_R3.DedicatedServer;
+import net.minecraft.server.v1_7_R3.EntityPlayer;
+import net.minecraft.server.v1_7_R3.MinecraftServer;
+import net.minecraft.server.v1_7_R3.PlayerInteractManager;
 import net.minecraft.util.com.mojang.authlib.GameProfile;
 
 import org.bukkit.Bukkit;

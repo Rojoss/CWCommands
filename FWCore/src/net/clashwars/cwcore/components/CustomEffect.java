@@ -9,14 +9,14 @@ import java.util.Set;
 import net.clashwars.cwcore.constants.Effects;
 import net.clashwars.cwcore.util.LocationUtils;
 import net.clashwars.cwcore.util.Utils;
-import net.minecraft.server.v1_7_R1.PacketPlayOutWorldParticles;
+import net.minecraft.server.v1_7_R3.PacketPlayOutWorldParticles;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

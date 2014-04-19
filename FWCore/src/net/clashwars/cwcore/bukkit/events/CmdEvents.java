@@ -4,7 +4,6 @@ import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.entity.CWPlayer;
 import net.clashwars.cwcore.util.Utils;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -110,7 +109,7 @@ public class CmdEvents implements Listener {
 		if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_AIR) {
 			if (event.getItem() != null && event.getItem().getTypeId() != 0) {
 				Player player = event.getPlayer();
-				CWPlayer cwp = cwc.getPlayerManager().getPlayer(player.getName());
+				CWPlayer cwp = cwc.getPlayerManager().getPlayer(player.getUniqueId());
 				String cmd = Utils.getPowerToolCommandByID(Utils.getPowerToolsList(cwp), event.getItem().getTypeId());
 				if (cmd != "") {
 					player.chat("/" + cmd.replaceAll("♒", " "));

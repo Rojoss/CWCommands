@@ -4,15 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.clashwars.cwcore.components.CustomItem;
-import net.minecraft.server.v1_7_R1.EntityFireworks;
-import net.minecraft.server.v1_7_R1.Item;
-import net.minecraft.server.v1_7_R1.NBTTagCompound;
-import net.minecraft.server.v1_7_R1.NBTTagList;
+import net.minecraft.server.v1_7_R3.EntityFireworks;
 
-import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_7_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
@@ -142,7 +138,7 @@ public class ItemUtils {
 
 	public static void createFireworksExplosion(Location location, ItemStack stack) {
 		// create item
-		net.minecraft.server.v1_7_R1.ItemStack item = CraftItemStack.asNMSCopy(stack);
+		net.minecraft.server.v1_7_R3.ItemStack item = CraftItemStack.asNMSCopy(stack);
 
 		// create fireworks entity
 		EntityFireworks fireworks = new EntityFireworks(((CraftWorld) location.getWorld()).getHandle(), location.getX(), location.getY(),

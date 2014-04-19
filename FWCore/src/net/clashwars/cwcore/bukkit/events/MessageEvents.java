@@ -321,7 +321,7 @@ public class MessageEvents implements PluginMessageListener {
 							}
 
 							if (p != null) {
-								cwp = cwc.getPlayerManager().getPlayer(p.getName());
+								cwp = cwc.getPlayerManager().getPlayer(p.getUniqueId());
 								ExpUtils expMan = new ExpUtils(p);
 
 								String yes = ChatColor.GREEN + "true";
@@ -370,7 +370,7 @@ public class MessageEvents implements PluginMessageListener {
 							in.readUTF();
 							ptarget = in.readUTF();
 
-							cwp = cwc.getPlayerManager().getPlayer(ptarget);
+							cwp = cwc.getPlayerManager().getPlayer(cwc.getServer().getPlayer(ptarget).getUniqueId());
 							cwp.fetchData();
 							break;
 						case "warpteleport":

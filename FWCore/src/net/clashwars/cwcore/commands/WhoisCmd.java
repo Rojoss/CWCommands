@@ -49,7 +49,7 @@ public class WhoisCmd implements CommandClass {
 			if (!bungee) {
 				if (cwc.getServer().getPlayer(args[0]) == cwc.getServer().getPlayer(sender.getName())) {
 					player = cwc.getServer().getPlayer(args[0]);
-					cwp = cwc.getPlayerManager().getPlayer(player.getName());
+					cwp = cwc.getPlayerManager().getPlayer(player.getUniqueId());
 				} else {
 					if (sender.hasPermission("cwcore.cmd.whois.others")) {
 						player = cwc.getServer().getPlayer(args[0]);
@@ -91,7 +91,7 @@ public class WhoisCmd implements CommandClass {
 				e.printStackTrace();
 			}
 		} else {
-			cwp = cwc.getPlayerManager().getPlayer(player.getName());
+			cwp = cwc.getPlayerManager().getPlayer(player.getUniqueId());
 			ExpUtils expMan = new ExpUtils(player);
 
 			String yes = ChatColor.GREEN + "true";

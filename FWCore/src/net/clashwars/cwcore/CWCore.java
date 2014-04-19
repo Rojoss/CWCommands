@@ -28,7 +28,6 @@ import net.clashwars.cwcore.sql.SqlConnection;
 import net.clashwars.cwcore.sql.SqlInfo;
 import net.milkbowl.vault.permission.Permission;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
@@ -98,9 +97,13 @@ public class CWCore {
 
 		pm = new PlayerManager(this);
 		pm.populate();
-
-		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-		perm = rsp.getProvider();
+		
+		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+		if (rsp != null) {
+			perm = rsp.getProvider();
+        } else {
+        	log("Vault couldn't be loaded.");
+        }
 
 		effects = new CustomEffect();
 

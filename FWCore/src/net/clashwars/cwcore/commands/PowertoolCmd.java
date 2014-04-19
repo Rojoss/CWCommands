@@ -51,7 +51,7 @@ public class PowertoolCmd implements CommandClass {
 			return true;
 		} else {
 			player = (Player) sender;
-			cwp = cwc.getPlayerManager().getPlayer(player.getName());
+			cwp = cwc.getPlayerManager().getPlayer(player.getUniqueId());
 		}
 
 		//Args

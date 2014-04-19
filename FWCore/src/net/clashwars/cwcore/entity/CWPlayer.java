@@ -2,6 +2,8 @@ package net.clashwars.cwcore.entity;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.UUID;
+
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.sql.SqlConnection;
 
@@ -13,6 +15,7 @@ public class CWPlayer {
 	private CWCore	cwc;
 	private int		id;
 	private String	name;
+	private UUID	uuid;
 
 	private String	nick		= "";
 	private String	tag			= "";
@@ -25,10 +28,11 @@ public class CWPlayer {
 	private int		maxHealth	= 0;
 	private String	powertools	= "";
 
-	public CWPlayer(CWCore cwc, int id, String name) {
+	public CWPlayer(CWCore cwc, int id, UUID uid) {
 		this.cwc = cwc;
 		this.id = id;
-		this.name = name;
+		this.name = cwc.getServer().getPlayer(uid).getName();
+		this.uuid = uid;
 	}
 
 	public CWCore getPlugin() {
@@ -41,6 +45,10 @@ public class CWPlayer {
 
 	public String getName() {
 		return name;
+	}
+	
+	public UUID getUUID() {
+		return uuid;
 	}
 
 	public String getNick() {
@@ -143,11 +151,11 @@ public class CWPlayer {
 	}
 
 	public Player getOnlinePlayer() {
-		return Bukkit.getPlayer(getName());
+		return Bukkit.getPlayer(getUUID());
 	}
 
 	public OfflinePlayer getOfflinePlayer() {
-		return Bukkit.getOfflinePlayer(getName());
+		return Bukkit.getOfflinePlayer(getUUID());
 	}
 
 	public void fetchData() {

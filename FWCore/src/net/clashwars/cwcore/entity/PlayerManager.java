@@ -3,6 +3,7 @@ package net.clashwars.cwcore.entity;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import net.clashwars.cwcore.CWCore;
 import net.clashwars.cwcore.sql.SqlConnection;
@@ -28,21 +29,21 @@ public class PlayerManager implements Manager {
 		for (Map<String, Object> map : users) {
 
 			int id = (Integer) map.get("id");
-			String name = (String) map.get("player");
+			UUID uid = UUID.fromString((String)map.get("player"));
 
-			CWPlayer player = new CWPlayer(cwc, id, name);
+			CWPlayer player = new CWPlayer(cwc, id, uid);
 			player.interpretData(map);
 
 			players.put(id, player);
 		}
 	}
 
-	public CWPlayer getPlayer(String player) {
+	public CWPlayer getPlayer(UUID uuid) {
 		for (Map.Entry<Integer, CWPlayer> entry : players.entrySet()) {
 
 			CWPlayer cwp = entry.getValue();
 
-			if (cwp.getName().equalsIgnoreCase(player)) {
+			if (cwp.getUUID().equals(uuid)) {
 				return cwp;
 			}
 		}
@@ -64,26 +65,26 @@ public class PlayerManager implements Manager {
 	}
 
 	public CWPlayer getPlayer(Player player) {
-		return getPlayer(player.getName());
+		return getPlayer(player.getUniqueId());
 	}
 
-	public CWPlayer getOrCreatePlayer(String player) {
-		CWPlayer cwp = getPlayer(player);
+	public CWPlayer getOrCreatePlayer(UUID uid) {
+		CWPlayer cwp = getPlayer(uid);
 
 		if (cwp != null) {
 			return cwp;
 		}
 
 		int id = players.size();
-		cwp = new CWPlayer(cwc, id, player);
+		cwp = new CWPlayer(cwc, id, uid);
 		players.put(id, cwp);
-		cwc.getSQLConnection().set("users", id, player, player, "", 0, 0, 0, 0, 0, 0, 0, "");
+		cwc.getSQLConnection().set("users", id, uid.toString(), "", "", 0, 0, 0, 0, 0, 0, 0, "");
 
 		return cwp;
 	}
 
 	public CWPlayer getOrCreatePlayer(Player player) {
-		return getOrCreatePlayer(player.getName());
+		return getOrCreatePlayer(player.getUniqueId());
 	}
 
 	public Map<Integer, CWPlayer> getPlayers() {

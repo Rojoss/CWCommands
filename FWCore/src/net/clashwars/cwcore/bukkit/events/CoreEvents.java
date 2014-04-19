@@ -3,15 +3,12 @@ package net.clashwars.cwcore.bukkit.events;
 import java.lang.reflect.Field;
 
 import net.clashwars.cwcore.CWCore;
-import net.clashwars.cwcore.components.ItemMenu;
 import net.clashwars.cwcore.util.Utils;
-import net.minecraft.server.v1_7_R1.EnumClientCommand;
-import net.minecraft.server.v1_7_R1.PacketPlayInClientCommand;
+import net.minecraft.server.v1_7_R3.EnumClientCommand;
+import net.minecraft.server.v1_7_R3.PacketPlayInClientCommand;
 
 import org.bukkit.Bukkit;
-import org.bukkit.block.CreatureSpawner;
-import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
-import org.bukkit.entity.Entity;
+import org.bukkit.craftbukkit.v1_7_R3.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
