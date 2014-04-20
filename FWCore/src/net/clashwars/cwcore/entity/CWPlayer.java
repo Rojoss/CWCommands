@@ -31,7 +31,11 @@ public class CWPlayer {
 	public CWPlayer(CWCore cwc, int id, UUID uid) {
 		this.cwc = cwc;
 		this.id = id;
-		this.name = cwc.getServer().getPlayer(uid).getName();
+		if (cwc.getServer().getPlayer(uuid) != null) {
+			this.name = cwc.getServer().getPlayer(uid).getName();
+		} else {
+			this.name = cwc.getServer().getOfflinePlayer(uid).getName();
+		}
 		this.uuid = uid;
 	}
 
