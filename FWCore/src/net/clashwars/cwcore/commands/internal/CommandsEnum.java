@@ -28,18 +28,6 @@ public enum CommandsEnum {
 	GIVE(
 			GiveCmd.class,
 			"give"),
-	NICK(
-			NickCmd.class,
-			"nick",
-			"nickname"),
-	TAG(
-			TagCmd.class,
-			"tag",
-			"nametag"),
-	REALNAME(
-			RealnameCmd.class,
-			"realname",
-			"rname"),
 	REMOVEPOTS(
 			RemovepotsCmd.class,
 			"removepots",
@@ -55,28 +43,14 @@ public enum CommandsEnum {
 			"clearinv",
 			"ci",
 			"clearinventory"),
-	MORE(
-			MoreCmd.class,
-			"more",
-			"stack"),
 	GUI(
 			GuiCmd.class,
 			"gui"),
 	TOP(
 			TopCmd.class,
-			"top"),
-	SUICIDE(
-			SuicideCmd.class,
-			"suicide",
-			"killme"),
-	KILL(
-			KillCmd.class,
-			"kill",
-			"slay"),
-	GOD(
-			GodCmd.class,
-			"god",
-			"godmode"),
+			"top",
+			"topp",
+			"roof"),
 	FLY(
 			FlyCmd.class,
 			"fly",
@@ -112,10 +86,6 @@ public enum CommandsEnum {
 			TeleportCmd.class,
 			"teleport",
 			"tp"),
-	TELEPORTHERE(
-			TeleporthereCmd.class,
-			"teleporthere",
-			"tphere"),
 	TELEPORTPOS(
 			TeleportposCmd.class,
 			"teleportpos",
@@ -124,9 +94,6 @@ public enum CommandsEnum {
 	SUDO(
 			SudoCmd.class,
 			"sudo"),
-	WHOIS(
-			WhoisCmd.class,
-			"whois"),
 	SETWARP(
 			WarpsetCmd.class,
 			"setwarp"),
@@ -169,13 +136,7 @@ public enum CommandsEnum {
 	SOUND(
 			SoundCmd.class,
 			"sound",
-			"playsound"),
-	CMDS(
-			CmdsCmd.class,
-			"cmds",
-			"commands",
-			"command",
-			"cmd");
+			"playsound");
 
 	private String[]						aliases;
 	private Class<? extends CommandClass>	clazz;
